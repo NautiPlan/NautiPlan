@@ -7,14 +7,11 @@ import TodoView from "./pages/TodoView";
 function App() {
   return (
     <div className="App">
-      <h1>hello world</h1>
-      <switch>
-        <Routes>
-          <Route path="/chat" element={<AIPlannerView />} />
-          <Route path="/calendar" element={<CalendarView />} />
-          <Route path="/" element={<TodoView />} />
-        </Routes>
-      </switch>
+      <Routes>
+        <Route path="/chat" element={<AIPlannerView />} />
+        <Route path="/calendar" element={<CalendarView />} />
+        <Route path="/" element={<TodoView />} />
+      </Routes>
       <TabBarBase />
     </div>
   );

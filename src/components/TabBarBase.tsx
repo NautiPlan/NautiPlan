@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "tdesign-icons-react";
 import { TabBar, TabBarItem } from "tdesign-mobile-react";
 
@@ -11,20 +11,13 @@ function TabBarBase() {
   ];
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [value, setValue] = useState("/");
 
   const change = (changeValue: string | number) => {
     setValue(changeValue as string);
     navigate(`${changeValue}`);
-    console.log("TabBar 值改变为：", changeValue);
   };
-
-  useEffect(() => {
-    setValue(location.pathname);
-    console.log("当前值：", value);
-  }, [value]);
 
   return (
     <div className="demo-tab-bar">

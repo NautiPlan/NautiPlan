@@ -1,5 +1,11 @@
+import AIPlanner from "../components/AIPlanner";
+
 function AIPlannerView() {
-  return <h1>AIPlannerVi ew</h1>;
+  return (
+    <>
+      <AIPlanner></AIPlanner>
+    </>
+  );
 }
 
 export default AIPlannerView;
