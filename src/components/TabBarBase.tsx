@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "tdesign-icons-react";
 import { TabBar, TabBarItem } from "tdesign-mobile-react";
 
-function TabBarBaseDemo() {
+function TabBarBase() {
   const list = [
-    { value: "label_1", icon: "home", ariaLabel: "首页" },
-    { value: "label_2", icon: "app", ariaLabel: "软件" },
-    { value: "label_3", icon: "chat", ariaLabel: "聊天" },
+    { value: "/", icon: "home", ariaLabel: "Todo" },
+    { value: "/calendar", icon: "app", ariaLabel: "Calendar" },
+    { value: "/chat", icon: "chat", ariaLabel: "Chat" },
   ];
-  const [value, setValue] = useState("label_1");
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [value, setValue] = useState("/");
 
   const change = (changeValue: string | number) => {
     setValue(changeValue as string);
+    navigate(`${changeValue}`);
     console.log("TabBar 值改变为：", changeValue);
   };
 
   useEffect(() => {
+    setValue(location.pathname);
     console.log("当前值：", value);
   }, [value]);
 
@@ -30,4 +37,4 @@ function TabBarBaseDemo() {
   );
 }
 
-export default TabBarBaseDemo;
+export default TabBarBase;
