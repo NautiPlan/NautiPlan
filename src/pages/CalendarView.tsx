@@ -1,8 +1,8 @@
-import { useState, useMemo, useCallback } from "react";
-import "./CalendarView.css";
-import { getMonthInfo, generateWeekdays } from "../components/CalendarUtils";
+import { useCallback, useMemo, useState } from "react";
 import { generateCalendarCells } from "../components/CalendarCells";
 import CalendarSidebar from "../components/CalendarSidebar";
+import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
+import "../styles/pages/CalendarView.css";
 
 function CalendarView() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -11,15 +11,9 @@ function CalendarView() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const today = useMemo(() => new Date(), []);
-  const weekdays = useMemo(
-    () => generateWeekdays(weekStartsOnMonday),
-    [weekStartsOnMonday]
-  );
+  const weekdays = useMemo(() => generateWeekdays(weekStartsOnMonday), [weekStartsOnMonday]);
 
-  const { daysInMonth, startingDay, monthName, year } = useMemo(
-    () => getMonthInfo(currentDate, weekStartsOnMonday),
-    [currentDate, weekStartsOnMonday]
-  );
+  const { daysInMonth, startingDay, monthName, year } = useMemo(() => getMonthInfo(currentDate, weekStartsOnMonday), [currentDate, weekStartsOnMonday]);
 
   // 点击日期时，设置选中日期并打开侧边栏
   const handleDateClick = useCallback((date: Date) => {
@@ -71,15 +65,7 @@ function CalendarView() {
       );
     }
     return weeks;
-  }, [
-    daysInMonth,
-    startingDay,
-    year,
-    currentDate,
-    today,
-    selectedDate,
-    handleDateClick,
-  ]);
+  }, [daysInMonth, startingDay, year, currentDate, today, selectedDate, handleDateClick]);
 
   return (
     <div className="calendar-container">
@@ -105,13 +91,8 @@ function CalendarView() {
 
       <div className="calendar-container">
         {/* ...header、weekdays、calendarWeeks... */}
-        <CalendarSidebar
-          open={sidebarOpen}
-          selectedDate={selectedDate}
-          onClose={closeSidebar}
-        />
-		</div>
-		  
+        <CalendarSidebar open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} />
+      </div>
     </div>
   );
 }

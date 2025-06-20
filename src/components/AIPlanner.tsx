@@ -1,8 +1,7 @@
 import { useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
-import { Calendar, Cell, Slider, Textarea } from "tdesign-mobile-react";
-
-import { Input } from "tdesign-mobile-react";
+import { Button, Calendar, Cell, Input, Slider, Textarea } from "tdesign-mobile-react";
+import "../styles/components/AIPlanner.css";
 function AIPlanner() {
   // 日期选择
   const [dataNote, setDataNote] = useState("");
@@ -29,13 +28,6 @@ function AIPlanner() {
   // 文本域
   const [textValue, onChange] = useState<TextareaProps["value"]>("");
 
-  function onFocus(value: any, { e }: any) {
-    console.log("onFocus: ", value, e);
-  }
-  function onBlur(value: any, { e }: any) {
-    console.log("onBlur: ", value, e);
-  }
-
   // 优先级
   const [priorityValue, setpriorityValue] = useState(10);
   const onPriorityChange = (value: number | number[]) => {
@@ -44,30 +36,29 @@ function AIPlanner() {
   };
 
   return (
-    <div>
+    <div className="ai-planner-container">
       <div className="title">AI计划助手</div>
       <div className="item">
         任务
         <Input placeholder="请输入文字" />
       </div>
       <div className="item">
-        截止日期
         <div>
           <Calendar visible={visible} onConfirm={handleConfirm} onSelect={handleSelect} onClose={onClose}></Calendar>
-          <Cell title="选择日期" arrow note={dataNote} onClick={() => setVisible(true)}></Cell>
+          <Cell title="截止日期" arrow note={dataNote} onClick={() => setVisible(true)}></Cell>
         </div>
       </div>
       <div className="item">
         当前进度说明
         <Textarea
-          className="textarea-example"
-          value={textValue}
           placeholder="请输入文字"
-          onFocus={onFocus}
-          onBlur={onBlur}
+          maxlength={100}
           autosize={true}
+          allowInputOverMax
+          indicator
+          value={textValue}
           onChange={(value) => {
-            console.log("value", value);
+            console.log(value);
             onChange(value);
           }}
         />
@@ -79,6 +70,11 @@ function AIPlanner() {
         </div>
       </div>
       <div className="item">上传图片或音频（可选）</div>
+      <div className="item">
+        <Button size="large" theme="primary">
+          生成计划
+        </Button>
+      </div>
     </div>
   );
 }

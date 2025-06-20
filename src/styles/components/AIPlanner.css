@@ -1,0 +1,177 @@
+/* styles/components/AIPlanner.css */
+
+/* 整体容器样式 */
+.ai-planner-container {
+  padding: 20px;
+  max-width: 600px; /* 限制最大宽度，在桌面端居中显示 */
+  margin: 20px auto; /* 居中并添加上下边距 */
+  background-color: #f9f9f9; /* 浅灰色背景 */
+  border-radius: 8px; /* 圆角边框 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 柔和的阴影 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #333; /* 默认字体颜色 */
+}
+
+/* 标题样式 */
+.ai-planner-container .title {
+  font-size: 28px; /* 标题字体大小 */
+  font-weight: bold; /* 粗体 */
+  text-align: center; /* 居中对齐 */
+  margin-bottom: 30px; /* 底部外边距 */
+  color: #222; /* 标题颜色 */
+}
+
+/* 每个表单项的样式 */
+.ai-planner-container .item {
+  margin-bottom: 15px; /* 底部外边距 */
+  padding: 15px 20px; /* 内边距 */
+  background-color: #fff; /* 白色背景 */
+  border-radius: 8px; /* 圆角边框 */
+  border: 1px solid #eee; /* 浅灰色边框 */
+  display: flex; /* Flex 布局 */
+  flex-direction: column; /* 垂直排列 */
+  gap: 10px; /* 元素之间的间距 */
+}
+
+/* 表单项的标签文本样式 */
+.ai-planner-container .item > div:first-child:not(.wrapper-label) {
+  font-weight: 600; /* 粗体 */
+  color: #555; /* 字体颜色 */
+  font-size: 16px; /* 字体大小 */
+}
+
+/* TDesign Input 组件的内部输入框样式 */
+.ai-planner-container .item .t-input {
+  width: 100%; /* 宽度占满父容器 */
+}
+.ai-planner-container .item .t-input__inner {
+  width: 100%;
+  padding: 10px 12px; /* 内边距 */
+  border: 1px solid #ddd; /* 边框 */
+  border-radius: 6px; /* 圆角 */
+  font-size: 16px; /* 字体大小 */
+  box-sizing: border-box; /* 盒模型 */
+  outline: none; /* 移除默认焦点轮廓 */
+  transition: border-color 0.2s ease; /* 边框颜色过渡效果 */
+}
+.ai-planner-container .item .t-input__inner:focus {
+  border-color: #0052d9; /* 焦点时的边框颜色 (TDesign 主题蓝) */
+}
+
+/* Textarea 组件样式 */
+.ai-planner-container .item .textarea-example {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  min-height: 100px; /* 最小高度 */
+  resize: vertical; /* 允许垂直方向调整大小 */
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.ai-planner-container .item .textarea-example:focus {
+  border-color: #0052d9;
+}
+
+/* TDesign Cell 组件样式 (用于日期选择) */
+.ai-planner-container .item .t-cell {
+  display: flex;
+  justify-content: space-between; /* 左右对齐 */
+  align-items: center; /* 垂直居中 */
+  padding: 10px 0;
+  cursor: pointer; /* 鼠标指针样式 */
+  font-size: 16px;
+  color: #333;
+}
+.ai-planner-container .item .t-cell__title {
+  font-weight: normal; /* 覆盖可能的粗体 */
+  color: #555;
+}
+.ai-planner-container .item .t-cell__note {
+  color: #888; /* 备注文字颜色 */
+  font-size: 15px;
+}
+.ai-planner-container .item .t-cell__right-icon {
+  /* 假设 TDesign 使用此 class 作为右侧箭头图标 */
+  color: #ccc; /* 箭头颜色 */
+}
+
+/* TDesign Slider 组件样式 */
+.ai-planner-container .item .wrapper-label {
+  padding: 10px 0;
+}
+.ai-planner-container .item .t-slider__track {
+  background-color: #e0e0e0; /* 滑轨背景色 */
+  height: 6px; /* 滑轨高度 */
+  border-radius: 3px; /* 滑轨圆角 */
+}
+.ai-planner-container .item .t-slider__handle {
+  background-color: #0052d9; /* 滑块背景色 (TDesign 主题蓝) */
+  border: 2px solid #fff; /* 滑块边框 */
+  box-shadow: 0 0 0 4px rgba(0, 82, 217, 0.2); /* 滑块阴影 */
+  width: 18px; /* 滑块宽度 */
+  height: 18px; /* 滑块高度 */
+  margin-top: -6px; /* 垂直居中滑块 */
+}
+.ai-planner-container .item .t-slider__label {
+  /* 滑块值标签样式 */
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* TDesign Button 组件样式 */
+.ai-planner-container .item .t-button {
+  width: 100%; /* 宽度占满父容器 */
+  padding: 12px 20px; /* 内边距 */
+  font-size: 18px; /* 字体大小 */
+  font-weight: bold; /* 粗体 */
+  border-radius: 6px; /* 圆角 */
+  cursor: pointer; /* 鼠标指针样式 */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* 背景色和阴影过渡效果 */
+  box-sizing: border-box;
+  display: flex; /* Flex 布局 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+.ai-planner-container .item .t-button--primary {
+  background-color: #0052d9; /* 主题蓝色背景 */
+  color: #fff; /* 白色字体 */
+  border: none; /* 无边框 */
+}
+
+.ai-planner-container .item .t-button--primary:hover {
+  background-color: #003d99; /* 鼠标悬停时颜色变深 */
+  box-shadow: 0 4px 12px rgba(0, 82, 217, 0.3); /* 鼠标悬停时阴影效果 */
+}
+
+/* 响应式调整，适用于小屏幕设备 */
+@media (max-width: 768px) {
+  .ai-planner-container {
+    padding: 15px; /* 减小内边距 */
+    margin: 10px; /* 减小外边距 */
+  }
+  .ai-planner-container .title {
+    font-size: 24px; /* 减小标题字体大小 */
+    margin-bottom: 20px;
+  }
+  .ai-planner-container .item {
+    padding: 12px 15px;
+    margin-bottom: 10px;
+  }
+  .ai-planner-container .item > div:first-child:not(.wrapper-label) {
+    font-size: 15px;
+  }
+  .ai-planner-container .item .t-input__inner,
+  .ai-planner-container .item .textarea-example,
+  .ai-planner-container .item .t-cell {
+    font-size: 15px;
+  }
+  .ai-planner-container .item .t-button {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+}
