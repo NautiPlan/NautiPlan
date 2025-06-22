@@ -10,9 +10,9 @@ const TIMER_MODES = {
 
 // 定义每种模式的默认时长（秒）
 const DEFAULT_TIMES = {
-  [TIMER_MODES.POMODORO]: 2, // 25分钟
-  [TIMER_MODES.SHORT_BREAK]: 2, // 5分钟
-  [TIMER_MODES.LONG_BREAK]: 2, // 15分钟
+  [TIMER_MODES.POMODORO]: 25 * 60, // 25分钟
+  [TIMER_MODES.SHORT_BREAK]: 5 * 60, // 5分钟
+  [TIMER_MODES.LONG_BREAK]: 15 * 60, // 15分钟
 };
 
 // 默认的循环模式
