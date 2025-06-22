@@ -65,10 +65,10 @@ export const useTimerStore = create<TimerState>()(
 
       // 开始计时器
       startTimer: () => {
-        // set((state) => ({
-        //   isRunning: true,
-        //   lastRunTimestamp: Date.now(),
-        // }));
+        set((state) => ({
+          isRunning: true,
+          lastRunTimestamp: Date.now(),
+        }));
       },
 
       // 暂停计时器
