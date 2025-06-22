@@ -1,9 +1,18 @@
 import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
 import { Button, Calendar, Cell, Input, Slider, Textarea, Toast } from "tdesign-mobile-react";
+import { v4 as uuidv4 } from "uuid";
+import { TaskDescription } from "../interface/task";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
+
 function AIPlanner() {
+  // 任务名称
+  const [taskName, setTaskName] = useState("");
+  const onTaskNameChange = (value: any) => {
+    const stringValue = String(value);
+    setTaskName(stringValue);
+  };
   // 日期选择
   const [dataNote, setDataNote] = useState("");
   const [visible, setVisible] = useState(false);
@@ -69,9 +78,26 @@ function AIPlanner() {
 
   // 上传
   const commit = async () => {
+    const taskDescription: TaskDescription = {
+      id: uuidv4(),
+      name: taskName,
+      startDate: new Date(),
+      dueDate: new Date(dataNote),
+      taskDescription: textValue?.toString(),
+      importance: priorityValue,
+    };
+
     try {
-      const result = await callVivoGpt({ prompt: "111" });
-      console.log("生成的计划:", result);
+      const result = await callVivoGpt({ prompt: JSON.stringify(taskDescription) });
+
+      if (!result) {
+        try {
+          const parsePlan = JSON.parse(result as string);
+          console.log("解析后的计划:", parsePlan);
+        } catch (error) {
+          console.error("JSON解析失败:", error);
+        }
+      }
     } catch (error) {
       console.error("AI请求错误:", error);
     }
@@ -82,7 +108,7 @@ function AIPlanner() {
       <div className="title">AI计划助手</div>
       <div className="item">
         任务
-        <Input placeholder="请输入文字" />
+        <Input placeholder="请输入任务名称" value={taskName} onChange={onTaskNameChange} />
       </div>
       <div className="item">
         <div>
@@ -91,9 +117,9 @@ function AIPlanner() {
         </div>
       </div>
       <div className="item">
-        当前进度说明
+        任务说明
         <Textarea
-          placeholder="请输入文字"
+          placeholder="可包括任务目标、步骤、注意事项等"
           maxlength={100}
           autosize={true}
           allowInputOverMax

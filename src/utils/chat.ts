@@ -9,16 +9,10 @@ const URI = "/vivogpt/completions";
 const DOMAIN = "api-ai.vivo.com.cn";
 const METHOD = "POST";
 
-// 接口定义
+// AI接口
 interface VivoGptRequestData {
   prompt: string;
   model?: string;
-  sessionId?: string;
-  extra?: {
-    temperature?: number;
-    max_tokens?: number;
-    top_p?: number;
-  };
 }
 
 interface VivoGptResponse {
@@ -49,11 +43,11 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
   // 设置默认值
   const requestData = {
     prompt: data.prompt,
+    systemPrompt: "你是一个AI日程管理助手，你会得到一段描述信息，你需要针对要求，分析潜在任务，任务难度等因素合理安排用户日常，以JSON方式为我安排计划，参考以下样例" + '{\n  "id": "plan-001",\n  "name": "项目开发计划",\n  "startDate": "2023-10-01T00:00:00.000Z",\n  "dueDate": "2023-10-31T23:59:59.000Z",\n  "priority": 1,\n  "completed": false,\n  "Tasks": [\n    {\n      "id": "task-001",\n      "name": "需求分析",\n      "date": "2023-10-01T00:00:00.000Z",\n      "completed": true\n    },\n    {\n      "id": "task-002",\n      "name": "原型设计",\n      "date": "2023-10-05T00:00:00.000Z",\n      "completed": true\n    },\n    {\n      "id": "task-003",\n      "name": "开发实现\\n(包含子任务)",\n      "date": "2023-10-10T00:00:00.000Z",\n      "completed": false\n    },\n    {\n      "id": "task-004",\n      "name": "测试\\t验收",\n      "date": "2023-10-25T00:00:00.000Z",\n      "completed": false\n    }\n  ]\n}',
     model: data.model || "vivo-BlueLM-TB-Pro",
-    sessionId: data.sessionId || uuidv4(),
+    sessionId: uuidv4(),
     extra: {
-      temperature: data.extra?.temperature || 0.9,
-      ...data.extra,
+      temperature: 0.9,
     },
   };
 
@@ -65,7 +59,6 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
       "Content-Type": "application/json",
     };
 
-    const startTime = Date.now();
     const url = `https://${DOMAIN}${URI}`;
 
     // 构建查询参数
@@ -79,17 +72,11 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
       body: JSON.stringify(requestData),
     });
 
-    const endTime = Date.now();
-    const timeCost = (endTime - startTime) / 1000;
-
     if (response.ok) {
       const resObj: VivoGptResponse = await response.json();
-      console.log("response:", resObj);
 
       if (resObj.code === 0 && resObj.data) {
         const content = resObj.data.content;
-        console.log(`final content:\n${content}`);
-        console.log(`请求耗时: ${timeCost.toFixed(2)}秒`);
         return content;
       } else {
         console.error("API错误:", resObj.message || "未知错误");
