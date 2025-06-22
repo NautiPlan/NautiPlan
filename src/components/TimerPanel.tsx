@@ -20,9 +20,10 @@ const TimerPanel: React.FC = () => {
         nextInCircleMode,
         updateLastRunTimestamp,
         exitCircleMode,// 添加退出Circle模式的函数引用
+        startTimerInterval,
+        stopTimerInterval,
     } = useTimerStore();
 
-    const timerIntervalRef = useRef<number | null>(null);
     const checkTimerIntervalRef = useRef<number | null>(null);
 
 
@@ -68,20 +69,7 @@ const TimerPanel: React.FC = () => {
         }
     };
 
-    // 提取计时器间隔逻辑为单独函数
-    const startTimerInterval = () => {
-        if (timerIntervalRef.current !== null) {
-            clearInterval(timerIntervalRef.current);
-        }
 
-        timerIntervalRef.current = window.setInterval(() => {
-            if (useTimerStore.getState().timer > 0) {
-                tickTimer();
-            } else {
-                handleTimerComplete();
-            }
-        }, 1000);
-    };
 
     // 启动计时器
     const handleStartTimer = () => {
@@ -96,10 +84,8 @@ const TimerPanel: React.FC = () => {
         if (!isRunning) return;
 
         pauseTimer();
-        if (timerIntervalRef.current !== null) {
-            clearInterval(timerIntervalRef.current);
-            timerIntervalRef.current = null;
-        }
+
+        stopTimerInterval();
     };
 
 
@@ -125,56 +111,98 @@ const TimerPanel: React.FC = () => {
     };
 
 
-    // 恢复计时器状态
+    // // 恢复计时器状态
+    // useEffect(() => {
+    //     // 恢复之前运行的计时器状态
+    //     if (isRunning && lastRunTimestamp) {
+    //         // 计算经过的时间
+    //         const now = Date.now();
+    //         const elapsedSeconds = Math.floor((now - lastRunTimestamp) / 2000);
+
+    //         // 如果有经过的时间，减少计时器时间
+    //         if (elapsedSeconds > 0 && timer > 0) {
+    //             // 直接使用store的getState来避免闭包问题
+    //             const currentTimer = useTimerStore.getState().timer;
+    //             const newTime = Math.max(0, currentTimer - elapsedSeconds);
+
+    //             // 使用立即执行的匿名函数来更新计时器状态
+    //             (async () => {
+    //                 // 每秒tick一次直到追上当前时间
+    //                 for (let i = 0; i < elapsedSeconds && i < currentTimer; i++) {
+    //                     tickTimer();
+    //                     // 稍微延迟避免状态更新过快
+    //                     await new Promise((resolve) => setTimeout(resolve, 1));
+    //                 }
+
+    //                 // 如果计时器归零，触发通知
+    //                 if (newTime <= 0) {
+    //                     handleTimerComplete();
+    //                 } else {
+    //                     // 否则继续运行计时器
+    //                     startTimerInterval();
+    //                 }
+    //             })();
+    //         } else {
+    //             // 没有经过时间或计时器已结束，直接启动计时器
+    //             startTimerInterval();
+    //         }
+
+    //         // 更新最后运行时间戳为当前时间
+    //         updateLastRunTimestamp(now);
+    //     }
+
+    //     // 组件卸载时清除计时器
+    //     return () => {
+    //         stopTimerInterval();
+    //         if (checkTimerIntervalRef.current !== null) {
+    //             clearInterval(checkTimerIntervalRef.current);
+    //         }
+    //     };
+    // }, []); // 空依赖数组，仅在组件挂载时执行一次
+
+
     useEffect(() => {
-        // 恢复之前运行的计时器状态
-        if (isRunning && lastRunTimestamp) {
-            // 计算经过的时间
-            const now = Date.now();
-            const elapsedSeconds = Math.floor((now - lastRunTimestamp) / 1000);
+        const handleVisibilityChange = () => {
+            const currentState = useTimerStore.getState();
 
-            // 如果有经过的时间，减少计时器时间
-            if (elapsedSeconds > 0 && timer > 0) {
-                // 直接使用store的getState来避免闭包问题
-                const currentTimer = useTimerStore.getState().timer;
-                const newTime = Math.max(0, currentTimer - elapsedSeconds);
-
-                // 使用立即执行的匿名函数来更新计时器状态
-                (async () => {
-                    // 每秒tick一次直到追上当前时间
-                    for (let i = 0; i < elapsedSeconds && i < currentTimer; i++) {
-                        tickTimer();
-                        // 稍微延迟避免状态更新过快
-                        await new Promise((resolve) => setTimeout(resolve, 1));
-                    }
-
-                    // 如果计时器归零，触发通知
-                    if (newTime <= 0) {
-                        handleTimerComplete();
-                    } else {
-                        // 否则继续运行计时器
-                        startTimerInterval();
-                    }
-                })();
+            if (document.hidden) {
+                // 页面切出，记录当前时间
+                updateLastRunTimestamp(Date.now());
             } else {
-                // 没有经过时间或计时器已结束，直接启动计时器
-                startTimerInterval();
-            }
+                // 页面切回
+                if (currentState.isRunning && currentState.lastRunTimestamp) {
+                    const now = Date.now();
+                    const elapsedSeconds = Math.floor((now - currentState.lastRunTimestamp) / 1000);
 
-            // 更新最后运行时间戳为当前时间
-            updateLastRunTimestamp(now);
-        }
+                    if (elapsedSeconds > 0 && currentState.timer > 0) {
+                        const newTime = Math.max(0, currentState.timer - elapsedSeconds);
 
-        // 组件卸载时清除计时器
-        return () => {
-            if (timerIntervalRef.current !== null) {
-                clearInterval(timerIntervalRef.current);
-            }
-            if (checkTimerIntervalRef.current !== null) {
-                clearInterval(checkTimerIntervalRef.current);
+                        // 更新 timer
+                        useTimerStore.getState().setTimer(newTime);
+
+                        // 如果时间归零，触发完成
+                        if (newTime <= 0) {
+                            handleTimerComplete();
+                        }
+                    }
+
+                    // 重启计时器
+                    startTimerInterval();
+                    updateLastRunTimestamp(now);
+                }
             }
         };
-    }, []); // 空依赖数组，仅在组件挂载时执行一次
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        // 卸载时移除
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+    }, []);
+
+
+
 
     return (
         <div className="timer-panel">
