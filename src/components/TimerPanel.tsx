@@ -110,57 +110,6 @@ const TimerPanel: React.FC = () => {
         handleStartTimer();
     };
 
-
-    // // 恢复计时器状态
-    // useEffect(() => {
-    //     // 恢复之前运行的计时器状态
-    //     if (isRunning && lastRunTimestamp) {
-    //         // 计算经过的时间
-    //         const now = Date.now();
-    //         const elapsedSeconds = Math.floor((now - lastRunTimestamp) / 2000);
-
-    //         // 如果有经过的时间，减少计时器时间
-    //         if (elapsedSeconds > 0 && timer > 0) {
-    //             // 直接使用store的getState来避免闭包问题
-    //             const currentTimer = useTimerStore.getState().timer;
-    //             const newTime = Math.max(0, currentTimer - elapsedSeconds);
-
-    //             // 使用立即执行的匿名函数来更新计时器状态
-    //             (async () => {
-    //                 // 每秒tick一次直到追上当前时间
-    //                 for (let i = 0; i < elapsedSeconds && i < currentTimer; i++) {
-    //                     tickTimer();
-    //                     // 稍微延迟避免状态更新过快
-    //                     await new Promise((resolve) => setTimeout(resolve, 1));
-    //                 }
-
-    //                 // 如果计时器归零，触发通知
-    //                 if (newTime <= 0) {
-    //                     handleTimerComplete();
-    //                 } else {
-    //                     // 否则继续运行计时器
-    //                     startTimerInterval();
-    //                 }
-    //             })();
-    //         } else {
-    //             // 没有经过时间或计时器已结束，直接启动计时器
-    //             startTimerInterval();
-    //         }
-
-    //         // 更新最后运行时间戳为当前时间
-    //         updateLastRunTimestamp(now);
-    //     }
-
-    //     // 组件卸载时清除计时器
-    //     return () => {
-    //         stopTimerInterval();
-    //         if (checkTimerIntervalRef.current !== null) {
-    //             clearInterval(checkTimerIntervalRef.current);
-    //         }
-    //     };
-    // }, []); // 空依赖数组，仅在组件挂载时执行一次
-
-
     useEffect(() => {
         const handleVisibilityChange = () => {
             const currentState = useTimerStore.getState();
