@@ -1,5 +1,13 @@
-function TodoView() {
-  return <h1>TodoView</h1>;
-}
+import React from "react";
+import Nautilus from "../components/Nautilus";
 
-export default TodoView;
+const NautilusView: React.FC = () => {
+  return (
+    <div className="nautilus-view">
+      <Nautilus />
+    </div>
+  );
+};
+
+export default NautilusView;
+
