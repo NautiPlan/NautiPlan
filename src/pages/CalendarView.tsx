@@ -2,18 +2,21 @@ import { useCallback, useMemo, useState } from "react";
 import { generateCalendarCells } from "../components/CalendarCells";
 import CalendarSidebar from "../components/CalendarSidebar";
 import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
+import CalendarModal from "../components/CalendarModal";
 import "../styles/pages/CalendarView.css";
 
 function CalendarView() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [weekStartsOnMonday, setWeekStartsOnMonday] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const today = useMemo(() => new Date(), []);
-  const weekdays = useMemo(() => generateWeekdays(weekStartsOnMonday), [weekStartsOnMonday]);
+  const weekdays = useMemo(() => generateWeekdays(), []);
 
-  const { daysInMonth, startingDay, monthName, year } = useMemo(() => getMonthInfo(currentDate, weekStartsOnMonday), [currentDate, weekStartsOnMonday]);
+  const { daysInMonth, startingDay, monthName, year } = useMemo(
+    () => getMonthInfo(currentDate),
+    [currentDate]
+  );
 
   // 点击日期时，设置选中日期并打开侧边栏
   const handleDateClick = useCallback((date: Date) => {
@@ -32,9 +35,6 @@ function CalendarView() {
     setSidebarOpen(true);
   }, []);
 
-  const toggleWeekStart = useCallback(() => {
-    setWeekStartsOnMonday((prev) => !prev);
-  }, []);
 
   const changeMonth = useCallback((offset: number) => {
     setCurrentDate((prev) => {
@@ -73,7 +73,6 @@ function CalendarView() {
         <div className="calendar-controls">
           <button onClick={() => changeMonth(-1)}>&lt; 上月</button>
           <button onClick={goToToday}>今天</button>
-          <button onClick={toggleWeekStart}>更改显示方式</button>
           <button onClick={() => changeMonth(1)}>下月 &gt;</button>
         </div>
         <h2>
@@ -89,10 +88,12 @@ function CalendarView() {
       </div>
       <div className="calendar-body">{calendarWeeks}</div>
 
-      <div className="calendar-container">
-        {/* ...header、weekdays、calendarWeeks... */}
-        <CalendarSidebar open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} />
-      </div>
+      <CalendarModal
+        open={sidebarOpen}
+        selectedDate={selectedDate}
+        onClose={closeSidebar}
+      />
+      {/* <CalendarSidebar open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} /> */}
     </div>
   );
 }

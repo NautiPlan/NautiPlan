@@ -130,44 +130,49 @@
 }
 
 
-.calendar-sidebar {
+/* 弹窗样式 */
+.modal-overlay {
   position: fixed;
   top: 0;
+  left: 0;
   right: 0;
-  width: 320px;
-  height: 100vh;
-  background: #fff;
-  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
-  padding: 24px 16px 16px 16px;
-  overflow-y: auto;
-  opacity: 0;
-  transform: translateX(100%);
-  pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
 }
 
-.calendar-sidebar.animated {
-  opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
+  position: relative;
+  animation: modalFadeIn 0.3s ease-out;
 }
 
-.sidebar-close {
+.modal-close {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #eee;
+  top: 10px;
+  right: 10px;
+  background: none;
   border: none;
-  border-radius: 4px;
-  padding: 4px 10px;
+  font-size: 1.5rem;
   cursor: pointer;
+  color: #666;
 }
 
-@keyframes fadeIn {
+.modal-body {
+  padding: 20px 0;
+}
+
+@keyframes modalFadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(-20px);
   }
 
   to {
@@ -175,4 +180,6 @@
     transform: translateY(0);
   }
 }
+
+
 
