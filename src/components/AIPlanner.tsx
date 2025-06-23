@@ -56,8 +56,6 @@ function AIPlanner() {
     setPlanVisible(visible);
   };
 
-  const onHide = () => setPlanVisible(false);
-
   // 文件上传相关状态
   const [fileBuffers, setFileBuffers] = useState<ArrayBuffer[]>([]); // 存储所有上传文件
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -202,13 +200,15 @@ function AIPlanner() {
         </Button>
       </div>
       <Popup visible={planVisible} onVisibleChange={handlePlanVisibleChange} placement="center" style={{ width: "240px", height: "240px" }}>
-        {
+        {Plans.length > 0 ? (
           <div className="plan-content">
             <p className="plan-content-title">{Plans[Plans.length - 1].name}</p>
             <p>截止时间: {new Date(Plans[Plans.length - 1].dueDate).toLocaleDateString()}</p>
             <p>重要度: {Plans[Plans.length - 1].priority}</p>
           </div>
-        }
+        ) : (
+          <div>暂无计划</div>
+        )}
         <Button theme="primary" className="view-plan-btm">
           查看详情
         </Button>
