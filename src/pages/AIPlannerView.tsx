@@ -3,7 +3,7 @@ import AIPlanner from "../components/AIPlanner";
 function AIPlannerView() {
   return (
     <>
-      <AIPlanner></AIPlanner>
+      <AIPlanner />
     </>
   );
 }

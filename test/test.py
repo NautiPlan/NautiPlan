@@ -5,8 +5,8 @@ import requests
 from auth_util import gen_sign_headers
 
 # 请替换APP_ID、APP_KEY
-APP_ID = 11
-APP_KEY = 11
+APP_ID = '2025795358'
+APP_KEY = 'ZFiNLwhFLHHIcAVh'
 URI = '/vivogpt/completions'
 DOMAIN = 'api-ai.vivo.com.cn'
 METHOD = 'POST'

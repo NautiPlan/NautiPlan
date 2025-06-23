@@ -1,12 +1,16 @@
 import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
-import { Button, Calendar, Cell, Input, Slider, Textarea, Toast } from "tdesign-mobile-react";
+import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
 import { TaskDescription } from "../interface/task";
+import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
 
 function AIPlanner() {
+  // 状态管理
+  const { addPlan, Plans } = usePlanStore();
+
   // 任务名称
   const [taskName, setTaskName] = useState("");
   const onTaskNameChange = (value: any) => {
@@ -44,6 +48,16 @@ function AIPlanner() {
     const pValue = Array.isArray(value) ? value[0] : value;
     setpriorityValue(pValue);
   };
+
+  // plan弹窗
+  const [planVisible, setPlanVisible] = useState(false);
+
+  const handlePlanVisibleChange = (visible: boolean | ((prevState: boolean) => boolean)) => {
+    setPlanVisible(visible);
+  };
+
+  const onHide = () => setPlanVisible(false);
+
   // 文件上传相关状态
   const [fileBuffers, setFileBuffers] = useState<ArrayBuffer[]>([]); // 存储所有上传文件
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -102,7 +116,6 @@ function AIPlanner() {
       importance: priorityValue,
     };
 
-    // 创建一个持久的loading toast
     let loadingToast: any = null;
 
     loadingToast = Toast({
@@ -123,7 +136,8 @@ function AIPlanner() {
       if (result) {
         try {
           const plan = JSON.parse(result);
-          console.log("解析后的计划", JSON.stringify(plan, null, 2));
+          addPlan(plan);
+          setPlanVisible(true);
         } catch (parseError) {
           console.error("JSON解析失败:", parseError);
           console.log("原始返回内容:", result);
@@ -138,8 +152,6 @@ function AIPlanner() {
     } catch (error) {
       console.error("请求错误:", error);
     }
-
-    // 计划显示框
   };
 
   return (
@@ -189,6 +201,18 @@ function AIPlanner() {
           生成计划
         </Button>
       </div>
+      <Popup visible={planVisible} onVisibleChange={handlePlanVisibleChange} placement="center" style={{ width: "240px", height: "240px" }}>
+        {
+          <div className="plan-content">
+            <p className="plan-content-title">{Plans[Plans.length - 1].name}</p>
+            <p>截止时间: {new Date(Plans[Plans.length - 1].dueDate).toLocaleDateString()}</p>
+            <p>重要度: {Plans[Plans.length - 1].priority}</p>
+          </div>
+        }
+        <Button theme="primary" className="view-plan-btm">
+          查看详情
+        </Button>
+      </Popup>
     </div>
   );
 }
