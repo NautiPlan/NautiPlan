@@ -39,7 +39,7 @@ function AIPlanner() {
   const [textValue, onChange] = useState<TextareaProps["value"]>("");
 
   // 优先级
-  const [priorityValue, setpriorityValue] = useState(10);
+  const [priorityValue, setpriorityValue] = useState(50);
   const onPriorityChange = (value: number | number[]) => {
     const pValue = Array.isArray(value) ? value[0] : value;
     setpriorityValue(pValue);
@@ -78,6 +78,21 @@ function AIPlanner() {
 
   // 上传
   const commit = async () => {
+    if (!taskName.trim()) {
+      Toast({
+        message: "请输入任务名称",
+        theme: "warning",
+      });
+      return;
+    }
+    if (!dataNote) {
+      Toast({
+        message: "请选择截止日期",
+        theme: "warning",
+      });
+      return;
+    }
+
     const taskDescription: TaskDescription = {
       id: uuidv4(),
       name: taskName,
@@ -87,20 +102,44 @@ function AIPlanner() {
       importance: priorityValue,
     };
 
+    // 创建一个持久的loading toast
+    let loadingToast: any = null;
+
+    loadingToast = Toast({
+      message: "开始生成计划...",
+      theme: "loading",
+      duration: 0,
+      preventScrollThrough: true,
+      showOverlay: true,
+    });
+
     try {
       const result = await callVivoGpt({ prompt: JSON.stringify(taskDescription) });
-
-      if (!result) {
+      // 关闭loading toast
+      if (loadingToast) {
+        Toast.clear();
+        loadingToast = null;
+      }
+      if (result) {
         try {
-          const parsePlan = JSON.parse(result as string);
-          console.log("解析后的计划:", parsePlan);
-        } catch (error) {
-          console.error("JSON解析失败:", error);
+          const plan = JSON.parse(result);
+          console.log("解析后的计划", JSON.stringify(plan, null, 2));
+        } catch (parseError) {
+          console.error("JSON解析失败:", parseError);
+          console.log("原始返回内容:", result);
         }
+      } else {
+        Toast({
+          message: "生成计划失败，请重试",
+          theme: "error",
+          duration: 3000,
+        });
       }
     } catch (error) {
-      console.error("AI请求错误:", error);
+      console.error("请求错误:", error);
     }
+
+    // 计划显示框
   };
 
   return (
