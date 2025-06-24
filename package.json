@@ -13,6 +13,7 @@
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-http": "^2.4.4",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-sql": "github:tauri-apps/tauri-plugin-sql#v2",
     "@types/crypto-js": "^4.2.2",
     "crypto-js": "^4.2.0",
     "react": "^18.3.1",

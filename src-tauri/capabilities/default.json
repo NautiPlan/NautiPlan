@@ -13,6 +13,7 @@
           "url": "https://*.*"
         }
       ]
-    }
+    },
+    "sql:default"
   ]
 }
