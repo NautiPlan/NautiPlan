@@ -10,7 +10,7 @@ interface PlanListProps {
   showCompleted?: boolean;
 }
 
-function PlanList({ onPlanClick, showCompleted = true }: PlanListProps) {
+function PlanList({ onPlanClick }: PlanListProps) {
   const { Plans } = usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");

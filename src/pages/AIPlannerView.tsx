@@ -2,10 +2,8 @@ import AIPlanner from "../components/AIPlanner";
 
 function AIPlannerView() {
   return (
-    <div className="ai-planner-view">
-      <div className="scrollable-content">
-        <AIPlanner />
-      </div>
+    <div className="ai-planner-view" style={{ height: "100vh", overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
+      <AIPlanner />
     </div>
   );
 }
