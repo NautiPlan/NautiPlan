@@ -2,9 +2,11 @@ import AIPlanner from "../components/AIPlanner";
 
 function AIPlannerView() {
   return (
-    <>
-      <AIPlanner />
-    </>
+    <div className="ai-planner-view">
+      <div className="scrollable-content">
+        <AIPlanner />
+      </div>
+    </div>
   );
 }
 

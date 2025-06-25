@@ -8,6 +8,7 @@ function TabBarBase() {
     { value: "/", icon: "home", ariaLabel: "Todo" },
     { value: "/calendar", icon: "app", ariaLabel: "Calendar" },
     { value: "/chat", icon: "chat", ariaLabel: "Chat" },
+    { value: "/myPlan", icon: "user", ariaLabel: "MyPlan" },
   ];
 
   const navigate = useNavigate();
