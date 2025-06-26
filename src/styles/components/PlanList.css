@@ -1,19 +1,43 @@
 .plan-list-container {
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   background-color: #f5f5f5;
-  min-height: 100vh;
 }
 
 .plan-list-filters {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
-  padding: 0 4px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e7e7e7;
 }
 
 .plan-list-filters .t-button {
   flex: 1;
   border-radius: 20px;
+}
+
+/* 新增：可滚动区域 */
+.plan-list-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 隐藏滚动条 */
+.plan-list-scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
+.plan-list-scroll-area {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .plan-item-title {
@@ -66,6 +90,10 @@
 /* 响应式适配 */
 @media (max-width: 768px) {
   .plan-list-container {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
+  .plan-list-filters {
     padding: 12px;
   }
 
@@ -83,4 +111,257 @@
     flex-direction: column;
     gap: 2px;
   }
+}
+
+/* 现有样式保持不变 */
+.plan-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.plan-list-filters {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.plan-list-filters .t-button {
+  flex: 1;
+  border-radius: 20px;
+}
+
+/* 新增：可滚动区域 */
+.plan-list-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 隐藏滚动条 */
+.plan-list-scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
+.plan-list-scroll-area {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.plan-item-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.plan-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+  margin-right: 8px;
+}
+
+.plan-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.plan-item-description {
+  margin-top: 8px;
+}
+
+.plan-dates {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.plan-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+}
+
+.plan-stats span {
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ============ 新增：弹出层任务列表样式 ============ */
+
+/* 弹出层标题区域 */
+.tdesign-mobile-popup-demo__with-title.header {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  background-color: #fff;
+  border-bottom: 1px solid #e7e7e7;
+  padding: 16px;
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+/* 任务统计信息 */
+.task-summary {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #0052d9;
+}
+
+/* 任务列表容器 */
+.task-list-container {
+  max-height: calc(50vh - 120px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 任务列表项样式 */
+.task-item {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+/* 任务名称样式 */
+.task-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 任务日期样式 */
+.task-date {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* 任务状态标签样式 */
+.task-status-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* 空状态样式 */
+.task-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.task-empty-state .t-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+/* 弹出层内容区域 */
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.popup-body {
+  flex: 1;
+  overflow: hidden;
+  padding: 16px;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .plan-list-container {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
+  .plan-list-filters {
+    padding: 12px;
+  }
+
+  .plan-item-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .plan-tags {
+    flex-direction: row;
+    margin-top: 4px;
+  }
+
+  .plan-dates {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* 弹出层移动端适配 */
+  .task-title {
+    font-size: 16px;
+  }
+
+  .task-summary {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .task-list-container {
+    max-height: calc(50vh - 100px);
+  }
+
+  .task-name {
+    font-size: 14px;
+  }
+
+  .task-date {
+    font-size: 11px;
+  }
+}
+
+/* 优化滚动体验 */
+.task-list-container::-webkit-scrollbar {
+  width: 3px;
+}
+
+.task-list-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.task-list-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.task-list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }

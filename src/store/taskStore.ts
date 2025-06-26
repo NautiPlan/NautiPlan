@@ -26,4 +26,6 @@ export const usePlanStore = create<PlanStore>((set, get) => ({
     })),
 
   getPlanById: (planId) => get().Plans.find((plan) => plan.id === planId),
+
+  getTasksByPlanId: (planId: string) => get().Plans.find((plan) => plan.id === planId)?.Tasks || [],
 }));

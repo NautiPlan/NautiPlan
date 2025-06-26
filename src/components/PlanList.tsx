@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { InfoCircleFilledIcon } from "tdesign-icons-react";
-import { Button, Cell, Empty, List, Tag } from "tdesign-mobile-react";
+import { Button, Cell, Empty, List, Popup, Tag } from "tdesign-mobile-react";
 import { Plan } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/PlanList.css";
@@ -11,9 +11,11 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans } = usePlanStore();
+  const { Plans, removePlan } = usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     let filtered = Plans;
@@ -46,6 +48,8 @@ function PlanList({ onPlanClick }: PlanListProps) {
   };
 
   const handlePlanClick = (plan: Plan) => {
+    setSelectedPlan(plan);
+    setVisible(true);
     if (onPlanClick) {
       onPlanClick(plan);
     }
@@ -55,10 +59,22 @@ function PlanList({ onPlanClick }: PlanListProps) {
     return plan.Tasks || [];
   };
 
+  const handleVisibleChange = (visible: boolean) => {
+    setVisible(visible);
+    if (!visible) {
+      setSelectedPlan(null);
+    }
+  };
+
+  const handleRemovePlan = (plan: Plan) => {
+    setVisible(false);
+    removePlan(plan.id);
+  };
+
   if (Plans.length === 0) {
     return (
       <div className="plan-list-container">
-        <Empty icon={<InfoCircleFilledIcon />} description="暂无任务" />;
+        <Empty icon={<InfoCircleFilledIcon />} description="暂无任务" />
       </div>
     );
   }
@@ -78,55 +94,101 @@ function PlanList({ onPlanClick }: PlanListProps) {
         </Button>
       </div>
 
-      {/* 计划列表 */}
-      <List>
-        {filteredPlans.map((plan) => {
-          const tasks = getTasks(plan);
-          const completedTasks = tasks.filter((t) => t.completed);
+      {/* 可滚动的列表区域 */}
+      <div className="plan-list-scroll-area">
+        <List>
+          {filteredPlans.map((plan) => {
+            const tasks = getTasks(plan);
+            const completedTasks = tasks.filter((t) => t.completed);
 
-          return (
-            <Cell
-              key={plan.id}
-              title={
-                <div className="plan-item-title">
-                  <span className="plan-name">{plan.name}</span>
-                  <div className="plan-tags">
-                    <Tag theme={getPriorityColor(plan.priority)} size="small">
-                      {getPriorityText(plan.priority)}
-                    </Tag>
-                    {plan.completed && (
-                      <Tag theme="success" size="small">
-                        ✓ 已完成
+            return (
+              <Cell
+                key={plan.id}
+                title={
+                  <div className="plan-item-title">
+                    <span className="plan-name">{plan.name}</span>
+                    <div className="plan-tags">
+                      <Tag theme={getPriorityColor(plan.priority)} size="small">
+                        {getPriorityText(plan.priority)}
                       </Tag>
-                    )}
+                      {plan.completed && (
+                        <Tag theme="success" size="small">
+                          已完成
+                        </Tag>
+                      )}
+                    </div>
                   </div>
-                </div>
-              }
-              description={
-                <div className="plan-item-description">
-                  <div className="plan-dates">
-                    <span>开始: {formatDate(plan.startDate)}</span>
-                    <span>截止: {formatDate(plan.dueDate)}</span>
+                }
+                description={
+                  <div className="plan-item-description">
+                    <div className="plan-dates">
+                      <span>开始: {formatDate(plan.startDate)}</span>
+                      <span>截止: {formatDate(plan.dueDate)}</span>
+                    </div>
+                    <div className="plan-stats">
+                      <span>任务数量: {tasks.length}</span>
+                      {tasks.length > 0 && (
+                        <span>
+                          已完成: {completedTasks.length}/{tasks.length}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="plan-stats">
-                    <span>任务数量: {tasks.length}</span>
-                    {tasks.length > 0 && (
-                      <span>
-                        已完成: {completedTasks.length}/{tasks.length}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              }
-              //   删除按钮
-              arrow
-              onClick={() => handlePlanClick(plan)}
-            />
-          );
-        })}
-      </List>
+                }
+                arrow
+                onClick={() => handlePlanClick(plan)}
+              />
+            );
+          })}
+        </List>
 
-      {filteredPlans.length === 0 && filter !== "all" && <Empty description={filter === "completed" ? "暂无已完成的计划" : "暂无进行中的计划"} />}
+        {filteredPlans.length === 0 && filter !== "all" && <Empty description={filter === "completed" ? "暂无已完成的计划" : "暂无进行中的计划"} />}
+      </div>
+
+      <Popup visible={visible} onVisibleChange={handleVisibleChange} placement="bottom" style={{ height: "50%" }}>
+        <div className="tdesign-mobile-popup-demo__with-title header">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div></div>
+            <div className="task-title">任务列表</div>
+            <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
+              删除计划
+            </div>
+          </div>
+        </div>
+        {selectedPlan && (
+          <div style={{ padding: "16px" }}>
+            <div style={{ marginBottom: "12px", fontSize: "14px", color: "#666" }}>
+              {selectedPlan.name} - 共{getTasks(selectedPlan).length}个任务
+            </div>
+            {getTasks(selectedPlan).length === 0 ? (
+              <Empty description="暂无任务" />
+            ) : (
+              <List>
+                {getTasks(selectedPlan).map((task) => (
+                  <Cell
+                    key={task.id}
+                    title={
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span>{task.name}</span>
+                        {task.completed ? (
+                          <Tag theme="success" size="small">
+                            已完成
+                          </Tag>
+                        ) : (
+                          <Tag theme="default" size="small">
+                            待完成
+                          </Tag>
+                        )}
+                      </div>
+                    }
+                    description={`日期: ${formatDate(task.date)}`}
+                  />
+                ))}
+              </List>
+            )}
+          </div>
+        )}
+      </Popup>
     </div>
   );
 }

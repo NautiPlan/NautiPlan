@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { generateCalendarCells } from "../components/CalendarCells";
-import CalendarSidebar from "../components/CalendarSidebar";
-import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
 import CalendarModal from "../components/CalendarModal";
+import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
 import "../styles/pages/CalendarView.css";
 
 function CalendarView() {
@@ -13,10 +12,7 @@ function CalendarView() {
   const today = useMemo(() => new Date(), []);
   const weekdays = useMemo(() => generateWeekdays(), []);
 
-  const { daysInMonth, startingDay, monthName, year } = useMemo(
-    () => getMonthInfo(currentDate),
-    [currentDate]
-  );
+  const { daysInMonth, startingDay, monthName, year } = useMemo(() => getMonthInfo(currentDate), [currentDate]);
 
   // 点击日期时，设置选中日期并打开侧边栏
   const handleDateClick = useCallback((date: Date) => {
@@ -34,7 +30,6 @@ function CalendarView() {
     setSelectedDate(now);
     setSidebarOpen(true);
   }, []);
-
 
   const changeMonth = useCallback((offset: number) => {
     setCurrentDate((prev) => {
@@ -88,11 +83,7 @@ function CalendarView() {
       </div>
       <div className="calendar-body">{calendarWeeks}</div>
 
-      <CalendarModal
-        open={sidebarOpen}
-        selectedDate={selectedDate}
-        onClose={closeSidebar}
-      />
+      <CalendarModal open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} />
       {/* <CalendarSidebar open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} /> */}
     </div>
   );
