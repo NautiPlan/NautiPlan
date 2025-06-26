@@ -18,7 +18,7 @@ export interface Plan {
   id: string;
   name: string;
   startDate: Date;
-  dueDate: Date;
+  dueDate: Date | null;
   priority: number;
   completed: boolean;
   Tasks: Task[];

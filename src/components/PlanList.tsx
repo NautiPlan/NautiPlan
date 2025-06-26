@@ -11,7 +11,7 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans, removePlan } = usePlanStore();
+  const { Plans, removePlan, isDefaultPlan } = usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -31,7 +31,8 @@ function PlanList({ onPlanClick }: PlanListProps) {
     setFilteredPlans(filtered);
   }, [Plans, filter]);
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | null) => {
+    if (!date) return "无";
     return new Date(date).toLocaleDateString("zh-CN");
   };
 
@@ -150,9 +151,11 @@ function PlanList({ onPlanClick }: PlanListProps) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div></div>
             <div className="task-title">任务列表</div>
-            <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
-              删除计划
-            </div>
+            {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
+              <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
+                删除计划
+              </div>
+            )}
           </div>
         </div>
         {selectedPlan && (

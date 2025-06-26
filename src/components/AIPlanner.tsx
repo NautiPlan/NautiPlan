@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
 import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
-import { TaskDescription } from "../interface/task";
+import { Plan, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
@@ -133,7 +133,14 @@ function AIPlanner() {
       }
       if (result) {
         try {
-          const plan = JSON.parse(result);
+          const plan: Plan = JSON.parse(result);
+
+          //  将Plan中的tasksID使用uuidv4()生成新的ID
+          plan.Tasks = plan?.Tasks.map((task: any) => ({
+            ...task,
+            id: uuidv4(),
+          }));
+
           addPlan(plan);
           setPlanVisible(true);
         } catch (parseError) {
@@ -203,7 +210,7 @@ function AIPlanner() {
         {Plans.length > 0 ? (
           <div className="plan-content">
             <p className="plan-content-title">{Plans[Plans.length - 1].name}</p>
-            <p>截止时间: {new Date(Plans[Plans.length - 1].dueDate).toLocaleDateString()}</p>
+            <p>截止时间: {new Date(Plans[Plans.length - 1].dueDate!).toLocaleDateString()}</p>
             <p>重要度: {Plans[Plans.length - 1].priority}</p>
           </div>
         ) : (
