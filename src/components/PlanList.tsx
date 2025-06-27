@@ -170,7 +170,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
           </div>
         </div>
         {selectedPlan && (
-          <div style={{ padding: "16px" }}>
+          <div
+            style={{
+              padding: "16px",
+              height: "calc(100% - 60px)", // 减去头部高度
+              overflowY: "auto", // 允许滚动
+            }}
+          >
             <div style={{ marginBottom: "12px", fontSize: "14px", color: "#666" }}>
               {selectedPlan.name} - 共{getTasks(selectedPlan).length}个任务
             </div>
