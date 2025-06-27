@@ -9,12 +9,17 @@ interface PlanStore {
   removePlan: (planId: string) => void;
   updatePlan: (planId: string, updatedPlan: Partial<Plan>) => void;
   getPlanById: (planId: string) => Plan | undefined;
-  getTasksByDate: (date: Date) => Task[];
-  toggleTaskById: (taskId: string) => void;
+  getPlanByStartDate: (date: Date) => Plan[];
+  getPlanByDueDate: (date: Date) => Plan[];  
+  getPlanByDate: (date: Date) => Plan[]; 
+
+  isDefaultPlan: (planId: string) => boolean;
+
   getTaskById: (taskId: string) => Task | undefined;
   removeTaskById: (taskId: string) => void;
-  isDefaultPlan: (planId: string) => boolean;
   addTaskToPlan: (planId: string, task: Task) => void;
+  getTasksByDate: (date: Date) => Task[];
+  toggleTaskById: (taskId: string) => void;
 }
 
 // 创建默认计划
@@ -103,5 +108,38 @@ export const usePlanStore = create<PlanStore>((set, get) => {
       }
       return undefined;
     },
+
+    getPlanByStartDate: (date: Date) =>
+      get().Plans.filter(
+        (plan) =>
+          plan.startDate &&
+          new Date(plan.startDate).toDateString() === date.toDateString()
+      ),
+
+    getPlanByDueDate: (date: Date) =>
+      get().Plans.filter(
+        (plan) =>
+          plan.dueDate &&
+          new Date(plan.dueDate).toDateString() === date.toDateString()
+      ),
+    
+      getPlanByDate: (date: Date) =>
+        get().Plans.filter(plan => {
+          const start = plan.startDate ? new Date(plan.startDate) : undefined;
+          const end = plan.dueDate ? new Date(plan.dueDate) : undefined;
+          const d = new Date(date);
+  
+          // 只要date在[startDate, dueDate]区间内（含端点），就返回
+          if (start && end) {
+            return d >= start && d <= end;
+          }
+          if (start && !end) {
+            return d >= start;
+          }
+          if (!start && end) {
+            return d <= end;
+          }
+          return false;
+        }),
   };
 });
