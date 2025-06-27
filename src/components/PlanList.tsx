@@ -149,8 +149,19 @@ function PlanList({ onPlanClick }: PlanListProps) {
       <Popup visible={visible} onVisibleChange={handleVisibleChange} placement="bottom" style={{ height: "50%" }}>
         <div className="tdesign-mobile-popup-demo__with-title header">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div></div>
-            <div className="task-title">任务列表</div>
+            <div
+              className="task-title"
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                fontWeight: "500",
+              }}
+            >
+              任务列表
+            </div>
+
             {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
               <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
                 删除计划
