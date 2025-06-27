@@ -11,6 +11,7 @@ interface PlanStore {
   getPlanById: (planId: string) => Plan | undefined;
   getTasksByDate: (date: Date) => Task[];
   toggleTaskById: (taskId: string) => void;
+  getTaskById: (taskId: string) => Task | undefined;
   removeTaskById: (taskId: string) => void;
   isDefaultPlan: (planId: string) => boolean;
   addTaskToPlan: (planId: string, task: Task) => void;
@@ -91,5 +92,16 @@ export const usePlanStore = create<PlanStore>((set, get) => {
           Plans: state.Plans.map((p) => (p.id === planId ? { ...p, Tasks: [...(p.Tasks || []), task] } : p)),
         };
       }),
+
+    getTaskById: (taskId) => {
+      const plans = get().Plans;
+      for (const plan of plans) {
+        const task = plan.Tasks?.find((t) => t.id === taskId);
+        if (task) {
+          return task;
+        }
+      }
+      return undefined;
+    },
   };
 });

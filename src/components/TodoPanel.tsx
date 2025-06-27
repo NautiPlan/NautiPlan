@@ -7,7 +7,7 @@ import "../styles/components/Nautilus.css";
 
 const TodoPanel: React.FC = () => {
   const [newTask, setNewTask] = useState("");
-  const { getTasksByDate, toggleTaskById, removeTaskById, addTaskToPlan, defaultPlanId } = usePlanStore();
+  const { getTasksByDate, toggleTaskById, removeTaskById, addTaskToPlan, defaultPlanId, getTaskById } = usePlanStore();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -59,7 +59,7 @@ const TodoPanel: React.FC = () => {
           <div className="todo-list">
             {tasks.map((task, index) => (
               <div key={index} className="todo-item">
-                <Checkbox icon="rectangle" defaultChecked={false} onChange={() => toggleTaskById(task.id)} />
+                <Checkbox icon="rectangle" defaultChecked={getTaskById(task.id)?.completed} onChange={() => toggleTaskById(task.id)} />
 
                 <span className={`todo-text ${task.completed ? "completed" : ""}`}>
                   {task.name}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { InfoCircleFilledIcon } from "tdesign-icons-react";
+
 import { Button, Cell, Empty, List, Popup, Tag } from "tdesign-mobile-react";
 import { Plan } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
@@ -11,7 +12,7 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans, removePlan, isDefaultPlan } = usePlanStore();
+  const { Plans, removePlan, isDefaultPlan, removeTaskById } = usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -79,6 +80,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
       </div>
     );
   }
+
+  // 状态管理
+  const [manageMode, setManageMode] = useState(false);
+
+  const handleManageClick = () => {
+    setManageMode(!manageMode);
+  };
 
   return (
     <div className="plan-list-container">
@@ -149,17 +157,38 @@ function PlanList({ onPlanClick }: PlanListProps) {
       <Popup visible={visible} onVisibleChange={handleVisibleChange} placement="bottom" style={{ height: "50%" }}>
         <div className="tdesign-mobile-popup-demo__with-title header">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div></div>
-            <div className="task-title">任务列表</div>
+            <div
+              className="task-title"
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                fontWeight: "500",
+              }}
+            >
+              任务列表
+            </div>
+
             {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
               <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
                 删除计划
               </div>
             )}
+
+            <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
+              管理
+            </div>
           </div>
         </div>
         {selectedPlan && (
-          <div style={{ padding: "16px" }}>
+          <div
+            style={{
+              padding: "16px",
+              height: "calc(100% - 60px)", // 减去头部高度
+              overflowY: "auto", // 允许滚动
+            }}
+          >
             <div style={{ marginBottom: "12px", fontSize: "14px", color: "#666" }}>
               {selectedPlan.name} - 共{getTasks(selectedPlan).length}个任务
             </div>
@@ -171,18 +200,35 @@ function PlanList({ onPlanClick }: PlanListProps) {
                   <Cell
                     key={task.id}
                     title={
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span>{task.name}</span>
-                        {task.completed ? (
-                          <Tag theme="success" size="small">
-                            已完成
-                          </Tag>
-                        ) : (
-                          <Tag theme="default" size="small">
-                            待完成
-                          </Tag>
+                      <>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span>{task.name}</span>
+                          {task.completed ? (
+                            <Tag theme="success" size="small">
+                              已完成
+                            </Tag>
+                          ) : (
+                            <Tag theme="default" size="small">
+                              待完成
+                            </Tag>
+                          )}
+                        </div>
+                        {manageMode && (
+                          <button
+                            className="delete-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeTaskById(task.id);
+                              setSelectedPlan((prev) => ({
+                                ...prev!,
+                                Tasks: prev?.Tasks?.filter((t) => t.id !== task.id) || [],
+                              }));
+                            }}
+                          >
+                            —
+                          </button>
                         )}
-                      </div>
+                      </>
                     }
                     description={`日期: ${formatDate(task.date)}`}
                   />

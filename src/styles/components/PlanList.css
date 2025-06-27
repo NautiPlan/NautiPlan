@@ -365,3 +365,19 @@
 .task-list-container::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
 }
+
+.delete-button {
+  color: #ef4444;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  margin-left: auto;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+}
+
+.delete-button:active {
+  color: #b91c1c;
+}
