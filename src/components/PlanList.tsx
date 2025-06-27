@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { InfoCircleFilledIcon } from "tdesign-icons-react";
+
 import { Button, Cell, Empty, List, Popup, Tag } from "tdesign-mobile-react";
 import { Plan } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
@@ -11,7 +12,7 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans, removePlan, isDefaultPlan } = usePlanStore();
+  const { Plans, removePlan, isDefaultPlan, removeTaskById } = usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -79,6 +80,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
       </div>
     );
   }
+
+  // 状态管理
+  const [manageMode, setManageMode] = useState(false);
+
+  const handleManageClick = () => {
+    setManageMode(!manageMode);
+  };
 
   return (
     <div className="plan-list-container">
@@ -167,6 +175,10 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 删除计划
               </div>
             )}
+
+            <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
+              管理
+            </div>
           </div>
         </div>
         {selectedPlan && (
@@ -188,18 +200,35 @@ function PlanList({ onPlanClick }: PlanListProps) {
                   <Cell
                     key={task.id}
                     title={
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span>{task.name}</span>
-                        {task.completed ? (
-                          <Tag theme="success" size="small">
-                            已完成
-                          </Tag>
-                        ) : (
-                          <Tag theme="default" size="small">
-                            待完成
-                          </Tag>
+                      <>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span>{task.name}</span>
+                          {task.completed ? (
+                            <Tag theme="success" size="small">
+                              已完成
+                            </Tag>
+                          ) : (
+                            <Tag theme="default" size="small">
+                              待完成
+                            </Tag>
+                          )}
+                        </div>
+                        {manageMode && (
+                          <button
+                            className="delete-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeTaskById(task.id);
+                              setSelectedPlan((prev) => ({
+                                ...prev!,
+                                Tasks: prev?.Tasks?.filter((t) => t.id !== task.id) || [],
+                              }));
+                            }}
+                          >
+                            —
+                          </button>
                         )}
-                      </div>
+                      </>
                     }
                     description={`日期: ${formatDate(task.date)}`}
                   />
