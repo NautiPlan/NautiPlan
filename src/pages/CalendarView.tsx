@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { generateCalendarCells } from "../components/CalendarCells";
 import CalendarModal from "../components/CalendarModal";
 import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
+import { usePlanStore } from "../store/taskStore"; // 引入store
 import "../styles/pages/CalendarView.css";
 
 function CalendarView() {
@@ -9,10 +10,39 @@ function CalendarView() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const getTasksByDate = usePlanStore((state) => state.getTasksByDate);
+
+  
+  const tasksOfSelectedDate = useMemo(() => {
+    if (!selectedDate) return [];
+    return getTasksByDate(selectedDate);
+  }, [getTasksByDate, selectedDate]);
+
+
+  const dayTaskCountMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const tasks = getTasksByDate(date);
+      const key = `${year}-${month + 1}-${day}`;
+      map[key] = tasks.length;
+    }
+    return map;
+  }, [getTasksByDate, currentDate]);
+
+
+
   const today = useMemo(() => new Date(), []);
   const weekdays = useMemo(() => generateWeekdays(), []);
 
-  const { daysInMonth, startingDay, monthName, year } = useMemo(() => getMonthInfo(currentDate), [currentDate]);
+  const { daysInMonth, startingDay, monthName, year } = useMemo(
+    () => getMonthInfo(currentDate),
+    [currentDate]
+  );
 
   // 点击日期时，设置选中日期并打开侧边栏
   const handleDateClick = useCallback((date: Date) => {
@@ -32,13 +62,13 @@ function CalendarView() {
   }, []);
 
   const changeMonth = useCallback((offset: number) => {
+    setSelectedDate(null);
+    setSidebarOpen(false);
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
       newDate.setMonth(newDate.getMonth() + offset);
       return newDate;
     });
-    setSelectedDate(null);
-    setSidebarOpen(false);
   }, []);
 
   const calendarWeeks = useMemo(() => {
@@ -50,6 +80,7 @@ function CalendarView() {
       today,
       selectedDate,
       onDateClick: handleDateClick,
+      dayTaskCountMap,
     });
     const weeks: React.ReactNode[] = [];
     for (let i = 0; i < cells.length; i += 7) {
@@ -60,7 +91,16 @@ function CalendarView() {
       );
     }
     return weeks;
-  }, [daysInMonth, startingDay, year, currentDate, today, selectedDate, handleDateClick]);
+  }, [
+    daysInMonth,
+    startingDay,
+    year,
+    currentDate,
+    today,
+    selectedDate,
+    handleDateClick,
+    dayTaskCountMap,
+  ]);
 
   return (
     <div className="calendar-container">
@@ -83,8 +123,12 @@ function CalendarView() {
       </div>
       <div className="calendar-body">{calendarWeeks}</div>
 
-      <CalendarModal open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} />
-      {/* <CalendarSidebar open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} /> */}
+      <CalendarModal
+        open={sidebarOpen}
+        selectedDate={selectedDate}
+        onClose={closeSidebar}
+        tasks={tasksOfSelectedDate}
+      />
     </div>
   );
 }
