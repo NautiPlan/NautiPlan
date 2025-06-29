@@ -22,6 +22,7 @@ const TodoPanel: React.FC = () => {
       name: newTask.trim(),
       date: today,
       completed: false,
+      planId: defaultPlanId,
     };
 
     addTaskToPlan(defaultPlanId, newTaskData);

@@ -4,65 +4,46 @@
   padding: 0;
 }
 
-.app-container {
-  min-height: 100%;
-  box-sizing: border-box;
-  background-color: #f9fafb;
-  padding: 0.75rem;
-  /* 减小整体内边距 */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+/* 全局滚动样式 */
+html,
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.app-content {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 0.75rem;
-  flex: 1; /* 允许内容区域自适应 */
+/* 自定义滚动条样式 - Webkit浏览器 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Firefox滚动条样式 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.app-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
 }
 
-.app-title {
-  margin-top: 0;
-  padding-top: 8px;
-  /* 减小顶部内边距 */
-  font-size: clamp(1.25rem, 5vw, 1.875rem);
-  /* 缩小手机端最小字体大小 */
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 1rem;
-  /* 减小下边距 */
-  color: #1f2937;
-}
-
-/* Grid Layout */
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  flex: 1; /* 允许网格自适应剩余空间 */
-  min-height: 0; /* 重要：允许网格收缩 */
-}
-
-@media (min-width: 768px) {
-  .app-container {
-    padding: 1rem;
-    /* 桌面端恢复较大内边距 */
-  }
-
-  .app-title {
-    padding-top: 10px;
-    margin-bottom: 1.5rem;
-  }
-
-  .main-grid {
-    grid-template-columns: 1fr 2fr;
-    gap: 1.5rem;
-  }
-}
-
-/* Panel Styles */
 .timer-panel,
 .todo-panel {
   background-color: white;
@@ -71,21 +52,13 @@
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* 重要：允许面板收缩 */
-}
-@media (min-width: 768px) {
-  .timer-panel,
-  .todo-panel {
-    overflow: hidden; /* 防止内容溢出 */
-  }
+  min-height: 0;
 }
 
 .panel-title {
   font-size: 1.125rem;
-  /* 缩小标题字体 */
   font-weight: 600;
   margin-bottom: 0.625rem;
-  /* 减小下边距 */
   color: #374151;
   text-align: center;
 }
@@ -97,22 +70,17 @@
   }
 }
 
-/* Timer Display */
 .timer-display-container {
   display: flex;
   justify-content: center;
   margin-bottom: 0.75rem;
-  /* 减小下边距 */
 }
 
 .timer-display {
   font-size: clamp(2.5rem, 8vw, 3rem);
-  /* 恢复原有字体大小 */
   font-weight: 700;
   width: 10rem;
-  /* 恢复原有计时器大小 */
   height: 10rem;
-  /* 恢复原有计时器大小 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,16 +109,12 @@
   color: #1d4ed8;
 }
 
-/* 新增样式 */
 .timer-status-container,
 .circle-status-container {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  /* 减小圆角 */
   padding: 10px;
-  /* 减小内边距 */
   margin-bottom: 12px;
-  /* 减小下边距 */
   text-align: left;
 }
 
@@ -169,9 +133,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
-  /* 减小下边距 */
   font-size: 0.875rem;
-  /* 缩小字体 */
 }
 
 @media (min-width: 768px) {
@@ -208,14 +170,11 @@
   color: #fcc419;
 }
 
-/* Timer Mode Buttons */
 .timer-mode-buttons {
   display: flex;
   justify-content: center;
   gap: 0.3rem;
-  /* 减小按钮间距 */
   margin-bottom: 0.75rem;
-  /* 减小下边距 */
 }
 
 @media (min-width: 768px) {
@@ -227,10 +186,8 @@
 
 .mode-button {
   padding: 0.5rem 1rem;
-  /* 恢复原有按钮大小 */
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  /* 恢复原有字体大小 */
   background-color: #f3f4f6;
   color: #4b5563;
   border: none;
@@ -261,16 +218,12 @@
   color: #1d4ed8;
 }
 
-/* Timer Control Buttons */
 .timer-control-buttons {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  /* 减小按钮间距 */
   margin-bottom: 0.75rem;
-  /* 减小下边距 */
   flex-wrap: wrap;
-  /* 允许按钮换行 */
 }
 
 @media (min-width: 768px) {
@@ -278,27 +231,21 @@
     gap: 0.75rem;
     margin-bottom: 1rem;
     flex-wrap: nowrap;
-    /* 桌面端不换行 */
   }
 }
 
 .control-button {
   padding: 0.75rem 1.25rem;
-  /* 恢复原有按钮大小 */
   border-radius: 0.375rem;
   font-weight: 500;
   font-size: 1rem;
-  /* 恢复原有字体大小 */
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
   color: white;
   min-width: auto;
-  /* 移除最小宽度限制 */
   flex: 0 1 auto;
-  /* 按钮不平分空间 */
   margin-bottom: 0.25rem;
-  /* 如果按钮换行，添加底部间距 */
 }
 
 .control-button:disabled {
@@ -342,14 +289,11 @@
   background-color: #247fb8;
 }
 
-/* Current Task */
 .current-task {
   margin-top: 0.5rem;
   padding: 0.625rem;
-  /* 减小内边距 */
   background-color: #f9fafb;
   border-radius: 0.3rem;
-  /* 减小圆角 */
   text-align: center;
 }
 
@@ -362,7 +306,6 @@
 
 .current-task-label {
   font-size: 0.8125rem;
-  /* 缩小字体 */
   color: #6b7280;
   margin-bottom: 0.25rem;
 }
@@ -377,7 +320,6 @@
   font-weight: 500;
   color: #1f2937;
   font-size: 0.9375rem;
-  /* 缩小字体 */
 }
 
 @media (min-width: 768px) {
@@ -386,11 +328,9 @@
   }
 }
 
-/* Add Todo Form */
 .add-todo-form {
   display: flex;
   margin-bottom: 1rem;
-  /* 减小下边距 */
 }
 
 @media (min-width: 768px) {
@@ -402,17 +342,13 @@
 .todo-input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  /* 调整输入框大小 */
   border: 1px solid #d1d5db;
   border-right: none;
   border-top-left-radius: 0.3rem;
-  /* 减小圆角 */
   border-bottom-left-radius: 0.3rem;
-  /* 减小圆角 */
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-size: 0.9375rem;
-  /* 缩小字体 */
 }
 
 @media (min-width: 768px) {
@@ -431,18 +367,14 @@
 
 .add-button {
   padding: 0.5rem 0.75rem;
-  /* 调整按钮大小 */
   background-color: #22c55e;
   color: white;
   border: none;
   border-top-right-radius: 0.3rem;
-  /* 减小圆角 */
   border-bottom-right-radius: 0.3rem;
-  /* 减小圆角 */
   cursor: pointer;
   transition: background-color 0.2s;
   font-size: 0.9375rem;
-  /* 缩小字体 */
 }
 
 @media (min-width: 768px) {
@@ -458,10 +390,8 @@
   background-color: #16a34a;
 }
 
-/* Progress Bar */
 .progress-container {
   margin-bottom: 0.75rem;
-  /* 减小下边距 */
 }
 
 @media (min-width: 768px) {
@@ -474,7 +404,6 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.8125rem;
-  /* 缩小字体 */
   color: #4b5563;
   margin-bottom: 0.25rem;
 }
@@ -488,10 +417,8 @@
 .progress-bar-bg {
   width: 100%;
   height: 0.5rem;
-  /* 减小进度条高度 */
   background-color: #e5e7eb;
   border-radius: 9999px;
-  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -507,17 +434,40 @@
   transition: width 0.5s;
 }
 
-/* Todo List */
+/* Todo列表滚动容器 - 关键滚动设置 */
 .todo-list-container {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  max-height: calc(100vh - 400px);
-  /* 使用视口高度而不是百分比 */
+  overflow-x: hidden;
+  max-height: 400px; /* 设置最大高度，超出时显示滚动条 */
+  border-radius: 0.375rem;
 }
 
-@media (min-width: 768px) {
-  .todo-list-container {
-    max-height: calc(100vh - 350px);
-  }
+/* Todo列表滚动条样式 */
+.todo-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-list-container::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+
+.todo-list-container::-webkit-scrollbar-thumb {
+  background: #22c55e;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.todo-list-container::-webkit-scrollbar-thumb:hover {
+  background: #16a34a;
+}
+
+/* Firefox下的todo列表滚动条 */
+.todo-list-container {
+  scrollbar-width: thin;
+  scrollbar-color: #22c55e #f8f9fa;
 }
 
 .todo-list {
@@ -529,7 +479,6 @@
   display: flex;
   align-items: center;
   padding: 0.625rem;
-  /* 减小内边距 */
   border-bottom: 1px solid #e5e7eb;
   transition: background-color 0.2s;
 }
@@ -558,11 +507,8 @@
 
 .todo-checkbox {
   width: 1.125rem;
-  /* 减小复选框大小 */
   height: 1.125rem;
-  /* 减小复选框大小 */
   margin-right: 0.625rem;
-  /* 减小右边距 */
   border-radius: 0.25rem;
 }
 
@@ -578,7 +524,6 @@
   flex: 1;
   color: #1f2937;
   font-size: 0.9375rem;
-  /* 缩小字体 */
 }
 
 @media (min-width: 768px) {
@@ -599,7 +544,6 @@
 
 .todo-action-button {
   padding: 0.5rem;
-  /* 恢复原有按钮大小 */
   border-radius: 9999px;
   background-color: transparent;
   color: #6b7280;
@@ -624,9 +568,7 @@
 
 .icon {
   width: 1.125rem;
-  /* 减小图标大小 */
   height: 1.125rem;
-  /* 减小图标大小 */
 }
 
 @media (min-width: 768px) {
@@ -636,11 +578,9 @@
   }
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 1.5rem 0;
-  /* 减小内边距 */
   color: #6b7280;
 }
 
@@ -652,11 +592,8 @@
 
 .empty-icon {
   width: 2.5rem;
-  /* 减小图标大小 */
   height: 2.5rem;
-  /* 减小图标大小 */
   margin: 0 auto 0.625rem;
-  /* 减小下边距 */
   color: #9ca3af;
 }
 
@@ -668,35 +605,21 @@
   }
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior-y: none;
-}
-
 /* Android特定样式 */
 * {
   -webkit-tap-highlight-color: transparent;
-  /* 移除点击高亮 */
 }
 
 input,
 button {
   appearance: none;
-  /* 移除默认样式 */
   -webkit-appearance: none;
 }
 
-/* 修复Android输入框问题 */
 input:focus {
   outline: none;
 }
 
-/* 防止文本选择 */
 .timer-display,
 .control-button,
 .mode-button,
@@ -705,31 +628,36 @@ input:focus {
   -webkit-user-select: none;
 }
 
-/* 为缺口设备添加安全区域内边距 */
-@supports (padding: max(0px)) {
-  .app-container {
-    padding-left: max(0.75rem, env(safe-area-inset-left));
-    padding-right: max(0.75rem, env(safe-area-inset-right));
-    padding-top: max(0.75rem, env(safe-area-inset-top));
-    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
-  }
-
-  @media (min-width: 768px) {
-    .app-container {
-      padding-left: max(1rem, env(safe-area-inset-left));
-      padding-right: max(1rem, env(safe-area-inset-right));
-      padding-top: max(1rem, env(safe-area-inset-top));
-      padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    }
-  }
-}
-
-/* 添加动量滚动 */
-.todo-list-container {
-  max-height: 500px;
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
-/* 改善移动设备上的触摸体验 */
-/* 移除小屏幕上的特殊按钮调整，保持原有大小 */
+/* 移动端滚动优化 */
+@media (max-width: 767px) {
+  .todo-list-container {
+    max-height: 300px; /* 移动端调整最大高度 */
+    -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+  }
+
+  .app-container {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 平板端滚动优化 */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .todo-list-container {
+    max-height: 450px;
+  }
+}
+
+/* 桌面端滚动优化 */
+@media (min-width: 1025px) {
+  .todo-list-container {
+    max-height: 500px;
+  }
+}

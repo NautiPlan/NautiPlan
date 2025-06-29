@@ -135,10 +135,11 @@ function AIPlanner() {
         try {
           const plan: Plan = JSON.parse(result);
 
-          //  将Plan中的tasksID使用uuidv4()生成新的ID
+          //  将Plan中的tasksID使用uuidv4()生成新的ID, planId复制
           plan.Tasks = plan?.Tasks.map((task: any) => ({
             ...task,
             id: uuidv4(),
+            planId: plan.id, // 确保每个任务都有正确的planId
           }));
 
           addPlan(plan);

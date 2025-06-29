@@ -169,16 +169,15 @@ function PlanList({ onPlanClick }: PlanListProps) {
             >
               任务列表
             </div>
+            <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
+              管理
+            </div>
 
             {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
               <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
                 删除计划
               </div>
             )}
-
-            <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
-              管理
-            </div>
           </div>
         </div>
         {selectedPlan && (

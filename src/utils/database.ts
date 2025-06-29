@@ -28,8 +28,6 @@ export async function loadDatabase(): Promise<Database> {
       completed BOOLEAN NOT NULL DEFAULT FALSE,
       planId TEXT NOT NULL
     )
-
-    
   `);
 
       console.log("数据库初始化完成");
