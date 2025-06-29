@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { InfoCircleFilledIcon } from "tdesign-icons-react";
-
-import { Button, Cell, Empty, List, Popup, Tag } from "tdesign-mobile-react";
-import { Plan } from "../interface/task";
+import { Button, Calendar, Cell, Empty, Input, List, Popup, Tag } from "tdesign-mobile-react";
+import { v4 as uuidv4 } from "uuid";
+import { Plan, Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/PlanList.css";
 
@@ -12,7 +12,7 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans, removePlan, isDefaultPlan, removeTaskById } = usePlanStore();
+  const { Plans, removePlan, isDefaultPlan, removeTaskById, addTaskToPlan } = usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -63,6 +63,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
 
   const handleVisibleChange = (visible: boolean) => {
     setVisible(visible);
+    setManageMode(false);
     if (!visible) {
       setSelectedPlan(null);
     }
@@ -88,6 +89,63 @@ function PlanList({ onPlanClick }: PlanListProps) {
     setManageMode(!manageMode);
   };
 
+  // 添加任务逻辑
+  const [addTaskVisible, setAddTaskVisible] = useState(false);
+  const handleAddTaskBTN = () => {
+    setAddTaskVisible(true);
+  };
+  const handleAddTaskVisibleChange = (visible: boolean) => {
+    setDataNote("");
+    setTaskName("");
+    setDateValue(null);
+    setAddTaskVisible(visible);
+  };
+
+  // 日期选择
+  const [dataNote, setDataNote] = useState("");
+  const [dateValue, setDateValue] = useState<Date | null>(null);
+  const [dateVisible, setDateVisible] = useState(false);
+  const format = (val: Date) => {
+    const date = new Date(val);
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  };
+  const handleConfirm = (val: Date) => {
+    setDateValue(val);
+    setDataNote(format(val));
+    setDateVisible(false);
+  };
+  const onClose = () => {
+    setDateVisible(false);
+  };
+
+  // 任务名称
+  const [taskName, setTaskName] = useState("");
+  const onTaskNameChange = (value: any) => {
+    const stringValue = String(value);
+    setTaskName(stringValue);
+  };
+
+  // 提交任务
+  const handleAddTask = () => {
+    if (!selectedPlan || !taskName || !dataNote) return;
+
+    const newTask: Task = {
+      id: uuidv4(),
+      name: taskName,
+      date: dateValue!,
+      completed: false,
+      planId: selectedPlan.id,
+    };
+
+    addTaskToPlan(selectedPlan.id, newTask);
+
+    setSelectedPlan((prev) => ({
+      ...prev!,
+      Tasks: [...(prev?.Tasks || []), newTask],
+    }));
+
+    handleAddTaskVisibleChange(false);
+  };
   return (
     <div className="plan-list-container">
       {/* 筛选按钮 */}
@@ -154,7 +212,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
         {filteredPlans.length === 0 && filter !== "all" && <Empty description={filter === "completed" ? "暂无已完成的计划" : "暂无进行中的计划"} />}
       </div>
 
-      <Popup visible={visible} onVisibleChange={handleVisibleChange} placement="bottom" style={{ height: "50%" }}>
+      <Popup visible={visible} onVisibleChange={handleVisibleChange} placement="bottom" style={{ height: "50%", zIndex: 1000 }}>
         <div className="tdesign-mobile-popup-demo__with-title header">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div
@@ -170,7 +228,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
               任务列表
             </div>
             <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
-              管理
+              {manageMode ? "完成" : "管理"}
             </div>
 
             {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
@@ -234,8 +292,59 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 ))}
               </List>
             )}
+            {manageMode && (
+              <div
+                className="add-task"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                  marginTop: "16px",
+                }}
+              >
+                <Button
+                  size="large"
+                  theme="primary"
+                  variant="text"
+                  style={{
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                  onClick={() => handleAddTaskBTN()}
+                >
+                  +
+                </Button>
+              </div>
+            )}
           </div>
         )}
+      </Popup>
+      <Popup visible={addTaskVisible} onVisibleChange={handleAddTaskVisibleChange} placement="bottom" style={{ height: "50%", zIndex: 1001 }}>
+        <div className="add-task-title">添加任务</div>
+        <div className="add-task-input">
+          <Input placeholder="请输入任务名" value={taskName} onChange={onTaskNameChange} />
+        </div>
+        <div className="add-task-input">
+          <div>
+            <Calendar visible={dateVisible} onConfirm={handleConfirm} onClose={onClose} style={{ zIndex: 1002 }}></Calendar>
+            <Cell title="单个选择日期" arrow note={dataNote} onClick={() => setDateVisible(true)}></Cell>
+          </div>
+        </div>
+        <div className="add-task-btn">
+          <Button
+            theme="primary"
+            style={{
+              width: "100%",
+              textAlign: "center",
+            }}
+            onClick={() => {
+              handleAddTask();
+              setAddTaskVisible(false);
+            }}
+          >
+            提交
+          </Button>
+        </div>
       </Popup>
     </div>
   );

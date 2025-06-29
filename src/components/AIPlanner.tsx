@@ -27,16 +27,11 @@ function AIPlanner() {
   };
 
   const handleConfirm = (val: Date) => {
-    console.log(val);
     setDataNote(format(val));
     setVisible(false);
   };
-  const handleSelect = (val: Date) => {
-    console.log(val);
-  };
-  const onClose = (trigger: string) => {
+  const onClose = () => {
     setVisible(false);
-    console.log("closed by", trigger);
   };
 
   // 文本域
@@ -169,7 +164,7 @@ function AIPlanner() {
       </div>
       <div className="item">
         <div>
-          <Calendar visible={visible} onConfirm={handleConfirm} onSelect={handleSelect} onClose={onClose}></Calendar>
+          <Calendar visible={visible} onConfirm={handleConfirm} onClose={onClose}></Calendar>
           <Cell title="截止日期" arrow note={dataNote} onClick={() => setVisible(true)}></Cell>
         </div>
       </div>
