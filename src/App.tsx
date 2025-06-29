@@ -5,12 +5,15 @@ import AIPlannerView from "./pages/AIPlannerView";
 import CalendarView from "./pages/CalendarView";
 import PlanView from "./pages/PlanView";
 import TodoView from "./pages/TodoView";
-import { loadDatabase } from "./utils/database";
+import { usePlanStore } from "./store/taskStore";
 
 function App() {
+  const { syncToDatabase } = usePlanStore();
+
   useEffect(() => {
-    loadDatabase().catch(console.error);
-  }, []);
+    syncToDatabase();
+  }, []); // 空依赖数组确保只执行一次
+
   return (
     <div className="App">
       <Routes>
