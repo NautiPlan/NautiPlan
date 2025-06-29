@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { generateCalendarCells } from "../components/CalendarCells";
 import CalendarModal from "../components/CalendarModal";
 import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
-import { usePlanStore } from "../store/taskStore"; // 引入store
+import { usePlanStore } from "../store/taskStore";
 import "../styles/pages/CalendarView.css";
 
 function CalendarView() {
@@ -12,13 +12,7 @@ function CalendarView() {
 
   const getTasksByDate = usePlanStore((state) => state.getTasksByDate);
 
-  
-  const tasksOfSelectedDate = useMemo(() => {
-    if (!selectedDate) return [];
-    return getTasksByDate(selectedDate);
-  }, [getTasksByDate, selectedDate]);
-
-
+  // 统计每一天的任务数量
   const dayTaskCountMap = useMemo(() => {
     const map: Record<string, number> = {};
     const year = currentDate.getFullYear();
@@ -34,8 +28,6 @@ function CalendarView() {
     return map;
   }, [getTasksByDate, currentDate]);
 
-
-
   const today = useMemo(() => new Date(), []);
   const weekdays = useMemo(() => generateWeekdays(), []);
 
@@ -44,7 +36,7 @@ function CalendarView() {
     [currentDate]
   );
 
-  // 点击日期时，设置选中日期并打开侧边栏
+  // 点击日期时，设置选中日期并打开弹窗
   const handleDateClick = useCallback((date: Date) => {
     setSelectedDate(date);
     setSidebarOpen(true);
@@ -127,7 +119,6 @@ function CalendarView() {
         open={sidebarOpen}
         selectedDate={selectedDate}
         onClose={closeSidebar}
-        tasks={tasksOfSelectedDate}
       />
     </div>
   );

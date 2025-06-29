@@ -109,21 +109,72 @@
     background: #fff0f0;
 }
 
-.modal-task-desc {
-    color: #888;
-    font-size: 13px;
-    margin-bottom: 2px;
+.modal-task-delete {
+    margin-left: 12px;
+    color: #f44336;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 10px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
 }
 
-.modal-task-meta {
-    font-size: 12px;
-    color: #666;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 2px;
+.modal-task-delete:hover {
+    background: #ffeaea;
+    color: #b71c1c;
 }
 
-.modal-task-importance {
-    color: #ff9800; 
+.modal-create-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2000;
 }
+
+.modal-create-content {
+    min-width: 260px;
+    max-width: 320px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 15px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.modal-btn {
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-btn:disabled {
+    background: #b0c4de;
+    cursor: not-allowed;
+}
+
+.modal-create-task {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.modal-create-task:hover {
+    background: #1769aa; }
