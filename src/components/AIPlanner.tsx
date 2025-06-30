@@ -129,7 +129,8 @@ function AIPlanner() {
       if (result) {
         try {
           const plan: Plan = JSON.parse(result);
-
+          plan.dueDate = new Date(plan.dueDate!);
+          plan.startDate = new Date(plan.startDate);
           //  将Plan中的tasksID使用uuidv4()生成新的ID, planId复制
           plan.Tasks = plan?.Tasks.map((task: any) => ({
             ...task,

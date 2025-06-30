@@ -15,14 +15,8 @@ const DEFAULT_TIMES = {
   [TIMER_MODES.LONG_BREAK]: 15 * 60, // 15分钟
 };
 
-
 // 默认的循环模式
-const DEFAULT_CIRCLE_PATTERN = [
-  TIMER_MODES.POMODORO,
-  TIMER_MODES.SHORT_BREAK,
-  TIMER_MODES.POMODORO,
-  TIMER_MODES.LONG_BREAK,
-];
+const DEFAULT_CIRCLE_PATTERN = [TIMER_MODES.POMODORO, TIMER_MODES.SHORT_BREAK, TIMER_MODES.POMODORO, TIMER_MODES.LONG_BREAK];
 
 // 定义计时器存储的类型
 interface TimerState {
@@ -35,7 +29,7 @@ interface TimerState {
   circlePattern: string[];
   lastRunTimestamp: number | null;
 
-  timerIntervalId: number | null;   //存放 setInterval() 返回的 intervalId，用于后续 clearInterval() 时停止计时器
+  timerIntervalId: number | null; //存放 setInterval() 返回的 intervalId，用于后续 clearInterval() 时停止计时器
 
   // 操作
   setTimerMode: (mode: string) => void;
@@ -49,9 +43,8 @@ interface TimerState {
   exitCircleMode: () => void; // 新增：退出Circle模式的函数
   setTimer: (newTime: number) => void;
 
-
-  startTimerInterval: () => void;   //定义一个函数，作用是启动计时器，用 setInterval() 每秒调用 tickTimer() 并把 intervalId 存进 timerIntervalId
-  stopTimerInterval: () => void;    // 定义一个函数，作用是停止计时器，用 clearInterval(timerIntervalId) 并把 timerIntervalId 置为 null
+  startTimerInterval: () => void; //定义一个函数，作用是启动计时器，用 setInterval() 每秒调用 tickTimer() 并把 intervalId 存进 timerIntervalId
+  stopTimerInterval: () => void; // 定义一个函数，作用是停止计时器，用 clearInterval(timerIntervalId) 并把 timerIntervalId 置为 null
   handleTimerComplete: () => void;
 }
 
@@ -80,7 +73,7 @@ export const useTimerStore = create<TimerState>()(
 
       // 开始计时器
       startTimer: () => {
-        set((state) => ({
+        set(() => ({
           isRunning: true,
           lastRunTimestamp: Date.now(),
         }));
@@ -171,7 +164,6 @@ export const useTimerStore = create<TimerState>()(
         }
       },
 
-
       startTimerInterval: () => {
         const { timerIntervalId } = get();
         if (timerIntervalId !== null) {
@@ -184,14 +176,12 @@ export const useTimerStore = create<TimerState>()(
           } else {
             get().pauseTimer();
             get().stopTimerInterval();
-            get().handleTimerComplete();  // 如果你把 handleTimerComplete 放进 store
+            get().handleTimerComplete(); // 如果你把 handleTimerComplete 放进 store
           }
         }, 1000);
 
         set({ timerIntervalId: intervalId });
       },
-
-
 
       stopTimerInterval: () => {
         const { timerIntervalId } = get();
@@ -202,7 +192,6 @@ export const useTimerStore = create<TimerState>()(
       },
 
       setTimer: (newTime) => set({ timer: newTime }),
-
     }),
     {
       name: "timer-storage", // localStorage中的名称

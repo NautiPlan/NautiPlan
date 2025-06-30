@@ -68,7 +68,7 @@ export const usePlanStore = create<PlanStore>((set, get) => {
 
     addPlan: async (plan) => {
       const db = get().db;
-      await db?.execute("INSERT INTO Plans (id, name, startDate, dueDate, priority, completed) VALUES (?, ?, ?, ?, ?, ?)", [plan.id, plan.name, plan.startDate.toISOString(), plan.dueDate ? plan.dueDate.toISOString() : null, plan.priority, plan.completed]);
+      await db?.execute("INSERT INTO Plans (id, name, startDate, dueDate, priority, completed) VALUES (?, ?, ?, ?, ?, ?)", [plan.id, plan.name, plan.startDate.toISOString(), plan.dueDate!.toISOString(), plan.priority, plan.completed]);
       set((state) => ({ Plans: [...state.Plans, plan] }));
     },
 
