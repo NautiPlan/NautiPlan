@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
 import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
-import { Plan, TaskDescription } from "../interface/task";
+import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
@@ -132,10 +132,11 @@ function AIPlanner() {
           plan.dueDate = new Date(plan.dueDate!);
           plan.startDate = new Date(plan.startDate);
           //  将Plan中的tasksID使用uuidv4()生成新的ID, planId复制
-          plan.Tasks = plan?.Tasks.map((task: any) => ({
+          plan.Tasks = plan?.Tasks.map((task: Task) => ({
             ...task,
             id: uuidv4(),
-            planId: plan.id, // 确保每个任务都有正确的planId
+            date: new Date(task.date),
+            planId: plan.id,
           }));
 
           addPlan(plan);
