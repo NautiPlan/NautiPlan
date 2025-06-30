@@ -177,4 +177,14 @@
 }
 
 .modal-create-task:hover {
-    background: #1769aa; }
+    background: #1769aa;
+}
+
+.modal-select {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 15px;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}

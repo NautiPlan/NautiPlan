@@ -19,10 +19,16 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
 }) => {
   const removeTaskById = usePlanStore((state) => state.removeTaskById);
   const getTasksByDate = usePlanStore((state) => state.getTasksByDate);
+  const addTaskToPlan = usePlanStore((state) => state.addTaskToPlan);
+  const plans = usePlanStore((state) => state.Plans);
 
   // 控制新建任务弹窗
   const [showCreate, setShowCreate] = useState(false);
   const [newTaskName, setNewTaskName] = useState("");
+  // 新增：选择计划
+  const [selectedPlanId, setSelectedPlanId] = useState(
+    plans.length > 0 ? plans[0].id : ""
+  );
 
   const handleDelete = (taskId: string) => {
     removeTaskById(taskId);
@@ -32,11 +38,18 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   const handleCreateTask = () => {
     setShowCreate(true);
     setNewTaskName("");
+    setSelectedPlanId(plans.length > 0 ? plans[0].id : "");
   };
 
   const handleSaveTask = () => {
-    if (!selectedDate || !newTaskName.trim()) return;
-    // 这里应有 addTaskToPlan 逻辑
+    if (!selectedDate || !newTaskName.trim() || !selectedPlanId) return;
+    addTaskToPlan(selectedPlanId, {
+      id: Date.now().toString(),
+      name: newTaskName.trim(),
+      date: selectedDate,
+      completed: false,
+      planId: selectedPlanId,
+    });
     setShowCreate(false);
     setModelChange((s) => s + 1);
   };
@@ -96,6 +109,19 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
           <div className="modal-overlay modal-create-overlay">
             <div className="modal-content modal-create-content">
               <h3 className="modal-title">新建任务</h3>
+              {/* 下拉选择计划 */}
+              <select
+                className="modal-select"
+                value={selectedPlanId}
+                onChange={(e) => setSelectedPlanId(e.target.value)}
+                style={{ width: "100%", marginBottom: 12, padding: 6 }}
+              >
+                {plans.map((plan) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </option>
+                ))}
+              </select>
               <input
                 className="modal-input"
                 type="text"
