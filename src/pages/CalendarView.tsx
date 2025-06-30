@@ -9,6 +9,8 @@ function CalendarView() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // 提升 modelChange
+  const [modelChange, setModelChange] = useState(0);
 
   const getTasksByDate = usePlanStore((state) => state.getTasksByDate);
 
@@ -26,7 +28,7 @@ function CalendarView() {
       map[key] = tasks.length;
     }
     return map;
-  }, [getTasksByDate, currentDate]);
+  }, [getTasksByDate, currentDate, modelChange]); // 依赖 modelChange
 
   const today = useMemo(() => new Date(), []);
   const weekdays = useMemo(() => generateWeekdays(), []);
@@ -73,6 +75,8 @@ function CalendarView() {
       selectedDate,
       onDateClick: handleDateClick,
       dayTaskCountMap,
+      modelChange, // 传递给 cells
+      setModelChange, // 传递给 cells
     });
     const weeks: React.ReactNode[] = [];
     for (let i = 0; i < cells.length; i += 7) {
@@ -92,6 +96,8 @@ function CalendarView() {
     selectedDate,
     handleDateClick,
     dayTaskCountMap,
+    modelChange,
+    setModelChange,
   ]);
 
   return (
@@ -119,6 +125,8 @@ function CalendarView() {
         open={sidebarOpen}
         selectedDate={selectedDate}
         onClose={closeSidebar}
+        modelChange={modelChange}
+        setModelChange={setModelChange}
       />
     </div>
   );

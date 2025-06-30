@@ -10,6 +10,8 @@ interface CalendarCellsProps {
   selectedDate: Date | null;
   onDateClick: (date: Date) => void;
   dayTaskCountMap?: Record<string, number>;
+  modelChange?: number;
+  setModelChange?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const generateCalendarCells = ({
