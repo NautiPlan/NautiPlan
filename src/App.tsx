@@ -16,12 +16,14 @@ function App() {
 
   return (
     <div className="App">
-      <Routes>
-        <Route path="/chat" element={<AIPlannerView />} />
-        <Route path="/calendar" element={<CalendarView />} />
-        <Route path="/myPlan" element={<PlanView />} />
-        <Route path="/" element={<TodoView />} />
-      </Routes>
+      <main className="app-content">
+        <Routes>
+          <Route path="/chat" element={<AIPlannerView />} />
+          <Route path="/calendar" element={<CalendarView />} />
+          <Route path="/myPlan" element={<PlanView />} />
+          <Route path="/" element={<TodoView />} />
+        </Routes>
+      </main>
       <TabBarBase />
     </div>
   );

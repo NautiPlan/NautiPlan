@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "tdesign-icons-react";
 import { TabBar, TabBarItem } from "tdesign-mobile-react";
+import "../styles/components/TabBarBase.css";
 
 function TabBarBase() {
   const list = [
