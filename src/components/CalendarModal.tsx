@@ -30,6 +30,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
     plans.length > 0 ? plans[0].id : ""
   );
 
+  
   const handleDelete = (taskId: string) => {
     removeTaskById(taskId);
     setModelChange((s) => s + 1);

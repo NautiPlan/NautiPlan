@@ -75,9 +75,8 @@ function CalendarView() {
       selectedDate,
       onDateClick: handleDateClick,
       dayTaskCountMap,
-      modelChange, // 传递给 cells
-      setModelChange, // 传递给 cells
     });
+    console.log("changed");
     const weeks: React.ReactNode[] = [];
     for (let i = 0; i < cells.length; i += 7) {
       weeks.push(
@@ -96,8 +95,7 @@ function CalendarView() {
     selectedDate,
     handleDateClick,
     dayTaskCountMap,
-    modelChange,
-    setModelChange,
+    modelChange, // 这里依赖modelChange即可
   ]);
 
   return (
