@@ -9,6 +9,36 @@ const URI = "/vivogpt/completions";
 const DOMAIN = "api-ai.vivo.com.cn";
 const METHOD = "POST";
 
+
+
+const systemPromptBySystem = `你是一个AI日程管理助手，你会得到一段我的计划的相关描述，
+你需要针对这段计划的相关描述，分解这个计划成多个子任务，通过完成这些子任务来完成这个计划，把这些子任务安排到每天去，注意一定要仔细地划分子任务
+以JSON方式为我安排计划，你可以参考以下样例（假如我一共有20天时间）：
+[
+  {
+    "id": "task-001",
+    "name": "需求分析",
+    "day": "1-2",
+  },
+  {
+    "id": "task-002",
+    "name": "原型设计",
+    "day": "3-8",
+  },
+  {
+    "id": "task-003",
+    "name": "开发实现\n(包含子任务)",
+    "day": "9-15",
+  },
+  {
+    "id": "task-004",
+    "name": "测试",
+    "day": "16-20",
+  }
+]  
+`;
+
+
 // AI接口
 interface VivoGptRequestData {
   prompt: string;
@@ -28,6 +58,59 @@ interface VivoGptResponse {
   };
 }
 
+type Task = {
+  id: string;
+  name: string;
+  day: string;
+};
+
+type ScheduledTask = {
+  date: string;
+  task: string;
+  id: string;
+  completed: boolean;
+};
+
+/**
+ * 根据任务数组和起始日期，生成带有具体日期的每日任务安排列表
+ *
+ * @param {Task[]} content - 任务数组，每个任务包含 id、name 和 day（"起始天数-结束天数"字符串）
+ * @param {Date} startDate - 计划的起始日期，所有任务日期均基于此日期计算
+ * @returns {ScheduledTask[]} 返回一个数组，每个元素代表某一天的具体任务，包含任务 id、名称、ISO格式的日期和完成状态
+ *
+ * 函数逻辑：
+ * 1. 遍历每个任务，根据任务的 day 字段解析出开始和结束的相对天数
+ * 2. 根据起始日期和相对天数计算出具体日期，时间部分设置为 UTC 零点，格式为 ISO 8601
+ * 3. 对于任务跨度内的每一天，生成一条独立任务记录，完成状态初始设为 false
+ * 4. 返回所有生成的每日任务组成的数组
+ */
+function generateTaskSchedule(content: Task[], startDate: Date): ScheduledTask[] {
+  const schedule: ScheduledTask[] = [];
+
+  content.forEach((task) => {
+    const dayRange = task.day.split('-');
+    const startDay = parseInt(dayRange[0], 10);
+    const endDay = dayRange[1] ? parseInt(dayRange[1], 10) : startDay;
+
+    for (let day = startDay; day <= endDay; day++) {
+      const taskDate = new Date(startDate);
+      taskDate.setUTCDate(startDate.getUTCDate() + day - 1);
+      taskDate.setUTCHours(0, 0, 0, 0); // 确保是 T00:00:00.000Z
+
+      schedule.push({
+        id: task.id,
+        task: task.name,
+        date: taskDate.toISOString(), // 保留 ISO 全格式
+        completed: false
+      });
+    }
+  });
+
+  return schedule;
+}
+
+
+
 /**
  * 调用VivoGPT API
  * @param data 请求数据
@@ -40,14 +123,34 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
 
   console.log("requestId:", params.requestId);
 
+  const promptObj = JSON.parse(data.prompt);
+  const startDate = new Date(promptObj.startDate);
+  const dueDate = new Date(promptObj.dueDate);
+  const timeDiff = dueDate.getTime() - startDate.getTime();
+  const daysAvailable = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  const strPromot = `我的任务是 ${promptObj.name} , 我有${daysAvailable + 1}天去完成它，重要性是 ${promptObj.importance}，任务的描述是：${promptObj.taskDescription}`;
+  // const strPromot = "吴习哲太帅了"
+
+  console.log("剩了" + daysAvailable + "天");
+
+
+  console.log(promptObj.id);               // "5f241fd0-2859-497d-af39-39fbd642ecba"
+  console.log(promptObj.name);             // "math exam"
+  console.log(promptObj.startDate);        // "2025-07-01T03:00:59.636Z"
+  console.log(promptObj.dueDate);          // "2025-07-31T00:00:00.000Z"
+  console.log(promptObj.taskDescription);  // "I know nothing about math exam"
+  console.log(promptObj.importance);       // 50
+
+
+
   // 设置默认值
   const requestData = {
-    prompt: data.prompt,
-    systemPrompt: "你是一个AI日程管理助手，你会得到一段描述信息，你需要针对要求，分析潜在任务，任务难度等因素合理安排用户日常，以JSON方式为我安排计划，参考以下样例" + '{\n  "id": "plan-001",\n  "name": "项目开发计划",\n  "startDate": "2023-10-01T00:00:00.000Z",\n  "dueDate": "2023-10-31T23:59:59.000Z",\n  "priority": 1,\n  "completed": false,\n  "Tasks": [\n    {\n      "id": "task-001",\n      "name": "需求分析",\n      "date": "2023-10-01T00:00:00.000Z",\n      "completed": true\n    },\n    {\n      "id": "task-002",\n      "name": "原型设计",\n      "date": "2023-10-05T00:00:00.000Z",\n      "completed": true\n    },\n    {\n      "id": "task-003",\n      "name": "开发实现\\n(包含子任务)",\n      "date": "2023-10-10T00:00:00.000Z",\n      "completed": false\n    },\n    {\n      "id": "task-004",\n      "name": "测试\\t验收",\n      "date": "2023-10-25T00:00:00.000Z",\n      "completed": false\n    }\n  ]\n}',
+    prompt: strPromot,
+    systemPrompt: systemPromptBySystem,
     model: data.model || "vivo-BlueLM-TB-Pro",
     sessionId: uuidv4(),
     extra: {
-      temperature: 0.9,
+      temperature: 0.1,
     },
   };
 
@@ -76,8 +179,36 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
       const resObj: VivoGptResponse = await response.json();
 
       if (resObj.code === 0 && resObj.data) {
-        const content = resObj.data.content;
-        return content;
+        // const content = resObj.data.content;
+        // console.log("我猜返回的内容resObj.data.content是:", content);
+
+        const contentStr: string = resObj.data.content;
+        const contentJson: Task[] = JSON.parse(contentStr);
+        const startDate: Date = new Date(promptObj.startDate);
+
+        const schedule = generateTaskSchedule(contentJson, startDate);
+
+        console.log("转成带有日期的任务如下：\n" + JSON.stringify(schedule, null, 2));
+
+        const finalSchedule = {
+          id: promptObj.id,
+          name: promptObj.name,
+          startDate: promptObj.startDate,
+          dueDate: promptObj.dueDate,
+          priority: promptObj.importance,
+          completed: false,               // 初始肯定是未完成
+          Tasks: schedule.map(task => ({
+            id: task.id,
+            name: task.task,     // 这里 task.task 是任务名
+            date: task.date,     // ISO 格式
+            completed: task.completed
+          }))
+        };
+
+        console.log("最终完整计划：\n" + JSON.stringify(finalSchedule, null, 2));
+
+
+        return JSON.stringify(finalSchedule, null, 2);
       } else {
         console.error("API错误:", resObj.message || "未知错误");
         return null;
