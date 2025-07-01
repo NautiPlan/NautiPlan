@@ -50,16 +50,37 @@ export const usePlanStore = create<PlanStore>((set, get) => {
     syncToDatabase: async () => {
       const db = await loadDatabase();
       // 查找Plan是否为空表
-      const plans = await db.select<Plan[]>("SELECT * FROM Plans");
+      const plans: Plan[] = await db.select<Plan[]>("SELECT * FROM Plans");
       if (plans.length === 0) {
         const defaultPlan = createDefaultPlan();
         await db.execute("INSERT INTO Plans (id, name, startDate, dueDate, priority, completed) VALUES (?, ?, ?, ?, ?, ?)", [defaultPlan.id, defaultPlan.name, defaultPlan.startDate.toISOString(), defaultPlan.dueDate ? defaultPlan.dueDate.toISOString() : null, defaultPlan.priority, defaultPlan.completed]);
         set({ Plans: [defaultPlan], defaultPlanId: defaultPlan.id, db: db });
       } else {
         const plansWithTasks = await Promise.all(
-          plans.map(async (plan) => {
-            const tasks = await db.select<Task[]>("SELECT * FROM Tasks WHERE planId = ?", [plan.id]);
-            return { ...plan, Tasks: tasks };
+          plans.map(async (rawPlan) => {
+            // 格式化plan数据类型
+            const formattedPlan: Plan = {
+              id: rawPlan.id,
+              name: rawPlan.name,
+              startDate: new Date(rawPlan.startDate),
+              dueDate: rawPlan.dueDate ? new Date(rawPlan.dueDate) : null,
+              priority: Number(rawPlan.priority),
+              completed: JSON.parse(rawPlan.completed as unknown as string),
+              Tasks: [],
+            };
+
+            // 查询并格式化tasks
+            const rawTasks: Task[] = await db.select<any[]>("SELECT * FROM Tasks WHERE planId = ?", [rawPlan.id]);
+            const formattedTasks: Task[] = rawTasks.map((rawTask) => ({
+              id: rawTask.id,
+              name: rawTask.name,
+              date: rawTask.date ? new Date(rawTask.date) : new Date(),
+              completed: JSON.parse(rawTask.completed as unknown as string),
+              planId: rawTask.planId,
+            }));
+
+            formattedPlan.Tasks = formattedTasks;
+            return formattedPlan;
           })
         );
         set({ Plans: plansWithTasks, defaultPlanId: "default-plan-001", db: db });
