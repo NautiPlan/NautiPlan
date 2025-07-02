@@ -2,10 +2,12 @@ import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
 import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
-import { FileWithMeta, Plan, Task, TaskDescription } from "../interface/task";
+import FileWithMeta from "../interface/fileWithMeta";
+import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
+import { callVivoImageGpt } from "../utils/multiModalImage";
 
 function AIPlanner() {
   // 状态管理
@@ -109,12 +111,26 @@ function AIPlanner() {
       return;
     }
 
+    let imageTextValue: string = "";
+
+    // 检查是否有上传的图片文件
+    if (files.length > 0) {
+      try {
+        const result: string | null = await callVivoImageGpt(files);
+        imageTextValue += result || "";
+      } catch (error) {
+        console.error("图片处理错误:", error);
+      }
+    }
+
+    console.log("上传的图片:", imageTextValue);
+
     const taskDescription: TaskDescription = {
       id: uuidv4(),
       name: taskName,
       startDate: new Date(),
       dueDate: new Date(dataNote),
-      taskDescription: textValue?.toString(),
+      taskDescription: textValue?.toString() + imageTextValue,
       importance: priorityValue,
     };
 

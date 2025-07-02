@@ -24,11 +24,3 @@ export interface Plan {
   completed: boolean;
   Tasks: Task[];
 }
-
-export interface FileWithMeta {
-  id: string;
-  buffer: ArrayBuffer;
-  name: string;
-  type: string;
-  size: number;
-}

@@ -1,5 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { v4 as uuidv4 } from "uuid";
+import { VivoGptRequestData, VivoGptResponse } from "../interface/chat";
 import { genSignHeaders } from "./auth";
 
 // 配置常量
@@ -8,8 +9,6 @@ const APP_KEY = "ZFiNLwhFLHHIcAVh";
 const URI = "/vivogpt/completions";
 const DOMAIN = "api-ai.vivo.com.cn";
 const METHOD = "POST";
-
-
 
 const systemPromptBySystem = `你是一个AI日程管理助手，你会得到一段我的计划的相关描述，
 你需要针对这段计划的相关描述，分解这个计划成多个子任务，通过完成这些子任务来完成这个计划，把这些子任务安排到每天去，注意一定要仔细地划分子任务
@@ -37,26 +36,6 @@ const systemPromptBySystem = `你是一个AI日程管理助手，你会得到一
   }
 ]  
 `;
-
-
-// AI接口
-interface VivoGptRequestData {
-  prompt: string;
-  model?: string;
-}
-
-interface VivoGptResponse {
-  code: number;
-  message?: string;
-  data?: {
-    content: string;
-    usage?: {
-      prompt_tokens: number;
-      completion_tokens: number;
-      total_tokens: number;
-    };
-  };
-}
 
 type Task = {
   id: string;
@@ -88,7 +67,7 @@ function generateTaskSchedule(content: Task[], startDate: Date): ScheduledTask[]
   const schedule: ScheduledTask[] = [];
 
   content.forEach((task) => {
-    const dayRange = task.day.split('-');
+    const dayRange = task.day.split("-");
     const startDay = parseInt(dayRange[0], 10);
     const endDay = dayRange[1] ? parseInt(dayRange[1], 10) : startDay;
 
@@ -101,15 +80,13 @@ function generateTaskSchedule(content: Task[], startDate: Date): ScheduledTask[]
         id: task.id,
         task: task.name,
         date: taskDate.toISOString(), // 保留 ISO 全格式
-        completed: false
+        completed: false,
       });
     }
   });
 
   return schedule;
 }
-
-
 
 /**
  * 调用VivoGPT API
@@ -121,7 +98,7 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
     requestId: uuidv4(),
   };
 
-  console.log("requestId:", params.requestId);
+  // console.log("requestId:", params.requestId);
 
   const promptObj = JSON.parse(data.prompt);
   const startDate = new Date(promptObj.startDate);
@@ -131,17 +108,14 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
   const strPromot = `我的任务是 ${promptObj.name} , 我有${daysAvailable + 1}天去完成它，重要性是 ${promptObj.importance}，任务的描述是：${promptObj.taskDescription}`;
   // const strPromot = "吴习哲太帅了"
 
-  console.log("剩了" + daysAvailable + "天");
+  // console.log("剩了" + daysAvailable + "天");
 
-
-  console.log(promptObj.id);               // "5f241fd0-2859-497d-af39-39fbd642ecba"
-  console.log(promptObj.name);             // "math exam"
-  console.log(promptObj.startDate);        // "2025-07-01T03:00:59.636Z"
-  console.log(promptObj.dueDate);          // "2025-07-31T00:00:00.000Z"
-  console.log(promptObj.taskDescription);  // "I know nothing about math exam"
-  console.log(promptObj.importance);       // 50
-
-
+  // console.log(promptObj.id); // "5f241fd0-2859-497d-af39-39fbd642ecba"
+  // console.log(promptObj.name); // "math exam"
+  // console.log(promptObj.startDate); // "2025-07-01T03:00:59.636Z"
+  // console.log(promptObj.dueDate); // "2025-07-31T00:00:00.000Z"
+  // console.log(promptObj.taskDescription); // "I know nothing about math exam"
+  // console.log(promptObj.importance); // 50
 
   // 设置默认值
   const requestData = {
@@ -188,7 +162,7 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
 
         const schedule = generateTaskSchedule(contentJson, startDate);
 
-        console.log("转成带有日期的任务如下：\n" + JSON.stringify(schedule, null, 2));
+        // console.log("转成带有日期的任务如下：\n" + JSON.stringify(schedule, null, 2));
 
         const finalSchedule = {
           id: promptObj.id,
@@ -196,21 +170,20 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
           startDate: promptObj.startDate,
           dueDate: promptObj.dueDate,
           priority: promptObj.importance,
-          completed: false,               // 初始肯定是未完成
-          Tasks: schedule.map(task => ({
+          completed: false, // 初始肯定是未完成
+          Tasks: schedule.map((task) => ({
             id: task.id,
-            name: task.task,     // 这里 task.task 是任务名
-            date: task.date,     // ISO 格式
-            completed: task.completed
-          }))
+            name: task.task, // 这里 task.task 是任务名
+            date: task.date, // ISO 格式
+            completed: task.completed,
+          })),
         };
 
-        console.log("最终完整计划：\n" + JSON.stringify(finalSchedule, null, 2));
-
+        // console.log("最终完整计划：\n" + JSON.stringify(finalSchedule, null, 2));
 
         return JSON.stringify(finalSchedule, null, 2);
       } else {
-        console.error("API错误:", resObj.message || "未知错误");
+        // console.error("API错误:", resObj.message || "未知错误");
         return null;
       }
     } else {
