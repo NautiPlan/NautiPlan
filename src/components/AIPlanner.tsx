@@ -111,7 +111,17 @@ function AIPlanner() {
       return;
     }
 
+    let loadingToast: any = null;
+
     let imageTextValue: string = "";
+
+    loadingToast = Toast({
+      message: "开始理解图片...",
+      theme: "loading",
+      duration: 0,
+      preventScrollThrough: true,
+      showOverlay: true,
+    });
 
     // 检查是否有上传的图片文件
     if (files.length > 0) {
@@ -123,8 +133,6 @@ function AIPlanner() {
       }
     }
 
-    console.log("上传的图片:", imageTextValue);
-
     const taskDescription: TaskDescription = {
       id: uuidv4(),
       name: taskName,
@@ -133,8 +141,6 @@ function AIPlanner() {
       taskDescription: textValue?.toString() + imageTextValue,
       importance: priorityValue,
     };
-
-    let loadingToast: any = null;
 
     loadingToast = Toast({
       message: "开始生成计划...",
