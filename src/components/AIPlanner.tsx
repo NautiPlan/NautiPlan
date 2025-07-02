@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
 import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
-import { Plan, Task, TaskDescription } from "../interface/task";
+import { FileWithMeta, Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
@@ -52,23 +52,28 @@ function AIPlanner() {
   };
 
   // 文件上传相关状态
-  const [fileBuffers, setFileBuffers] = useState<ArrayBuffer[]>([]); // 存储所有上传文件
+  const [files, setFiles] = useState<FileWithMeta[]>([]); // 存储所有上传文件
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const selectedFiles = e.target.files;
+    if (!selectedFiles || selectedFiles.length === 0) return;
 
     try {
       const newBuffers = await Promise.all(
-        Array.from(files).map(async (file) => {
+        Array.from(selectedFiles).map(async (file) => {
           const arrayBuffer = await file.arrayBuffer();
-          return arrayBuffer;
+          return {
+            id: uuidv4(),
+            buffer: arrayBuffer,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+          } as FileWithMeta;
         })
       );
 
-      setFileBuffers([...fileBuffers, ...newBuffers]);
-      Toast.success(`成功添加${files.length}个文件到缓冲区`);
+      setFiles([...files, ...newBuffers]);
 
       // 重置input值，允许重复选择相同文件
       if (fileInputRef.current) {
@@ -81,6 +86,10 @@ function AIPlanner() {
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleDeleteFile = (id: string) => {
+    setFiles(files.filter((file) => file.id !== id));
   };
 
   // 上传
@@ -197,7 +206,29 @@ function AIPlanner() {
         <Button size="large" theme="default" onClick={handleUploadClick} style={{ marginTop: "10px" }}>
           选择文件
         </Button>
-        {fileBuffers.length > 0 && <div style={{ marginTop: "10px", color: "#666" }}>已添加 {fileBuffers.length} 个文件</div>}
+        {files.length > 0 && (
+          <>
+            <div style={{ marginTop: "10px", color: "#666" }}>已添加 {files.length} 个文件</div>
+            {files.map((file) => (
+              <div
+                key={file.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "5px",
+                }}
+              >
+                {" "}
+                <span>
+                  {file.name} ({Math.round(file.size / 1024)} KB)
+                </span>
+                <Button size="small" variant="text" onClick={() => handleDeleteFile(file.id)} style={{ marginLeft: "8px", color: "#ff4d4f" }}>
+                  ×
+                </Button>
+              </div>
+            ))}
+          </>
+        )}
       </div>
       <div className="item">
         <Button size="large" theme="primary" onClick={commit}>
