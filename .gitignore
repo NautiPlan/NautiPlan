@@ -24,3 +24,5 @@ src-tauri/gen/android/keystore.properties
 *.njsproj
 *.sln
 *.sw?
+
+cpp/build/*

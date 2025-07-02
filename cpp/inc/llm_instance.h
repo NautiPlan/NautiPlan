@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-
+#include<functional>
 typedef void* LLM_HANDLE;
 typedef void* VIT_HANDLE;
 typedef void* LLM_params_ptr;

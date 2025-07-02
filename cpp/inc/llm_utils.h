@@ -1,91 +1,9 @@
-// #ifndef _LLM_UTILS_H_
-// #define _LLM_UTILS_H_
-
-// #include <string>
-// #include <vector>
-
-// #include <unordered_set>
-// #include <map>
-// #include <unordered_map>
-
-
-// #define VCAP_LLM_API __attribute__((visibility("default")))
-// #include <android/log.h>
-// #define TAG "_V_llm_util-"
-
-// enum LLM_LOG_LEVEL {
-//     LLM_LOG_LEVEL_VERBOSE = 0,
-//     LLM_LOG_LEVEL_DEBUG = 1,
-//     LLM_LOG_LEVEL_INFO = 2,
-//     LLM_LOG_LEVEL_WARN = 3,
-//     LLM_LOG_LEVEL_ERROR = 4,
-//     LLM_LOG_LEVEL_FATAL = 5
-// };
-
-// static int llm_log_level_ = LLM_LOG_LEVEL_DEBUG;
-
-
-// #define LOGV(...) \
-//  do { \
-//    if(getLogLevel() > LLM_LOG_LEVEL_VERBOSE) { \
-//      break; \
-//    } \
-//     __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__); \
-//  } while(0)
-
-// #define LOGD(...) \
-//  do { \
-//    if(getLogLevel() > LLM_LOG_LEVEL_DEBUG) { \
-//      break; \
-//    } \
-//     __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__); \
-//  } while(0)
-
-// #define LOGI(...) \
-//  do { \
-//    if(getLogLevel() > LLM_LOG_LEVEL_INFO) { \
-//      break; \
-//    } \
-//     __android_log_print(ANDROID_LOG_INFO,TAG ,__VA_ARGS__); \
-//  } while(0)
-
-// #define LOGW(...) \
-//  do { \
-//    if(getLogLevel() > LLM_LOG_LEVEL_WARN) { \
-//      break; \
-//    } \
-//     __android_log_print(ANDROID_LOG_WARN,TAG ,__VA_ARGS__); \
-//  } while(0)
-
-// #define LOGE(...) \
-//  do { \
-//    if(getLogLevel() > LLM_LOG_LEVEL_ERROR) { \
-//      break; \
-//    } \
-//     __android_log_print(ANDROID_LOG_ERROR,TAG ,__VA_ARGS__); \
-//  } while(0)
-
-// #define LOGF(...) \
-//  do { \
-//    if(getLogLevel() > LLM_LOG_LEVEL_FATAL) { \
-//      break; \
-//    } \
-//     __android_log_print(ANDROID_LOG_FATAL,TAG ,__VA_ARGS__); \
-//  } while(0)
-
-// inline int getLogLevel() {
-//     return llm_log_level_;
-// }
-
-// #endif
 #ifndef LLM_UTILS_H_
 #define LLM_UTILS_H_
 
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <iomanip>
-#include <sstream>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
 
 // 平台检测宏
 #if defined(_WIN32) || defined(_WIN64)
@@ -111,45 +29,53 @@ enum LLM_LOG_LEVEL
 };
 
 // 全局日志级别配置
-static LLM_LOG_LEVEL g_log_level = LLM_LOG_INFO;
+static int g_log_level = LLM_LOG_INFO;
 
-// 获取当前时间戳 (格式: [YYYY-MM-DD HH:MM:SS])
-inline std::string get_timestamp()
+// 获取当前时间戳 (格式: [YYYY-MM-DD HH:MM:SS.mmm])
+static inline void get_timestamp(char *buf, size_t buf_size)
 {
-	auto now = std::chrono::system_clock::now();
-	auto time = std::chrono::system_clock::to_time_t(now);
-	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-
-	std::stringstream ss;
-	ss << std::put_time(std::localtime(&time), "[%Y-%m-%d %H:%M:%S");
-	ss << "." << std::setfill('0') << std::setw(3) << ms.count();
-	return ss.str();
+#if defined(_WIN32) || defined(_WIN64)
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+	snprintf(buf, buf_size, "[%04d-%02d-%02d %02d:%02d:%02d.%03d",
+			 st.wYear, st.wMonth, st.wDay,
+			 st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+#else
+	struct timespec ts;
+	struct tm tm_info;
+	clock_gettime(CLOCK_REALTIME, &ts);
+	localtime_r(&ts.tv_sec, &tm_info);
+	snprintf(buf, buf_size, "[%04d-%02d-%02d %02d:%02d:%02d.%03ld",
+			 tm_info.tm_year + 1900, tm_info.tm_mon + 1, tm_info.tm_mday,
+			 tm_info.tm_hour, tm_info.tm_min, tm_info.tm_sec, ts.tv_nsec / 1000000);
+#endif
 }
 
 // 设置日志级别
-inline void set_log_level(LLM_LOG_LEVEL level)
+static inline void set_log_level(int level)
 {
 	g_log_level = level;
 }
 
-// 日志宏定义
-#define LLM_LOG(level, level_str, ...)                              \
-	do                                                              \
-	{                                                               \
-		if (level >= g_log_level)                                   \
-		{                                                           \
-			std::cerr << get_timestamp() << " " << level_str << " " \
-					  << __FILE__ << ":" << __LINE__ << "] "        \
-					  << __VA_ARGS__ << std::endl;                  \
-		}                                                           \
+// 日志宏定义（C风格）
+#define LLM_LOG(level, level_str, fmt, ...)                             \
+	do                                                                  \
+	{                                                                   \
+		if ((level) >= g_log_level)                                     \
+		{                                                               \
+			char _ts[32];                                               \
+			get_timestamp(_ts, sizeof(_ts));                            \
+			fprintf(stderr, "%s %s %s:%d] " fmt "\n",                   \
+					_ts, level_str, __FILE__, __LINE__, ##__VA_ARGS__); \
+		}                                                               \
 	} while (0)
 
-#define LOGV(...) LLM_LOG(LLM_LOG_VERBOSE, "[VERBOSE]", __VA_ARGS__)
-#define LOGD(...) LLM_LOG(LLM_LOG_DEBUG, "[DEBUG]", __VA_ARGS__)
-#define LOGI(...) LLM_LOG(LLM_LOG_INFO, "[INFO]", __VA_ARGS__)
-#define LOGW(...) LLM_LOG(LLM_LOG_WARNING, "[WARNING]", __VA_ARGS__)
-#define LOGE(...) LLM_LOG(LLM_LOG_ERROR, "[ERROR]", __VA_ARGS__)
-#define LOGF(...) LLM_LOG(LLM_LOG_FATAL, "[FATAL]", __VA_ARGS__)
+#define LOGV(fmt, ...) LLM_LOG(LLM_LOG_VERBOSE, "[VERBOSE]", fmt, ##__VA_ARGS__)
+#define LOGD(fmt, ...) LLM_LOG(LLM_LOG_DEBUG, "[DEBUG]", fmt, ##__VA_ARGS__)
+#define LOGI(fmt, ...) LLM_LOG(LLM_LOG_INFO, "[INFO]", fmt, ##__VA_ARGS__)
+#define LOGW(fmt, ...) LLM_LOG(LLM_LOG_WARNING, "[WARNING]", fmt, ##__VA_ARGS__)
+#define LOGE(fmt, ...) LLM_LOG(LLM_LOG_ERROR, "[ERROR]", fmt, ##__VA_ARGS__)
+#define LOGF(fmt, ...) LLM_LOG(LLM_LOG_FATAL, "[FATAL]", fmt, ##__VA_ARGS__)
 
 // 跨平台路径处理
 #ifdef LLM_OS_WINDOWS
@@ -158,18 +84,27 @@ inline void set_log_level(LLM_LOG_LEVEL level)
 #define LLM_PATH_SEPARATOR '/'
 #endif
 
-inline std::string join_path(const std::string &dir, const std::string &filename)
+static inline void join_path(char *out, size_t out_size, const char *dir, const char *filename)
 {
-	if (dir.empty())
-		return filename;
-	if (filename.empty())
-		return dir;
-
-	if (dir.back() == LLM_PATH_SEPARATOR || filename.front() == LLM_PATH_SEPARATOR)
+	if (!dir || !*dir)
 	{
-		return dir + filename;
+		snprintf(out, out_size, "%s", filename ? filename : "");
+		return;
 	}
-	return dir + LLM_PATH_SEPARATOR + filename;
+	if (!filename || !*filename)
+	{
+		snprintf(out, out_size, "%s", dir);
+		return;
+	}
+	size_t dir_len = strlen(dir);
+	if (dir[dir_len - 1] == LLM_PATH_SEPARATOR || filename[0] == LLM_PATH_SEPARATOR)
+	{
+		snprintf(out, out_size, "%s%s", dir, filename);
+	}
+	else
+	{
+		snprintf(out, out_size, "%s%c%s", dir, LLM_PATH_SEPARATOR, filename);
+	}
 }
 
 #endif // LLM_UTILS_H_
