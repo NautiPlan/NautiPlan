@@ -7,5 +7,9 @@ gen:CMakeLists.txt
 	-DCMAKE_BUILD_TYPE=Release \
 	-B build
 build:
-	cmake --build build	 
+	cmake --build build
+
+install:
+	cp build/libbluelm.so ../src-tauri/libs
+	cp lib/* ../src-tauri/libs	 
 .PHONY: gen build

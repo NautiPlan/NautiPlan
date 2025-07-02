@@ -3,6 +3,7 @@ project(bluelm LANGUAGES CXX)
 
 add_library(bluelm SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/src/llm_bluelm.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/llm_capi.cpp
 )
 
 find_library(log-lib log)
