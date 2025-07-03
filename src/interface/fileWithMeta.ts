@@ -1,6 +1,6 @@
 export default interface FileWithMeta {
   id: string;
-  buffer: ArrayBuffer | string;
+  buffer: ArrayBuffer;
   name: string;
   type: string;
   size: number;

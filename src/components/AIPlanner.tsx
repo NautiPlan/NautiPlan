@@ -7,6 +7,7 @@ import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
+import { callVivoAudioGpt } from "../utils/multiModalAudio";
 import { callVivoImageGpt } from "../utils/multiModalImage";
 
 function AIPlanner() {
@@ -124,12 +125,33 @@ function AIPlanner() {
     });
 
     // 检查是否有上传的图片文件
-    if (files.length > 0) {
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    if (imageFiles.length > 0) {
       try {
-        const result: string | null = await callVivoImageGpt(files);
+        const result: string | null = await callVivoImageGpt(imageFiles);
         imageTextValue += result || "";
       } catch (error) {
         console.error("图片处理错误:", error);
+      }
+    }
+
+    let audioTextValue: string = "";
+
+    loadingToast = Toast({
+      message: "开始理解音频...",
+      theme: "loading",
+      duration: 0,
+      preventScrollThrough: true,
+      showOverlay: true,
+    });
+
+    const audioFiles = files.filter((file) => file.type.startsWith("audio/"));
+    if (audioFiles.length > 0) {
+      try {
+        const result: string | null = await callVivoAudioGpt(audioFiles);
+        audioTextValue += result || "";
+      } catch (error) {
+        console.error("音频处理错误:", error);
       }
     }
 
@@ -138,7 +160,7 @@ function AIPlanner() {
       name: taskName,
       startDate: new Date(),
       dueDate: new Date(dataNote),
-      taskDescription: textValue?.toString() + imageTextValue,
+      taskDescription: textValue?.toString() + imageTextValue + audioTextValue,
       importance: priorityValue,
     };
 

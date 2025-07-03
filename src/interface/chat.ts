@@ -20,3 +20,20 @@ export interface ImageMessage {
   content: string;
   contentType: string;
 }
+
+export interface AsrResult {
+  ed: number;
+  onebest: string;
+  bg: number;
+}
+
+export interface AsrResponse {
+  action: string;
+  code: number;
+  desc: string;
+  sid: string;
+  type: string;
+  data: {
+    result: AsrResult[];
+  };
+}
