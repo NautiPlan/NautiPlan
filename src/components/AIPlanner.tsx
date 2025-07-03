@@ -12,7 +12,7 @@ import { callVivoImageGpt } from "../utils/multiModalImage";
 
 function AIPlanner() {
   // 状态管理
-  const { addPlan, Plans } = usePlanStore();
+  const { addPlan, Plans, isPlanCompleted } = usePlanStore();
 
   // 任务名称
   const [taskName, setTaskName] = useState("");
@@ -184,6 +184,7 @@ function AIPlanner() {
           const plan: Plan = JSON.parse(result);
           plan.dueDate = new Date(plan.dueDate!);
           plan.startDate = new Date(plan.startDate);
+          plan.completed = isPlanCompleted(plan.id);
           //  将Plan中的tasksID使用uuidv4()生成新的ID, planId复制
           plan.Tasks = plan?.Tasks.map((task: Task) => ({
             ...task,
