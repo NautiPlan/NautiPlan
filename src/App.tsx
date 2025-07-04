@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     syncToDatabase();
-  }, []); // 空依赖数组确保只执行一次
+  }, []);
 
   return (
     <div className="App">
