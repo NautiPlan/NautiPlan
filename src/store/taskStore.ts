@@ -34,7 +34,7 @@ const createDefaultPlan = (): Plan => {
   const defaultTaskId = "default-task-001";
   const defaultTask: Task = {
     id: defaultTaskId,
-    name: "默认任务1",
+    name: "临时任务1",
     date: today,
     completed: false,
     planId: defaultPlanId,
@@ -42,7 +42,7 @@ const createDefaultPlan = (): Plan => {
 
   return {
     id: defaultPlanId,
-    name: "默认计划",
+    name: "未分类计划",
     startDate: today,
     dueDate: null,
     priority: 5,

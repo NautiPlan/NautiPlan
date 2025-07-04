@@ -321,7 +321,7 @@ function AIPlanner() {
           <div>暂无计划</div>
         )}
         <Button theme="primary" className="view-plan-btm">
-          查看详情
+          关闭
         </Button>
       </Popup>
     </div>
