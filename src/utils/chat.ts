@@ -106,16 +106,6 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
   const timeDiff = dueDate.getTime() - startDate.getTime();
   const daysAvailable = Math.ceil(timeDiff / (1000 * 3600 * 24));
   const strPromot = `我的任务是 ${promptObj.name} , 我有${daysAvailable + 1}天去完成它，重要性是 ${promptObj.importance}，任务的描述是：${promptObj.taskDescription}`;
-  // const strPromot = "吴习哲太帅了"
-
-  // console.log("剩了" + daysAvailable + "天");
-
-  // console.log(promptObj.id); // "5f241fd0-2859-497d-af39-39fbd642ecba"
-  // console.log(promptObj.name); // "math exam"
-  // console.log(promptObj.startDate); // "2025-07-01T03:00:59.636Z"
-  // console.log(promptObj.dueDate); // "2025-07-31T00:00:00.000Z"
-  // console.log(promptObj.taskDescription); // "I know nothing about math exam"
-  // console.log(promptObj.importance); // 50
 
   // 设置默认值
   const requestData = {
@@ -153,16 +143,11 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
       const resObj: VivoGptResponse = await response.json();
 
       if (resObj.code === 0 && resObj.data) {
-        // const content = resObj.data.content;
-        // console.log("我猜返回的内容resObj.data.content是:", content);
-
         const contentStr: string = resObj.data.content;
         const contentJson: Task[] = JSON.parse(contentStr);
         const startDate: Date = new Date(promptObj.startDate);
 
         const schedule = generateTaskSchedule(contentJson, startDate);
-
-        // console.log("转成带有日期的任务如下：\n" + JSON.stringify(schedule, null, 2));
 
         const finalSchedule = {
           id: promptObj.id,
@@ -178,8 +163,6 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
             completed: task.completed,
           })),
         };
-
-        // console.log("最终完整计划：\n" + JSON.stringify(finalSchedule, null, 2));
 
         return JSON.stringify(finalSchedule, null, 2);
       } else {
