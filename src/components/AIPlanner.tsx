@@ -258,7 +258,7 @@ function AIPlanner() {
         任务说明
         <Textarea
           placeholder="可包括任务目标、步骤、注意事项等"
-          maxlength={100}
+          maxlength={500}
           autosize={true}
           allowInputOverMax
           indicator
