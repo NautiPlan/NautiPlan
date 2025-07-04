@@ -320,7 +320,13 @@ function AIPlanner() {
         ) : (
           <div>暂无计划</div>
         )}
-        <Button theme="primary" className="view-plan-btm">
+        <Button
+          theme="primary"
+          className="view-plan-btm"
+          onClick={() => {
+            setPlanVisible(false);
+          }}
+        >
           关闭
         </Button>
       </Popup>
