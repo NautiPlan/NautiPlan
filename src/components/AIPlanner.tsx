@@ -7,6 +7,7 @@ import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
+import { callVivoEdgeGpt } from "../utils/edgellm";
 import { callVivoAudioGpt } from "../utils/multiModalAudio";
 import { callVivoImageGpt } from "../utils/multiModalImage";
 import { prePrompts } from "../utils/prompt";
@@ -188,8 +189,9 @@ function AIPlanner() {
     try {
       let result;
       if (!isEdgellm) result = await callVivoGpt({ prompt: JSON.stringify(taskDescription) });
+      if (isEdgellm) result = await callVivoEdgeGpt(JSON.stringify(taskDescription));
       // 关闭loading toast
-      else if (loadingToast) {
+      if (loadingToast) {
         Toast.clear();
         loadingToast = null;
       }
