@@ -24,20 +24,30 @@ interface PlanStore {
   getTasksByDate: (date: Date) => Task[];
   toggleTaskById: (taskId: string) => void;
   getPlanByTaskId: (taskId: string) => Plan | undefined;
+  isPlanCompleted: (planId: string) => boolean;
 }
 
 const createDefaultPlan = (): Plan => {
   const defaultPlanId = "default-plan-001";
   const today = new Date();
 
+  const defaultTaskId = "default-task-001";
+  const defaultTask: Task = {
+    id: defaultTaskId,
+    name: "临时任务1",
+    date: today,
+    completed: false,
+    planId: defaultPlanId,
+  };
+
   return {
     id: defaultPlanId,
-    name: "默认计划",
+    name: "未分类计划",
     startDate: today,
     dueDate: null,
     priority: 5,
     completed: false,
-    Tasks: [],
+    Tasks: [defaultTask],
   };
 };
 
@@ -53,7 +63,9 @@ export const usePlanStore = create<PlanStore>((set, get) => {
       const plans: Plan[] = await db.select<Plan[]>("SELECT * FROM Plans");
       if (plans.length === 0) {
         const defaultPlan = createDefaultPlan();
-        await db.execute("INSERT INTO Plans (id, name, startDate, dueDate, priority, completed) VALUES (?, ?, ?, ?, ?, ?)", [defaultPlan.id, defaultPlan.name, defaultPlan.startDate.toISOString(), defaultPlan.dueDate ? defaultPlan.dueDate.toISOString() : null, defaultPlan.priority, defaultPlan.completed]);
+
+        await Promise.all([await db.execute("INSERT INTO Plans (id, name, startDate, dueDate, priority, completed) VALUES (?, ?, ?, ?, ?, ?)", [defaultPlan.id, defaultPlan.name, defaultPlan.startDate.toISOString(), defaultPlan.dueDate ? defaultPlan.dueDate.toISOString() : null, defaultPlan.priority, defaultPlan.completed]), await db.execute("INSERT INTO Tasks (id, name, date, completed, planId) VALUES (?, ?, ?, ?, ?)", [defaultPlan.Tasks[0].id, defaultPlan.Tasks[0].name, defaultPlan.Tasks[0].date.toISOString(), defaultPlan.Tasks[0].completed, defaultPlan.id])]);
+
         set({ Plans: [defaultPlan], defaultPlanId: defaultPlan.id, db: db });
       } else {
         const plansWithTasks = await Promise.all(
@@ -119,23 +131,66 @@ export const usePlanStore = create<PlanStore>((set, get) => {
     toggleTaskById: async (taskId) => {
       const db = get().db;
       await db?.execute("UPDATE Tasks SET completed = NOT completed WHERE id = ?", [taskId]);
+
+      const targetPlan = get().getPlanByTaskId(taskId);
+      if (!targetPlan) return;
+
+      const prePlanCompleted = targetPlan.completed;
+
       set((state) => ({
-        Plans: state.Plans.map((plan) => ({
-          ...plan,
-          Tasks: plan.Tasks?.map((task) => (task.id === taskId ? { ...task, completed: !task.completed } : task)),
-        })),
+        Plans: state.Plans.map((plan) => {
+          if (plan.id === targetPlan.id) {
+            const updatedTasks = plan.Tasks?.map((task) => (task.id === taskId ? { ...task, completed: !task.completed } : task));
+
+            const planCompleted = updatedTasks && updatedTasks.length > 0 ? updatedTasks.every((task) => task.completed) : true;
+
+            return {
+              ...plan,
+              Tasks: updatedTasks,
+              completed: planCompleted,
+            };
+          }
+          return plan;
+        }),
       }));
+
+      const updatedPlan = get().getPlanById(targetPlan.id);
+      if (updatedPlan && prePlanCompleted !== updatedPlan.completed) {
+        await db?.execute("UPDATE Plans SET completed = ? WHERE id = ?", [updatedPlan.completed, targetPlan.id]);
+      }
     },
 
     removeTaskById: async (taskId) => {
       const db = get().db;
+
+      const targetPlan = get().getPlanByTaskId(taskId);
+      if (!targetPlan) return;
+
       await db?.execute("DELETE FROM Tasks WHERE id = ?", [taskId]);
       set((state) => ({
-        Plans: state.Plans.map((plan) => ({
-          ...plan,
-          Tasks: plan.Tasks?.filter((task) => task.id !== taskId),
-        })),
+        Plans: state.Plans.map((plan) => {
+          if (plan.id === targetPlan.id) {
+            const updatedTasks = plan.Tasks?.filter((task) => task.id !== taskId);
+
+            const planCompleted = updatedTasks && updatedTasks.length > 0 ? updatedTasks.every((task) => task.completed) : true;
+
+            return {
+              ...plan,
+              Tasks: updatedTasks,
+              completed: planCompleted,
+            };
+          }
+          return {
+            ...plan,
+            Tasks: plan.Tasks?.filter((task) => task.id !== taskId),
+          };
+        }),
       }));
+
+      const updatedPlan = get().getPlanById(targetPlan.id);
+      if (targetPlan.completed === false) {
+        await db?.execute("UPDATE Plans SET completed = ? WHERE id = ?", [updatedPlan?.completed, targetPlan.id]);
+      }
     },
 
     isDefaultPlan: (planId) => planId === get().defaultPlanId,
@@ -143,14 +198,32 @@ export const usePlanStore = create<PlanStore>((set, get) => {
     addTaskToPlan: async (planId, task) => {
       const db = get().db;
       await db?.execute("INSERT INTO Tasks (id, name, date, completed, planId) VALUES (?, ?, ?, ?, ?)", [task.id, task.name, task.date.toISOString(), task.completed, planId]);
+
       set((state) => {
         const plan = state.Plans.find((p) => p.id === planId);
         if (!plan) return state;
 
         return {
-          Plans: state.Plans.map((p) => (p.id === planId ? { ...p, Tasks: [...(p.Tasks || []), task] } : p)),
+          Plans: state.Plans.map((p) =>
+            p.id === planId
+              ? {
+                  ...p,
+                  Tasks: [...(p.Tasks || []), task],
+                  completed: task.completed ? p.completed : false,
+                }
+              : p
+          ),
         };
       });
+
+      const plan = get().getPlanById(planId);
+
+      if (task.completed === false && plan?.completed === true) {
+        const updatedPlan = get().getPlanById(planId);
+        if (updatedPlan) {
+          await db?.execute("UPDATE Plans SET completed = ? WHERE id = ?", [false, planId]);
+        }
+      }
     },
 
     getTaskById: (taskId) => {
@@ -195,6 +268,15 @@ export const usePlanStore = create<PlanStore>((set, get) => {
         }
       }
       return undefined;
+    },
+
+    isPlanCompleted: (planId) => {
+      const plan = get().getPlanById(planId);
+      if (!plan) return false;
+      if (!plan.Tasks || plan.Tasks.length === 0) {
+        return true;
+      }
+      return plan.Tasks?.every((task) => task.completed);
     },
   };
 });

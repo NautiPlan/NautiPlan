@@ -10,13 +10,7 @@ interface CalendarModalProps {
   setModelChange: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const CalendarModal: React.FC<CalendarModalProps> = ({
-  open,
-  selectedDate,
-  onClose,
-  modelChange,
-  setModelChange,
-}) => {
+const CalendarModal: React.FC<CalendarModalProps> = ({ open, selectedDate, onClose, setModelChange }) => {
   const removeTaskById = usePlanStore((state) => state.removeTaskById);
   const getTasksByDate = usePlanStore((state) => state.getTasksByDate);
   const addTaskToPlan = usePlanStore((state) => state.addTaskToPlan);
@@ -26,11 +20,8 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   const [showCreate, setShowCreate] = useState(false);
   const [newTaskName, setNewTaskName] = useState("");
   // 新增：选择计划
-  const [selectedPlanId, setSelectedPlanId] = useState(
-    plans.length > 0 ? plans[0].id : ""
-  );
+  const [selectedPlanId, setSelectedPlanId] = useState(plans.length > 0 ? plans[0].id : "");
 
-  
   const handleDelete = (taskId: string) => {
     removeTaskById(taskId);
     setModelChange((s) => s + 1);
@@ -70,9 +61,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
         </button>
         {selectedDate ? (
           <div className="modal-body">
-            <h3 className="modal-title">
-              {selectedDate.toLocaleDateString("zh-CN")} 的任务
-            </h3>
+            <h3 className="modal-title">{selectedDate.toLocaleDateString("zh-CN")} 的任务</h3>
             {tasks.length === 0 ? (
               <div className="modal-empty">这一天没有任务</div>
             ) : (
@@ -81,18 +70,8 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   <li key={task.id} className="modal-task-item">
                     <div className="modal-task-header">
                       <strong className="modal-task-name">{task.name}</strong>
-                      <span
-                        className={`modal-task-status ${
-                          task.completed ? "completed" : "pending"
-                        }`}
-                      >
-                        {task.completed ? "已完成" : "未完成"}
-                      </span>
-                      <button
-                        className="modal-task-delete"
-                        onClick={() => handleDelete(task.id)}
-                        title="删除任务"
-                      >
+                      <span className={`modal-task-status ${task.completed ? "completed" : "pending"}`}>{task.completed ? "已完成" : "未完成"}</span>
+                      <button className="modal-task-delete" onClick={() => handleDelete(task.id)} title="删除任务">
                         删除
                       </button>
                     </div>
@@ -111,39 +90,19 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
             <div className="modal-content modal-create-content">
               <h3 className="modal-title">新建任务</h3>
               {/* 下拉选择计划 */}
-              <select
-                className="modal-select"
-                value={selectedPlanId}
-                onChange={(e) => setSelectedPlanId(e.target.value)}
-                style={{ width: "100%", marginBottom: 12, padding: 6 }}
-              >
+              <select className="modal-select" value={selectedPlanId} onChange={(e) => setSelectedPlanId(e.target.value)} style={{ width: "100%", marginBottom: 12, padding: 6 }}>
                 {plans.map((plan) => (
                   <option key={plan.id} value={plan.id}>
                     {plan.name}
                   </option>
                 ))}
               </select>
-              <input
-                className="modal-input"
-                type="text"
-                value={newTaskName}
-                onChange={(e) => setNewTaskName(e.target.value)}
-                placeholder="请输入任务名称"
-                autoFocus
-              />
+              <input className="modal-input" type="text" value={newTaskName} onChange={(e) => setNewTaskName(e.target.value)} placeholder="请输入任务名称" autoFocus />
               <div style={{ marginTop: 16, textAlign: "right" }}>
-                <button
-                  className="modal-btn"
-                  onClick={() => setShowCreate(false)}
-                  style={{ marginRight: 8 }}
-                >
+                <button className="modal-btn" onClick={() => setShowCreate(false)} style={{ marginRight: 8 }}>
                   取消
                 </button>
-                <button
-                  className="modal-btn"
-                  onClick={handleSaveTask}
-                  disabled={!newTaskName.trim()}
-                >
+                <button className="modal-btn" onClick={handleSaveTask} disabled={!newTaskName.trim()}>
                   保存
                 </button>
               </div>

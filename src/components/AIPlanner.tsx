@@ -1,15 +1,19 @@
 import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
-import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
+import { Button, Calendar, Cascader, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
+import FileWithMeta from "../interface/fileWithMeta";
 import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
+import { callVivoAudioGpt } from "../utils/multiModalAudio";
+import { callVivoImageGpt } from "../utils/multiModalImage";
+import { prePrompts } from "../utils/prompt";
 
 function AIPlanner() {
   // 状态管理
-  const { addPlan, Plans } = usePlanStore();
+  const { addPlan, Plans, isPlanCompleted } = usePlanStore();
 
   // 任务名称
   const [taskName, setTaskName] = useState("");
@@ -52,23 +56,28 @@ function AIPlanner() {
   };
 
   // 文件上传相关状态
-  const [fileBuffers, setFileBuffers] = useState<ArrayBuffer[]>([]); // 存储所有上传文件
+  const [files, setFiles] = useState<FileWithMeta[]>([]); // 存储所有上传文件
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const selectedFiles = e.target.files;
+    if (!selectedFiles || selectedFiles.length === 0) return;
 
     try {
       const newBuffers = await Promise.all(
-        Array.from(files).map(async (file) => {
+        Array.from(selectedFiles).map(async (file) => {
           const arrayBuffer = await file.arrayBuffer();
-          return arrayBuffer;
+          return {
+            id: uuidv4(),
+            buffer: arrayBuffer,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+          } as FileWithMeta;
         })
       );
 
-      setFileBuffers([...fileBuffers, ...newBuffers]);
-      Toast.success(`成功添加${files.length}个文件到缓冲区`);
+      setFiles([...files, ...newBuffers]);
 
       // 重置input值，允许重复选择相同文件
       if (fileInputRef.current) {
@@ -82,6 +91,16 @@ function AIPlanner() {
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
+
+  const handleDeleteFile = (id: string) => {
+    setFiles(files.filter((file) => file.id !== id));
+  };
+
+  // 预设prompt
+  const [note, setNote] = useState("无");
+  const [promptValue, setPromptValue] = useState<string>("");
+  const [promptVisible, setPromptVisible] = useState(false);
+  const data = prePrompts();
 
   // 上传
   const commit = async () => {
@@ -100,16 +119,57 @@ function AIPlanner() {
       return;
     }
 
+    let loadingToast: any = null;
+
+    let imageTextValue: string = "";
+
+    loadingToast = Toast({
+      message: "开始理解图片...",
+      theme: "loading",
+      duration: 0,
+      preventScrollThrough: true,
+      showOverlay: true,
+    });
+
+    // 检查是否有上传的图片文件
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    if (imageFiles.length > 0) {
+      try {
+        const result: string | null = await callVivoImageGpt(imageFiles);
+        imageTextValue += result || "";
+      } catch (error) {
+        console.error("图片处理错误:", error);
+      }
+    }
+
+    let audioTextValue: string = "";
+
+    loadingToast = Toast({
+      message: "开始理解音频...",
+      theme: "loading",
+      duration: 0,
+      preventScrollThrough: true,
+      showOverlay: true,
+    });
+
+    const audioFiles = files.filter((file) => file.type.startsWith("audio/"));
+    if (audioFiles.length > 0) {
+      try {
+        const result: string | null = await callVivoAudioGpt(audioFiles);
+        audioTextValue += result || "";
+      } catch (error) {
+        console.error("音频处理错误:", error);
+      }
+    }
+
     const taskDescription: TaskDescription = {
       id: uuidv4(),
       name: taskName,
       startDate: new Date(),
       dueDate: new Date(dataNote),
-      taskDescription: textValue?.toString(),
+      taskDescription: (promptValue as string) + textValue?.toString() + imageTextValue + audioTextValue,
       importance: priorityValue,
     };
-
-    let loadingToast: any = null;
 
     loadingToast = Toast({
       message: "开始生成计划...",
@@ -131,6 +191,7 @@ function AIPlanner() {
           const plan: Plan = JSON.parse(result);
           plan.dueDate = new Date(plan.dueDate!);
           plan.startDate = new Date(plan.startDate);
+          plan.completed = isPlanCompleted(plan.id);
           //  将Plan中的tasksID使用uuidv4()生成新的ID, planId复制
           plan.Tasks = plan?.Tasks.map((task: Task) => ({
             ...task,
@@ -171,10 +232,33 @@ function AIPlanner() {
         </div>
       </div>
       <div className="item">
+        <Cell
+          title="预设prompt"
+          note={note}
+          arrow
+          onClick={() => {
+            setPromptVisible(true);
+          }}
+        />
+        <Cascader
+          title="选择预设prompt"
+          value={promptValue}
+          visible={promptVisible}
+          options={data.areaList}
+          onChange={(value, selectedOptions) => {
+            setNote((selectedOptions as any).map((item: { label: any }) => item.label).join("/") || "");
+            setPromptValue(value as string);
+          }}
+          onClose={() => {
+            setPromptVisible(false);
+          }}
+        />
+      </div>
+      <div className="item">
         任务说明
         <Textarea
           placeholder="可包括任务目标、步骤、注意事项等"
-          maxlength={100}
+          maxlength={500}
           autosize={true}
           allowInputOverMax
           indicator
@@ -197,7 +281,29 @@ function AIPlanner() {
         <Button size="large" theme="default" onClick={handleUploadClick} style={{ marginTop: "10px" }}>
           选择文件
         </Button>
-        {fileBuffers.length > 0 && <div style={{ marginTop: "10px", color: "#666" }}>已添加 {fileBuffers.length} 个文件</div>}
+        {files.length > 0 && (
+          <>
+            <div style={{ marginTop: "10px", color: "#666" }}>已添加 {files.length} 个文件</div>
+            {files.map((file) => (
+              <div
+                key={file.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "5px",
+                }}
+              >
+                {" "}
+                <span>
+                  {file.name} ({Math.round(file.size / 1024)} KB)
+                </span>
+                <Button size="small" variant="text" onClick={() => handleDeleteFile(file.id)} style={{ marginLeft: "8px", color: "#ff4d4f" }}>
+                  ×
+                </Button>
+              </div>
+            ))}
+          </>
+        )}
       </div>
       <div className="item">
         <Button size="large" theme="primary" onClick={commit}>
@@ -214,8 +320,14 @@ function AIPlanner() {
         ) : (
           <div>暂无计划</div>
         )}
-        <Button theme="primary" className="view-plan-btm">
-          查看详情
+        <Button
+          theme="primary"
+          className="view-plan-btm"
+          onClick={() => {
+            setPlanVisible(false);
+          }}
+        >
+          关闭
         </Button>
       </Popup>
     </div>
