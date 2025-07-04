@@ -2324,6 +2324,8 @@ dependencies = [
 name = "nautiplan"
 version = "0.1.1"
 dependencies = [
+ "lazy_static",
+ "once_cell",
  "serde",
  "serde_json",
  "tauri",

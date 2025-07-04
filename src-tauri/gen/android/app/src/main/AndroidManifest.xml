@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
-
+        <uses-permission android:name="mediatek.permission.ACCESS_APU_SYS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!-- AndroidTV support -->
     <uses-feature android:name="android.software.leanback" android:required="false" />
 
@@ -33,5 +35,15 @@
             android:name="android.support.FILE_PROVIDER_PATHS"
             android:resource="@xml/file_paths" />
         </provider>
+
+        <uses-native-library
+            android:name="libdmabufheap.so"
+            android:required="false" />
+        <uses-native-library
+            android:name="libvcap_npu_network_v1.so"
+            android:required="false" />
+        <uses-native-library
+            android:name="libvcap_npu_network.so"
+            android:required="false" />
     </application>
 </manifest>
