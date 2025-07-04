@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { TextareaProps } from "tdesign-mobile-react";
-import { Button, Calendar, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
+import { Button, Calendar, Cascader, Cell, Input, Popup, Slider, Textarea, Toast } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
 import FileWithMeta from "../interface/fileWithMeta";
 import { Plan, Task, TaskDescription } from "../interface/task";
@@ -9,6 +9,7 @@ import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
 import { callVivoAudioGpt } from "../utils/multiModalAudio";
 import { callVivoImageGpt } from "../utils/multiModalImage";
+import { prePrompts } from "../utils/prompt";
 
 function AIPlanner() {
   // 状态管理
@@ -95,6 +96,12 @@ function AIPlanner() {
     setFiles(files.filter((file) => file.id !== id));
   };
 
+  // 预设prompt
+  const [note, setNote] = useState("无");
+  const [promptValue, setPromptValue] = useState<string>("");
+  const [promptVisible, setPromptVisible] = useState(false);
+  const data = prePrompts();
+
   // 上传
   const commit = async () => {
     if (!taskName.trim()) {
@@ -160,7 +167,7 @@ function AIPlanner() {
       name: taskName,
       startDate: new Date(),
       dueDate: new Date(dataNote),
-      taskDescription: textValue?.toString() + imageTextValue + audioTextValue,
+      taskDescription: (promptValue as string) + textValue?.toString() + imageTextValue + audioTextValue,
       importance: priorityValue,
     };
 
@@ -223,6 +230,29 @@ function AIPlanner() {
           <Calendar visible={visible} onConfirm={handleConfirm} onClose={onClose}></Calendar>
           <Cell title="截止日期" arrow note={dataNote} onClick={() => setVisible(true)}></Cell>
         </div>
+      </div>
+      <div className="item">
+        <Cell
+          title="预设prompt"
+          note={note}
+          arrow
+          onClick={() => {
+            setPromptVisible(true);
+          }}
+        />
+        <Cascader
+          title="选择预设prompt"
+          value={promptValue}
+          visible={promptVisible}
+          options={data.areaList}
+          onChange={(value, selectedOptions) => {
+            setNote((selectedOptions as any).map((item: { label: any }) => item.label).join("/") || "");
+            setPromptValue(value as string);
+          }}
+          onClose={() => {
+            setPromptVisible(false);
+          }}
+        />
       </div>
       <div className="item">
         任务说明
