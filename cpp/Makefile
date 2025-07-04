@@ -11,5 +11,7 @@ build:
 
 install:
 	cp build/libbluelm.so ../src-tauri/libs
-	cp lib/* ../src-tauri/libs	 
+	cp lib/* ../src-tauri/libs
+	cp build/libbluelm.so ../src-tauri/gen/android/app/src/main/jniLibs/arm64-v8a
+	cp lib/* ../src-tauri/gen/android/app/src/main/jniLibs/arm64-v8a	 
 .PHONY: gen build
