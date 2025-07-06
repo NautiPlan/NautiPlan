@@ -1,6 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { v4 as uuidv4 } from "uuid";
-import { VivoGptRequestData, VivoGptResponse } from "../interface/chat";
+import { TempTaskRecord, VivoGptRequestData, VivoGptResponse } from "../interface/chat";
 import { genSignHeaders } from "./auth";
 
 // 配置常量
@@ -37,12 +37,6 @@ const systemPromptBySystem = `你是一个AI日程管理助手，你会得到一
 ]  
 `;
 
-type Task = {
-  id: string;
-  name: string;
-  day: string;
-};
-
 type ScheduledTask = {
   date: string;
   task: string;
@@ -53,7 +47,7 @@ type ScheduledTask = {
 /**
  * 根据任务数组和起始日期，生成带有具体日期的每日任务安排列表
  *
- * @param {Task[]} content - 任务数组，每个任务包含 id、name 和 day（"起始天数-结束天数"字符串）
+ * @param {TempTaskRecord[]} content - 任务数组，每个任务包含 id、name 和 day（"起始天数-结束天数"字符串）
  * @param {Date} startDate - 计划的起始日期，所有任务日期均基于此日期计算
  * @returns {ScheduledTask[]} 返回一个数组，每个元素代表某一天的具体任务，包含任务 id、名称、ISO格式的日期和完成状态
  *
@@ -63,7 +57,7 @@ type ScheduledTask = {
  * 3. 对于任务跨度内的每一天，生成一条独立任务记录，完成状态初始设为 false
  * 4. 返回所有生成的每日任务组成的数组
  */
-export function generateTaskSchedule(content: Task[], startDate: Date): ScheduledTask[] {
+export function generateTaskSchedule(content: TempTaskRecord[], startDate: Date): ScheduledTask[] {
   const schedule: ScheduledTask[] = [];
 
   content.forEach((task) => {
@@ -87,6 +81,23 @@ export function generateTaskSchedule(content: Task[], startDate: Date): Schedule
 
   return schedule;
 }
+
+/**
+ * 根据重要性和剩余时间计算任务优先级。
+ * 优先级范围通常在 0-10 之间。
+ *
+ * @param {number} importance - 任务重要性 (1-100)
+ * @param {number} remainingDays - 任务剩余天数 (天)
+ * @returns {number} 计算出的优先级
+ */
+const calculatePriority = (importance: number, remainingDays: number): number => {
+  const safeRemainingDays = Math.max(0, remainingDays);
+  const importanceScore = Math.pow(importance / 100, 2) * 10;
+  const urgencyScore = 10 * Math.exp(-0.1 * safeRemainingDays);
+  const rawPriority = importanceScore * 0.4 + urgencyScore * 0.6;
+  const priority = 10 / (1 + Math.exp(-0.5 * (rawPriority - 5))); // 5 是 sigmoid 的中点，可以调整
+  return Math.round(Math.min(10, Math.max(0, priority)));
+};
 
 /**
  * 调用VivoGPT API
@@ -142,7 +153,7 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
 
       if (resObj.code === 0 && resObj.data) {
         const contentStr: string = resObj.data.content;
-        const contentJson: Task[] = JSON.parse(contentStr);
+        const contentJson: TempTaskRecord[] = JSON.parse(contentStr);
         const startDate: Date = new Date(promptObj.startDate);
 
         const schedule = generateTaskSchedule(contentJson, startDate);
@@ -152,7 +163,7 @@ export async function callVivoGpt(data: VivoGptRequestData): Promise<string | nu
           name: promptObj.name,
           startDate: promptObj.startDate,
           dueDate: promptObj.dueDate,
-          priority: promptObj.importance,
+          priority: calculatePriority(promptObj.importance, daysAvailable),
           completed: false, // 初始肯定是未完成
           Tasks: schedule.map((task) => ({
             id: task.id,

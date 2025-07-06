@@ -37,3 +37,9 @@ export interface AsrResponse {
     result: AsrResult[];
   };
 }
+
+export type TempTaskRecord = {
+  id: string;
+  name: string;
+  day: string;
+};

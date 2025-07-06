@@ -278,7 +278,6 @@ function AIPlanner() {
           indicator
           value={textValue}
           onChange={(value) => {
-            console.log(value);
             onChange(value);
           }}
         />

@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { TempTaskRecord } from "../interface/chat";
 import { generateTaskSchedule } from "./chat";
 
 const systemPromptBySystem = `你是一个AI日程管理助手，你会得到一段我的计划的相关描述，
@@ -29,12 +30,6 @@ const systemPromptBySystem = `你是一个AI日程管理助手，你会得到一
 `;
 
 const fixPrompt = `请注意，只回答JSON格式的内容，不要包含任何其他文本或解释。确保JSON格式正确，且符合以上结构：`;
-
-type Task = {
-  id: string;
-  name: string;
-  day: string;
-};
 
 async function initModel() {
   try {
@@ -95,7 +90,7 @@ export async function callVivoEdgeGpt(data: string): Promise<string | null> {
 
     console.log("生成的内容:", resObj);
 
-    let contentJson: Task[];
+    let contentJson: TempTaskRecord[];
     try {
       contentJson = JSON.parse(resObj);
     } catch (parseError) {
