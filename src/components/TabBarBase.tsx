@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "tdesign-icons-react";
 import { TabBar, TabBarItem } from "tdesign-mobile-react";
 import "../styles/components/TabBarBase.css";
@@ -13,8 +13,12 @@ function TabBarBase() {
   ];
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const [value, setValue] = useState(location.pathname);
 
-  const [value, setValue] = useState("/");
+  useEffect(() => {
+    setValue(location.pathname);
+  }, [location.pathname]);
 
   const change = (changeValue: string | number) => {
     setValue(changeValue as string);
