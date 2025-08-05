@@ -1,0 +1,50 @@
+/* 动画容器 */
+.app-content {
+  position: relative;
+  overflow: hidden; /* 隐藏滑出屏幕的页面部分 */
+}
+
+/* 页面容器，用于绝对定位 */
+.page-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- 向前动画 (新页面从右侧滑入) --- */
+
+/* 进入动画的起始状态 */
+.slide-forward-enter {
+  transform: translateX(100%);
+  z-index: 1; /* 保证新页面在上方 */
+}
+/* 进入动画的激活状态 */
+.slide-forward-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+/* 退出动画的激活状态 */
+.slide-forward-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+/* 进入动画的起始状态 */
+.slide-backward-enter {
+  transform: translateX(-100%);
+  z-index: 1; /* 保证新页面在上方 */
+}
+/* 进入动画的激活状态 */
+.slide-backward-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+/* 退出动画的激活状态 */
+.slide-backward-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}

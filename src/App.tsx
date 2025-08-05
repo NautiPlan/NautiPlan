@@ -1,28 +1,88 @@
-import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import TabBarBase from "./components/TabBarBase";
 import AIPlannerView from "./pages/AIPlannerView";
 import CalendarView from "./pages/CalendarView";
 import PlanView from "./pages/PlanView";
 import TodoView from "./pages/TodoView";
 import { usePlanStore } from "./store/taskStore";
+import "./styles/components/transitions.css";
+
+const pages = ["/", "/calendar", "/chat", "/myPlan"];
 
 function App() {
   const { syncToDatabase } = usePlanStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [direction, setDirection] = useState("forward");
+  const prevLocationIndex = useRef(pages.indexOf(location.pathname));
 
   useEffect(() => {
     syncToDatabase();
-  }, []); // 空依赖数组确保只执行一次
+  }, []);
+
+  const getCurrentDirection = () => {
+    const currentIndex = pages.indexOf(location.pathname);
+    const previousIndex = prevLocationIndex.current;
+
+    if (currentIndex > previousIndex) {
+      return "forward";
+    } else if (currentIndex < previousIndex) {
+      return "backward";
+    }
+    return direction;
+  };
+
+  useEffect(() => {
+    const currentIndex = pages.indexOf(location.pathname);
+    const previousIndex = prevLocationIndex.current;
+
+    if (currentIndex > previousIndex) {
+      setDirection("forward");
+    } else if (currentIndex < previousIndex) {
+      setDirection("backward");
+    }
+
+    prevLocationIndex.current = currentIndex;
+  }, [location]);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      const currentIndex = pages.indexOf(location.pathname);
+      if (currentIndex < pages.length - 1) {
+        setDirection("forward");
+        navigate(pages[currentIndex + 1]);
+      }
+    },
+    onSwipedRight: () => {
+      const currentIndex = pages.indexOf(location.pathname);
+      if (currentIndex > 0) {
+        setDirection("backward");
+        navigate(pages[currentIndex - 1]);
+      }
+    },
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
     <div className="App">
-      <main className="app-content">
-        <Routes>
-          <Route path="/chat" element={<AIPlannerView />} />
-          <Route path="/calendar" element={<CalendarView />} />
-          <Route path="/myPlan" element={<PlanView />} />
-          <Route path="/" element={<TodoView />} />
-        </Routes>
+      <main className="app-content" {...handlers}>
+        <TransitionGroup component="div">
+          <CSSTransition key={location.pathname} classNames={`slide-${getCurrentDirection()}`} timeout={300}>
+            <div className="page-container">
+              <Routes location={location}>
+                <Route path="/chat" element={<AIPlannerView />} />
+                <Route path="/calendar" element={<CalendarView />} />
+                <Route path="/myPlan" element={<PlanView />} />
+                <Route path="/" element={<TodoView />} />
+              </Routes>
+            </div>
+          </CSSTransition>
+        </TransitionGroup>
       </main>
       <TabBarBase />
     </div>

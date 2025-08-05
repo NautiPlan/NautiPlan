@@ -88,8 +88,6 @@ function generateTaskSchedule(content: TempTaskRecord[], startDate: Date): Sched
   return schedule;
 }
 
-
-
 /**
  * 根据重要性和剩余时间计算任务优先级。
  * 优先级范围通常在 0-10 之间。
@@ -102,11 +100,10 @@ const calculatePriority = (importance: number, remainingDays: number): number =>
   const safeRemainingDays = Math.max(0, remainingDays);
   const importanceScore = Math.pow(importance / 100, 2) * 10;
   const urgencyScore = 10 * Math.exp(-0.1 * safeRemainingDays);
-  const rawPriority = (importanceScore * 0.4) + (urgencyScore * 0.6);
+  const rawPriority = importanceScore * 0.4 + urgencyScore * 0.6;
   const priority = 10 / (1 + Math.exp(-0.5 * (rawPriority - 5))); // 5 是 sigmoid 的中点，可以调整
   return Math.round(Math.min(10, Math.max(0, priority)));
 };
-
 
 /**
  * 调用VivoGPT API
