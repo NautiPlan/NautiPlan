@@ -131,7 +131,7 @@
 
 
 /* 弹窗样式 */
-.modal-overlay {
+/* .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -167,7 +167,7 @@
 
 .modal-body {
   padding: 20px 0;
-}
+} */
 
 .calendar-day {
   position: relative;
