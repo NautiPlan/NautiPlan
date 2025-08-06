@@ -1,0 +1,13 @@
+/* 计划页面样式 */
+.plan-view {
+  min-height: 100vh;
+  padding-bottom: 80px; /* 为TabBar预留空间 */
+  box-sizing: border-box;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .plan-view {
+    padding-bottom: 90px; /* 移动端需要更多空间 */
+  }
+}

@@ -1,4 +1,3 @@
-# encoding: utf-8
 import uuid
 import time
 import requests

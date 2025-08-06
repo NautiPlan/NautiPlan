@@ -1,0 +1,28 @@
+/* Todo 待办页面样式 */
+.todo-view {
+  height: 100vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px; /* 为TabBar预留空间 */
+  box-sizing: border-box;
+}
+
+.todo-view .main-content {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  padding-bottom: 40px; /* 额外的底部空间 */
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .todo-view {
+    padding-bottom: 90px; /* 移动端需要更多空间 */
+  }
+
+  .todo-view .main-content {
+    padding: 16px;
+    padding-bottom: 50px;
+  }
+}

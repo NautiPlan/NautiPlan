@@ -30,3 +30,5 @@ __test__/
 *.njsproj
 *.sln
 *.sw?
+
+.env

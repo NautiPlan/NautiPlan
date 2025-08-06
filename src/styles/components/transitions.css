@@ -1,7 +1,10 @@
 /* 动画容器 */
 .app-content {
   position: relative;
-  overflow: hidden; /* 隐藏滑出屏幕的页面部分 */
+  overflow-x: hidden; /* 只隐藏水平方向的溢出 */
+  overflow-y: auto; /* 允许垂直滚动 */
+  min-height: 100vh; /* 确保容器高度足够 */
+  padding-bottom: 80px; /* 为TabBar预留空间 */
 }
 
 /* 页面容器，用于绝对定位 */
@@ -11,6 +14,8 @@
   left: 0;
   width: 100%;
   height: 100%;
+  overflow-y: auto; /* 允许页面内容垂直滚动 */
+  overflow-x: hidden; /* 隐藏水平滚动条 */
 }
 
 /* --- 向前动画 (新页面从右侧滑入) --- */
