@@ -12,7 +12,7 @@ function RecommendedResources({ selectedDate, currentDate }: RecommendedResource
   const [recommendedResources, setRecommendedResources] = useState<RecommendedResource[]>([]);
   const [isLoadingResources, setIsLoadingResources] = useState(false);
 
-  const fetchRecommendedResources = useCallback(async (targetDate: Date) => {
+  const fetchRecommendedResources = async (targetDate: Date) => {
     setIsLoadingResources(true);
     try {
       const resources = await recommendResources(targetDate);
@@ -23,12 +23,12 @@ function RecommendedResources({ selectedDate, currentDate }: RecommendedResource
     } finally {
       setIsLoadingResources(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     const targetDate = selectedDate || currentDate;
     fetchRecommendedResources(targetDate);
-  }, [selectedDate, currentDate, fetchRecommendedResources]);
+  }, []);
 
   return (
     <div className="recommended-resources-section">
