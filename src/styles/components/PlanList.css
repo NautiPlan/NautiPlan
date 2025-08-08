@@ -1,7 +1,7 @@
 .plan-list-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: auto; /* 改为自动高度 */
   background-color: #f5f5f5;
 }
 
@@ -90,7 +90,7 @@
 /* 响应式适配 */
 @media (max-width: 768px) {
   .plan-list-container {
-    height: calc(var(--vh, 1vh) * 100);
+    height: auto; /* 改为自动高度 */
   }
 
   .plan-list-filters {
@@ -303,7 +303,7 @@
 /* 响应式适配 */
 @media (max-width: 768px) {
   .plan-list-container {
-    height: calc(var(--vh, 1vh) * 100);
+    height: auto; /* 改为自动高度 */
   }
 
   .plan-list-filters {

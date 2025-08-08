@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RecommendedResource } from "../interface/resource";
 import "../styles/components/RecommendedResources.css";
 import { recommendResources } from "../utils/recommendRes";
@@ -8,8 +8,13 @@ interface RecommendedResourcesProps {
   currentDate: Date;
 }
 
-function RecommendedResources({ selectedDate, currentDate }: RecommendedResourcesProps) {
-  const [recommendedResources, setRecommendedResources] = useState<RecommendedResource[]>([]);
+function RecommendedResources({
+  selectedDate,
+  currentDate,
+}: RecommendedResourcesProps) {
+  const [recommendedResources, setRecommendedResources] = useState<
+    RecommendedResource[]
+  >([]);
   const [isLoadingResources, setIsLoadingResources] = useState(false);
 
   const fetchRecommendedResources = async (targetDate: Date) => {
@@ -59,12 +64,18 @@ function RecommendedResources({ selectedDate, currentDate }: RecommendedResource
                   <h4 className="resource-title">{resource.title}</h4>
                 </div>
                 <div className="resource-actions">
-                  <span className="relevance-score">相关度: {Math.round(resource.relevanceScore * 100)}%</span>
+                  <span className="relevance-score">
+                    相关度: {Math.round(resource.relevanceScore * 100)}%
+                  </span>
                   {resource.url && (
                     <button
                       className="view-resource-btn"
                       onClick={() => {
-                        window.open(resource.url, "_blank", "noopener,noreferrer");
+                        window.open(
+                          resource.url,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
                       }}
                     >
                       查看
