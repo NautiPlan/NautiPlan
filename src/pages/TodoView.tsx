@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import TimerPanel from "../components/TimerPanel";
 import TodoPanel from "../components/TodoPanel";
 import "../styles/components/Nautilus.css";
+import "../styles/pages/TodoView.css";
 
 const TodoView: React.FC = () => {
   useEffect(() => {
@@ -16,23 +17,8 @@ const TodoView: React.FC = () => {
   }, []);
 
   return (
-    <div
-      className="app-container"
-      style={{
-        height: "100vh",
-        overflow: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        className="main-content"
-        style={{
-          flex: 1,
-          overflow: "auto",
-          padding: "20px",
-        }}
-      >
+    <div className="todo-view">
+      <div className="main-content">
         <TimerPanel />
         <TodoPanel />
       </div>

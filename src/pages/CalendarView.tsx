@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { generateCalendarCells } from "../components/CalendarCells";
 import CalendarModal from "../components/CalendarModal";
 import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
+import RecommendedResources from "../components/RecommendedResources";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/pages/CalendarView.css";
 
@@ -9,7 +10,6 @@ function CalendarView() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // 提升 modelChange
   const [modelChange, setModelChange] = useState(0);
 
   const getTasksByDate = usePlanStore((state) => state.getTasksByDate);
@@ -33,10 +33,7 @@ function CalendarView() {
   const today = useMemo(() => new Date(), []);
   const weekdays = useMemo(() => generateWeekdays(), []);
 
-  const { daysInMonth, startingDay, monthName, year } = useMemo(
-    () => getMonthInfo(currentDate),
-    [currentDate]
-  );
+  const { daysInMonth, startingDay, monthName, year } = useMemo(() => getMonthInfo(currentDate), [currentDate]);
 
   // 点击日期时，设置选中日期并打开弹窗
   const handleDateClick = useCallback((date: Date) => {
@@ -119,13 +116,9 @@ function CalendarView() {
       </div>
       <div className="calendar-body">{calendarWeeks}</div>
 
-      <CalendarModal
-        open={sidebarOpen}
-        selectedDate={selectedDate}
-        onClose={closeSidebar}
-        modelChange={modelChange}
-        setModelChange={setModelChange}
-      />
+      <RecommendedResources selectedDate={selectedDate} currentDate={currentDate} />
+
+      <CalendarModal open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} modelChange={modelChange} setModelChange={setModelChange} />
     </div>
   );
 }

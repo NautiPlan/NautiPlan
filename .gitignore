@@ -32,3 +32,4 @@ __test__/
 *.sw?
 
 cpp/build/*
+.env
