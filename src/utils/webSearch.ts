@@ -15,7 +15,7 @@ export async function webSearch(query: string): Promise<WebSearchRes[]> {
     query,
     freshness: "nolimit",
     summary: true,
-    include: " bilibili.com|CSSConditionRule.net|github.com",
+    include: "bilibili.com|github.com|zhihu.com",
     count: 50,
   });
 
