@@ -1,6 +1,17 @@
 import { useRef, useState } from "react";
 import type { SwitchValue, TextareaProps } from "tdesign-mobile-react";
-import { Button, Calendar, Cascader, Cell, Input, Popup, Slider, Switch, Textarea, Toast } from "tdesign-mobile-react";
+import {
+  Button,
+  Calendar,
+  Cascader,
+  Cell,
+  Input,
+  Popup,
+  Slider,
+  Switch,
+  Textarea,
+  Toast,
+} from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
 import FileWithMeta from "../interface/fileWithMeta";
 import { Plan, Task, TaskDescription } from "../interface/task";
@@ -58,7 +69,9 @@ function AIPlanner() {
   // plan弹窗
   const [planVisible, setPlanVisible] = useState(false);
 
-  const handlePlanVisibleChange = (visible: boolean | ((prevState: boolean) => boolean)) => {
+  const handlePlanVisibleChange = (
+    visible: boolean | ((prevState: boolean) => boolean)
+  ) => {
     setPlanVisible(visible);
   };
 
@@ -174,7 +187,11 @@ function AIPlanner() {
       name: taskName,
       startDate: new Date(),
       dueDate: new Date(dataNote),
-      taskDescription: (promptValue as string) + textValue?.toString() + imageTextValue + audioTextValue,
+      taskDescription:
+        (promptValue as string) +
+        textValue?.toString() +
+        imageTextValue +
+        audioTextValue,
       importance: priorityValue,
     };
 
@@ -188,8 +205,10 @@ function AIPlanner() {
 
     try {
       let result;
-      if (!isEdgellm) result = await callVivoGpt({ prompt: JSON.stringify(taskDescription) });
-      if (isEdgellm) result = await callVivoEdgeGpt(JSON.stringify(taskDescription));
+      if (!isEdgellm)
+        result = await callVivoGpt({ prompt: JSON.stringify(taskDescription) });
+      if (isEdgellm)
+        result = await callVivoEdgeGpt(JSON.stringify(taskDescription));
       // 关闭loading toast
       if (loadingToast) {
         Toast.clear();
@@ -232,17 +251,39 @@ function AIPlanner() {
       <div className="title">AI计划助手</div>
       <div className="item">
         任务
-        <Input placeholder="请输入任务名称" value={taskName} onChange={onTaskNameChange} />
+        <Input
+          placeholder="请输入任务名称"
+          value={taskName}
+          onChange={onTaskNameChange}
+        />
       </div>
       <div className="item">
         <div>
-          <Calendar visible={visible} onConfirm={handleConfirm} onClose={onClose}></Calendar>
-          <Cell title="截止日期" arrow note={dataNote} onClick={() => setVisible(true)}></Cell>
+          <Calendar
+            visible={visible}
+            onConfirm={handleConfirm}
+            onClose={onClose}
+          ></Calendar>
+          <Cell
+            title="截止日期"
+            arrow
+            note={dataNote}
+            onClick={() => setVisible(true)}
+          ></Cell>
         </div>
       </div>
       <div className="item">
-        <Cell title="端侧模型" rightIcon={<Switch value={isEdgellm} customValue={[1, 0]} onChange={onEdgeChange} />}></Cell>
-        {!isEdgellm && (
+        <Cell
+          title="端侧模型"
+          rightIcon={
+            <Switch
+              value={isEdgellm}
+              customValue={[1, 0]}
+              onChange={onEdgeChange}
+            />
+          }
+        ></Cell>
+        {
           <>
             <Cell
               title="预设prompt"
@@ -258,7 +299,11 @@ function AIPlanner() {
               visible={promptVisible}
               options={data.areaList}
               onChange={(value, selectedOptions) => {
-                setNote((selectedOptions as any).map((item: { label: any }) => item.label).join("/") || "");
+                setNote(
+                  (selectedOptions as any)
+                    .map((item: { label: any }) => item.label)
+                    .join("/") || ""
+                );
                 setPromptValue(value as string);
               }}
               onClose={() => {
@@ -266,7 +311,7 @@ function AIPlanner() {
               }}
             />
           </>
-        )}
+        }
       </div>
       <div className="item">
         任务说明
@@ -291,13 +336,27 @@ function AIPlanner() {
       {!isEdgellm && (
         <div className="item">
           上传图片或音频（可选）
-          <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: "none" }} multiple accept="image/*,audio/*" />
-          <Button size="large" theme="default" onClick={handleUploadClick} style={{ marginTop: "10px" }}>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+            multiple
+            accept="image/*,audio/*"
+          />
+          <Button
+            size="large"
+            theme="default"
+            onClick={handleUploadClick}
+            style={{ marginTop: "10px" }}
+          >
             选择文件
           </Button>
           {files.length > 0 && (
             <>
-              <div style={{ marginTop: "10px", color: "#666" }}>已添加 {files.length} 个文件</div>
+              <div style={{ marginTop: "10px", color: "#666" }}>
+                已添加 {files.length} 个文件
+              </div>
               {files.map((file) => (
                 <div
                   key={file.id}
@@ -311,7 +370,12 @@ function AIPlanner() {
                   <span>
                     {file.name} ({Math.round(file.size / 1024)} KB)
                   </span>
-                  <Button size="small" variant="text" onClick={() => handleDeleteFile(file.id)} style={{ marginLeft: "8px", color: "#ff4d4f" }}>
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={() => handleDeleteFile(file.id)}
+                    style={{ marginLeft: "8px", color: "#ff4d4f" }}
+                  >
                     ×
                   </Button>
                 </div>
@@ -325,11 +389,19 @@ function AIPlanner() {
           生成计划
         </Button>
       </div>
-      <Popup visible={planVisible} onVisibleChange={handlePlanVisibleChange} placement="center" style={{ width: "240px", height: "240px" }}>
+      <Popup
+        visible={planVisible}
+        onVisibleChange={handlePlanVisibleChange}
+        placement="center"
+        style={{ width: "240px", height: "240px" }}
+      >
         {Plans.length > 0 ? (
           <div className="plan-content">
             <p className="plan-content-title">{Plans[Plans.length - 1].name}</p>
-            <p>截止时间: {new Date(Plans[Plans.length - 1].dueDate!).toLocaleDateString()}</p>
+            <p>
+              截止时间:{" "}
+              {new Date(Plans[Plans.length - 1].dueDate!).toLocaleDateString()}
+            </p>
             <p>重要度: {Plans[Plans.length - 1].priority}</p>
           </div>
         ) : (
