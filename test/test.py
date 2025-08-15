@@ -1,49 +1,42 @@
-import uuid
-import time
+import json
 import requests
 from auth_util import gen_sign_headers
 
 # 请替换APP_ID、APP_KEY
 APP_ID = '2025795358'
 APP_KEY = 'ZFiNLwhFLHHIcAVh'
-URI = '/vivogpt/completions'
+URI = '/query_rewrite_base'
 DOMAIN = 'api-ai.vivo.com.cn'
 METHOD = 'POST'
 
 
-def sync_vivogpt():
-    params = {
-        'requestId': str(uuid.uuid4())
+def query_rewrite():
+    params = {}
+    post_data = {
+        "prompts": [
+            [
+                "",
+                "",
+                "",
+                "",
+                "战狼2是谁主演的",
+                "《战狼2》是由吴京执导并主演的一部军事战争题材电影。影片中，吴京饰演了主角冷锋，他是一名退役的特种部队军人，在非洲执行任务时遭遇了一连串危机和战斗。因此，《战狼2》的主演是吴京。"
+            ],
+            [
+                "第一部里有他吗"
+            ]
+        ]
     }
-    print('requestId:', params['requestId'])
-
-    data = {
-        'prompt': '写一首春天的诗',
-        'model': 'vivo-BlueLM-TB-Pro',
-        'sessionId': str(uuid.uuid4()),
-        'extra': {
-            'temperature': 0.9
-        }
-    }
+    data = json.dumps(post_data)
     headers = gen_sign_headers(APP_ID, APP_KEY, METHOD, URI, params)
-    headers['Content-Type'] = 'application/json'
 
-    start_time = time.time()
-    url = 'https://{}{}'.format(DOMAIN, URI)
-    response = requests.post(url, json=data, headers=headers, params=params)
-
+    url = 'http://{}{}'.format(DOMAIN, URI)
+    response = requests.post(url, data=data, headers=headers)
     if response.status_code == 200:
-        res_obj = response.json()
-        print(f'response:{res_obj}')
-        if res_obj['code'] == 0 and res_obj.get('data'):
-            content = res_obj['data']['content']
-            print(f'final content:\n{content}')
+        print(response.json())
     else:
         print(response.status_code, response.text)
-    end_time = time.time()
-    timecost = end_time - start_time
-    print('请求耗时: %.2f秒' % timecost)
 
 
 if __name__ == '__main__':
-    sync_vivogpt()
+    query_rewrite()
