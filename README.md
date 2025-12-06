@@ -57,9 +57,7 @@ npm run tauri android build
 npm run tauri android build -- --target aarch64
 ```
 
-默认打包均为未签名版本，若需要打包可直接安装的apk，请自行签名，或在参看[安卓代码签名 | Tauri](https://tauri.app/zh-cn/distribute/sign/android/)
-
-
+默认打包均为未签名版本，若需要打包可直接安装的 apk，请自行签名，或在参看[安卓代码签名 | Tauri](https://tauri.app/zh-cn/distribute/sign/android/)
 
 ## 端侧额外配置
 
@@ -67,15 +65,15 @@ npm run tauri android build -- --target aarch64
 
 ### 编译端侧动态库
 
-makefile会调用cmake，使用NDK进行编译生成，需要设置环境变量$(NDK_HOME)，配置NDK目录
+makefile 会调用 cmake，使用 NDK 进行编译生成，需要设置环境变量$(NDK_HOME)，配置 NDK 目录
 
-使用cmake和NDK生成nijia文件
+使用 cmake 和 NDK 生成 nijia 文件
 
 ```
 make gen
 ```
 
-使用nijia进行编译
+使用 nijia 进行编译
 
 ```
 make build
@@ -83,7 +81,7 @@ make build
 
 ### 将端侧库添加到依赖
 
-我们需要将生成的动态库移动到指定位置，以便于tauri能够将他们打包至生成的APK中
+我们需要将生成的动态库移动到指定位置，以便于 tauri 能够将他们打包至生成的 APK 中
 
 使用命令可以将库一键搬运至指定目录
 
@@ -91,3 +89,10 @@ make build
 make install
 ```
 
+## 更新计划
+
+使用 rag 技术构建动态知识库，库中知识来自用户的输入资料以及联网搜索，使得生成的计划更加贴合用户，不再泛泛而谈
+
+构建 MCP 服务器，使得 AI 模型调用本地工具链构建计划，不再依赖 AI 生成特定格式，杜绝格式错误导致的计划生成错误
+
+目前考虑，先在通过简单前后端的模式，验证当前框架可行性，再考虑迁移至多平台
