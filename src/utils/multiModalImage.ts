@@ -1,83 +1,35 @@
-import { fetch } from "@tauri-apps/plugin-http";
-import CryptoJS from "crypto-js";
-import { v4 as uuidv4 } from "uuid";
-import { ImageMessage, VivoGptResponse } from "../interface/chat";
-import FileWithMeta from "../interface/fileWithMeta";
-import { genSignHeaders } from "./auth";
+import { invoke } from "@tauri-apps/api/core";
+import { FileWithMeta, ImageData } from "../interface/fileWithMeta";
 
-const APP_ID = "2025795358";
-const APP_KEY = "ZFiNLwhFLHHIcAVh";
-const URI = "/vivogpt/completions";
-const DOMAIN = "api-ai.vivo.com.cn";
-const METHOD = "POST";
+const API_KEY = import.meta.env.VITE_ALIAPI_KEY as string;
 
-export async function callVivoImageGpt(files: FileWithMeta[]): Promise<string | null> {
-  const params = {
-    requestId: uuidv4(),
-  };
-
-  let messages: ImageMessage[] = files.map((file) => {
-    const wordArray = CryptoJS.lib.WordArray.create(file.buffer as ArrayBuffer);
-    console.log("注意看", file.type);
-    return {
-      role: "user",
-      content: "data:" + file.type + ";base64," + CryptoJS.enc.Base64.stringify(wordArray),
-      contentType: "image",
-    };
-  });
-
-  messages = [
-    ...messages,
-    {
-      role: "user",
-      content: "用简介的文字描述所有图片的内容，注意回答中仅描述图片的内容含义，不要包含对图片样式的描述。",
-      contentType: "text",
-    },
-  ];
-
-  const data = {
-    sessionId: uuidv4(),
-    requestId: params.requestId,
-    model: "vivo-BlueLM-V-2.0",
-    messages: messages,
-  };
+const encodeImage = (file: FileWithMeta): ImageData => {
+  const data = file.type;
 
   try {
-    const signHeaders = genSignHeaders(APP_ID, APP_KEY, METHOD, URI, params);
-    const headers = {
-      ...signHeaders,
-      "Content-Type": "application/json",
-    };
-
-    const url = `http://${DOMAIN}${URI}`;
-
-    const queryParams = new URLSearchParams({
-      requestId: params.requestId,
-    });
-
-    const response = await fetch(`${url}?${queryParams}`, {
-      method: METHOD,
-      headers,
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      const resObj: VivoGptResponse = await response.json();
-
-      if (resObj.code === 0 && resObj.data) {
-        const content = resObj.data.content;
-        return content;
-      } else {
-        console.error("API错误:", resObj.message || "未知错误");
-        return null;
-      }
-    } else {
-      const errorText = await response.text();
-      console.error(`HTTP错误 ${response.status}:`, errorText);
-      return null;
-    }
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(file.buffer)));
+    return { data, base64 };
   } catch (error) {
-    console.error("请求失败:", error);
+    if (error instanceof RangeError) {
+      throw new Error("文件过大，无法转换为Base64，请选择更小的文件");
+    }
+    throw error;
+  }
+};
+
+export async function callImageGpt(
+  files: FileWithMeta[]
+): Promise<string | null> {
+  const images: ImageData[] = files.map((file) => encodeImage(file));
+  try {
+    const response = await invoke<string>("aliyun_image", {
+      images,
+      apiKey: API_KEY,
+    });
+    console.log("aliyun_image 调用成功:", response);
+    return response ?? null;
+  } catch (error) {
+    console.error("aliyun_image 调用失败:", error);
     return null;
   }
 }

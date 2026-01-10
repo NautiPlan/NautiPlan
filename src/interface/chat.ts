@@ -15,11 +15,6 @@ export interface VivoGptResponse {
     };
   };
 }
-export interface ImageMessage {
-  role: string;
-  content: string;
-  contentType: string;
-}
 
 export interface AsrResult {
   ed: number;
