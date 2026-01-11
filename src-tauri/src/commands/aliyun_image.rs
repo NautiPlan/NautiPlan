@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct ImageData {
+pub struct FileData {
     pub data: String,   // mime
     pub base64: String, // base64
 }
@@ -21,7 +21,7 @@ struct Message {
     content: Option<String>,
 }
 
-pub async fn call_image_gpt(images: Vec<ImageData>, api_key: String) -> Result<String, String> {
+pub async fn call_image_gpt(images: Vec<FileData>, api_key: String) -> Result<String, String> {
     if images.is_empty() {
         return Err("images 不能为空".to_string());
     }

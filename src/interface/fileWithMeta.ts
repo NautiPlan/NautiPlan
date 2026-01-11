@@ -6,7 +6,7 @@ export interface FileWithMeta {
   size: number;
 }
 
-export interface ImageData {
+export interface FileData {
   data: string; // MIME type
   base64: string;
 }

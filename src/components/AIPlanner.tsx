@@ -17,8 +17,7 @@ import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
 import { callVivoGpt } from "../utils/chat";
-import { callVivoAudioGpt } from "../utils/multiModalAudio";
-import { callImageGpt } from "../utils/multiModalImage";
+import { callImageGpt, callAudioGpt } from "../utils/multiModal";
 import { prePrompts } from "../utils/prompt";
 
 function AIPlanner() {
@@ -164,10 +163,11 @@ function AIPlanner() {
       showOverlay: true,
     });
 
+    // 检查是否有上传的音频文件
     const audioFiles = files.filter((file) => file.type.startsWith("audio/"));
     if (audioFiles.length > 0) {
       try {
-        const result: string | null = await callVivoAudioGpt(audioFiles);
+        const result: string | null = await callAudioGpt(audioFiles);
         audioTextValue += result || "";
       } catch (error) {
         console.error("音频处理错误:", error);
