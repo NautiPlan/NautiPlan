@@ -1,0 +1,3 @@
+[submodule "taskPilot-InferrenceCore"]
+	path = taskPilot-InferrenceCore
+	url = https://github.com/chuanshanjia666/taskPilot-InferrenceCore.git
