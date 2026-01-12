@@ -16,7 +16,7 @@ import { FileWithMeta } from "../interface/fileWithMeta";
 import { Plan, Task, TaskDescription } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/AIPlanner.css";
-import { callVivoGpt } from "../utils/chat";
+import { callGpt } from "../utils/chat";
 import { callImageGpt, callAudioGpt } from "../utils/multiModal";
 import { prePrompts } from "../utils/prompt";
 
@@ -196,9 +196,7 @@ function AIPlanner() {
     });
 
     try {
-      const result = await callVivoGpt({
-        prompt: JSON.stringify(taskDescription),
-      });
+      const result = await callGpt(taskDescription);
       // 关闭loading toast
       if (loadingToast) {
         Toast.clear();
@@ -206,10 +204,11 @@ function AIPlanner() {
       }
       if (result) {
         try {
-          const plan: Plan = JSON.parse(result);
+          const plan: Plan = result;
           plan.dueDate = new Date(plan.dueDate!);
           plan.startDate = new Date(plan.startDate);
-          plan.completed = isPlanCompleted(plan.id);
+          // plan.completed = isPlanCompleted(plan.id);
+          plan.completed = false;
           //  将Plan中的tasksID使用uuidv4()生成新的ID, planId复制
           plan.Tasks = plan?.Tasks.map((task: Task) => ({
             ...task,

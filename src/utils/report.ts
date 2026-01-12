@@ -1,19 +1,13 @@
-import { genSignHeaders } from "./auth";
 import {
   ReportRequestData,
   MonthlyReportData,
   TaskSummary,
 } from "../interface/report";
-import { v4 as uuidv4 } from "uuid";
 import { usePlanStore } from "../store/taskStore";
 import { Task } from "../interface/task";
-import { fetch } from "@tauri-apps/plugin-http";
+import { invoke } from "@tauri-apps/api/core";
 
-const APP_ID = "2025795358";
-const APP_KEY = "ZFiNLwhFLHHIcAVh";
-const URI = "/vivogpt/completions";
-const DOMAIN = "api-ai.vivo.com.cn";
-const METHOD = "POST";
+const API_KEY = import.meta.env.VITE_ALIAPI_KEY as string;
 
 function formatTasksForPrompt(tasks: TaskSummary[]): string {
   if (!tasks || tasks.length === 0) {
@@ -112,52 +106,15 @@ export async function generateMonthlyReport(): Promise<
     // userGoals可以从其他地方获取，这里暂时留空
   };
 
-  const params = {
-    requestId: uuidv4(),
-  };
-
   const prompt = buildReportPrompt(reportRequest);
-  const requestBody = {
-    prompt,
-    model: "vivo-BlueLM-TB-Pro",
-    sessionId: uuidv4(),
-  };
-
-  const signHeaders = genSignHeaders(APP_ID, APP_KEY, METHOD, URI, params);
-  const headers = {
-    "Content-Type": "application/json",
-    ...signHeaders,
-  };
-
-  const url = `https://${DOMAIN}${URI}`;
-
-  const queryParams = new URLSearchParams({
-    requestId: params.requestId,
-  });
 
   try {
-    const response = await fetch(`${url}?${queryParams}`, {
-      method: METHOD,
-      headers: headers,
-      body: JSON.stringify(requestBody),
+    const response = await invoke<string>("aliyun_report", {
+      prompt,
+      apiKey: API_KEY,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `API request failed with status ${response.status}: ${errorText}`
-      );
-    }
-
-    const responseData = await response.json();
-
-    if (responseData.code !== 0 || !responseData.data?.content) {
-      throw new Error(
-        `API returned an error: ${responseData.message || "No content"}`
-      );
-    }
-
-    const reportContent = JSON.parse(responseData.data.content);
+    const reportContent = JSON.parse(response);
 
     if (
       !reportContent.summary ||
