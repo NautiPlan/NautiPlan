@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+src-tauri/gen/android/keystore.properties
+
+# Test directories and files
+test/
+__test__/
+*.test.*
+*.spec.*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +30,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.env

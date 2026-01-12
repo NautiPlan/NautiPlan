@@ -1,0 +1,58 @@
+/* 动画容器 */
+.app-content {
+  position: relative;
+  overflow: hidden; /* 移除 y 轴滚动，因为它由 page-container 处理 */
+  min-height: 100vh; /* 确保容器高度足够 */
+  /* 移除这里的 padding-bottom */
+}
+
+/* 页面容器，用于绝对定位 */
+.page-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* 允许页面内容垂直滚动 */
+  overflow-x: hidden; /* 隐藏水平滚动条 */
+
+  /* 关键改动：将 padding-bottom 移到这里 */
+  /* 这个值应该约等于你的 TabBar 的高度 */
+  padding-bottom: 80px;
+}
+
+/* --- 向前动画 (新页面从右侧滑入) --- */
+
+/* 进入动画的起始状态 */
+.slide-forward-enter {
+  transform: translateX(100%);
+  z-index: 1; /* 保证新页面在上方 */
+}
+/* 进入动画的激活状态 */
+.slide-forward-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+/* 退出动画的激活状态 */
+.slide-forward-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+/* 进入动画的起始状态 */
+.slide-backward-enter {
+  transform: translateX(-100%);
+  z-index: 1; /* 保证新页面在上方 */
+}
+/* 进入动画的激活状态 */
+.slide-backward-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+/* 退出动画的激活状态 */
+.slide-backward-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}

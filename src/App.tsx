@@ -1,50 +1,91 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { useEffect, useRef, useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import TabBarBase from "./components/TabBarBase";
+import AIPlannerView from "./pages/AIPlannerView";
+import CalendarView from "./pages/CalendarView";
+import PlanView from "./pages/PlanView";
+import TodoView from "./pages/TodoView";
+import { usePlanStore } from "./store/taskStore";
+import "./styles/components/transitions.css";
+
+const pages = ["/", "/calendar", "/chat", "/myPlan"];
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const { syncToDatabase } = usePlanStore();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const [direction, setDirection] = useState("forward");
+  const prevLocationIndex = useRef(pages.indexOf(location.pathname));
+
+  useEffect(() => {
+    syncToDatabase();
+  }, []);
+
+  const getCurrentDirection = () => {
+    const currentIndex = pages.indexOf(location.pathname);
+    const previousIndex = prevLocationIndex.current;
+
+    if (currentIndex > previousIndex) {
+      return "forward";
+    } else if (currentIndex < previousIndex) {
+      return "backward";
+    }
+    return direction;
+  };
+
+  useEffect(() => {
+    const currentIndex = pages.indexOf(location.pathname);
+    const previousIndex = prevLocationIndex.current;
+
+    if (currentIndex > previousIndex) {
+      setDirection("forward");
+    } else if (currentIndex < previousIndex) {
+      setDirection("backward");
+    }
+
+    prevLocationIndex.current = currentIndex;
+  }, [location]);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      const currentIndex = pages.indexOf(location.pathname);
+      if (currentIndex < pages.length - 1) {
+        setDirection("forward");
+        navigate(pages[currentIndex + 1]);
+      }
+    },
+    onSwipedRight: () => {
+      const currentIndex = pages.indexOf(location.pathname);
+      if (currentIndex > 0) {
+        setDirection("backward");
+        navigate(pages[currentIndex - 1]);
+      }
+    },
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+    <div className="App">
+      <main className="app-content" {...handlers}>
+        <TransitionGroup component="div">
+          <CSSTransition key={location.pathname} classNames={`slide-${getCurrentDirection()}`} timeout={300}>
+            <div className="page-container">
+              <Routes location={location}>
+                <Route path="/chat" element={<AIPlannerView />} />
+                <Route path="/calendar" element={<CalendarView />} />
+                <Route path="/myPlan" element={<PlanView />} />
+                <Route path="/" element={<TodoView />} />
+              </Routes>
+            </div>
+          </CSSTransition>
+        </TransitionGroup>
+      </main>
+      <TabBarBase />
+    </div>
   );
 }
 

@@ -1,0 +1,29 @@
+/* AI 计划助手页面样式 */
+.ai-planner-view {
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 80px; /* 为TabBar预留空间 */
+  box-sizing: border-box;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .ai-planner-view {
+    padding-bottom: 90px; /* 移动端需要更多空间 */
+  }
+}
+
+/* 确保 AI 计划组件有足够的底部空间 */
+.ai-planner-view .ai-planner {
+  padding-bottom: 20px;
+  min-height: calc(100vh - 100px);
+}
+
+/* 移动端 AI 计划组件优化 */
+@media (max-width: 768px) {
+  .ai-planner-view .ai-planner {
+    min-height: calc(100vh - 110px);
+    padding-bottom: 30px;
+  }
+}

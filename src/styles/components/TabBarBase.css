@@ -1,0 +1,84 @@
+/* TabBar固定到底部的样式 */
+.demo-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: white;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  height: 60px; /* 明确设置高度 */
+  min-height: 60px; /* 确保最小高度 */
+}
+
+/* 确保TDesign TabBar组件的背景色 */
+.demo-tab-bar .t-tab-bar {
+  background-color: white;
+  border-top: none; /* 移除默认的上边框 */
+}
+
+/* App布局调整 */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px; /* 增加底部间距，确保内容不被遮挡 */
+  box-sizing: border-box;
+  min-height: calc(100vh - 80px); /* 调整最小高度计算 */
+}
+
+/* 页面内容区域 */
+.app-content > * {
+  min-height: calc(100vh - 80px); /* 调整计算公式 */
+  padding-bottom: 20px;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .app-content {
+    padding-bottom: 90px; /* 移动端增加更多底部空间 */
+  }
+
+  .app-content > * {
+    min-height: calc(100vh - 90px);
+  }
+
+  .demo-tab-bar {
+    height: 65px; /* 移动端TabBar稍微高一点 */
+    min-height: 65px;
+    /* 移动端可能需要额外的安全区域 */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* 日历容器在移动端的特殊处理 */
+  .calendar-container {
+    padding-bottom: 120px; /* 移动端需要更多底部空间 */
+    margin-bottom: 30px;
+  }
+
+  .recommended-resources-section {
+    margin-bottom: 40px; /* 移动端推荐资料模块底部间距 */
+  }
+}
+
+/* 确保TabBar项目的样式正常 */
+.demo-tab-bar .t-tab-bar__item {
+  color: #666;
+  transition: color 0.2s;
+}
+
+.demo-tab-bar .t-tab-bar__item--active {
+  color: #0052d9;
+}
+
+/* 防止页面滚动时TabBar抖动 */
+.demo-tab-bar {
+  will-change: transform;
+  transform: translateZ(0);
+}
