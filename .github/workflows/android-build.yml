@@ -13,10 +13,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout main repository
+        uses: actions/checkout@v4
         with:
-          submodules: recursive
-          token: ${{ secrets.MY_PAT }}
+          token: ${{ github.token }}
+
+      - name: Checkout submodules
+        run: |
+          git config --global url."https://${{ secrets.MY_PAT }}@github.com/".insteadOf "https://github.com/"
+          git submodule update --init --recursive
+        if: "${{ secrets.MY_PAT != '' }}"
 
       - name: setup node
         uses: actions/setup-node@v4
