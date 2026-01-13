@@ -483,6 +483,18 @@ body {
   flex: 1;
   color: #1f2937;
   font-size: 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.todo-name {
+  font-weight: 500;
+}
+
+.todo-date {
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 
 @media (min-width: 768px) {

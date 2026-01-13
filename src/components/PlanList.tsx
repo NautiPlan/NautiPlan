@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { InfoCircleFilledIcon } from "tdesign-icons-react";
-import { Button, Calendar, Cell, Empty, Input, List, Popup, Tag } from "tdesign-mobile-react";
+import {
+  Button,
+  Calendar,
+  Cell,
+  Empty,
+  Input,
+  List,
+  Popup,
+  Tag,
+} from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
 import { Plan, Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
@@ -12,7 +21,8 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans, removePlan, isDefaultPlan, removeTaskById, addTaskToPlan } = usePlanStore();
+  const { Plans, removePlan, isDefaultPlan, removeTaskById, addTaskToPlan } =
+    usePlanStore();
   const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -27,7 +37,10 @@ function PlanList({ onPlanClick }: PlanListProps) {
       filtered = Plans.filter((plan) => !plan.completed);
     }
 
-    filtered = filtered.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+    filtered = filtered.sort(
+      (a, b) =>
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    );
 
     setFilteredPlans(filtered);
   }, [Plans, filter]);
@@ -150,26 +163,50 @@ function PlanList({ onPlanClick }: PlanListProps) {
     <div className="plan-list-container">
       {/* 筛选按钮 */}
       <div className="plan-list-filters">
-        <Button 
-          size="small" 
+        <Button
+          size="small"
           theme="default"
-          style={filter === "all" ? { backgroundColor: "#e6f4ff", borderColor: "#91caff", color: "#0958d9" } : {}}
+          style={
+            filter === "all"
+              ? {
+                  backgroundColor: "#e6f4ff",
+                  borderColor: "#91caff",
+                  color: "#0958d9",
+                }
+              : {}
+          }
           onClick={() => setFilter("all")}
         >
           全部 ({Plans.length})
         </Button>
-        <Button 
-          size="small" 
-          theme={filter === "pending" ? "default" : "default"} 
-          style={filter === "pending" ? { backgroundColor: "#fffbe6", borderColor: "#ffe58f", color: "#d48806" } : {}}
+        <Button
+          size="small"
+          theme={filter === "pending" ? "default" : "default"}
+          style={
+            filter === "pending"
+              ? {
+                  backgroundColor: "#fffbe6",
+                  borderColor: "#ffe58f",
+                  color: "#d48806",
+                }
+              : {}
+          }
           onClick={() => setFilter("pending")}
         >
           进行中 ({Plans.filter((p) => !p.completed).length})
         </Button>
-        <Button 
-          size="small" 
-          theme={filter === "completed" ? "default" : "default"} 
-          style={filter === "completed" ? { backgroundColor: "#f6ffed", borderColor: "#b7eb8f", color: "#389e0d" } : {}}
+        <Button
+          size="small"
+          theme={filter === "completed" ? "default" : "default"}
+          style={
+            filter === "completed"
+              ? {
+                  backgroundColor: "#f6ffed",
+                  borderColor: "#b7eb8f",
+                  color: "#389e0d",
+                }
+              : {}
+          }
           onClick={() => setFilter("completed")}
         >
           已完成 ({Plans.filter((p) => p.completed).length})
@@ -224,12 +261,29 @@ function PlanList({ onPlanClick }: PlanListProps) {
           })}
         </List>
 
-        {filteredPlans.length === 0 && filter !== "all" && <Empty description={filter === "completed" ? "暂无已完成的计划" : "暂无进行中的计划"} />}
+        {filteredPlans.length === 0 && filter !== "all" && (
+          <Empty
+            description={
+              filter === "completed" ? "暂无已完成的计划" : "暂无进行中的计划"
+            }
+          />
+        )}
       </div>
 
-      <Popup visible={visible} onVisibleChange={handleVisibleChange} placement="bottom" style={{ height: "50%", zIndex: 1000 }}>
+      <Popup
+        visible={visible}
+        onVisibleChange={handleVisibleChange}
+        placement="bottom"
+        style={{ height: "50%", zIndex: 1000 }}
+      >
         <div className="tdesign-mobile-popup-demo__with-title header">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <div
               className="task-title"
               style={{
@@ -247,7 +301,11 @@ function PlanList({ onPlanClick }: PlanListProps) {
             </div>
 
             {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
-              <div className="task-remove" style={{ color: "#ff4757", cursor: "pointer" }} onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}>
+              <div
+                className="task-remove"
+                style={{ color: "#ff4757", cursor: "pointer" }}
+                onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}
+              >
                 删除计划
               </div>
             )}
@@ -261,7 +319,9 @@ function PlanList({ onPlanClick }: PlanListProps) {
               overflowY: "auto", // 允许滚动
             }}
           >
-            <div style={{ marginBottom: "12px", fontSize: "14px", color: "#666" }}>
+            <div
+              style={{ marginBottom: "12px", fontSize: "14px", color: "#666" }}
+            >
               {selectedPlan.name} - 共{getTasks(selectedPlan).length}个任务
             </div>
             {getTasks(selectedPlan).length === 0 ? (
@@ -273,7 +333,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
                     key={task.id}
                     title={
                       <>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
                           <span>{task.name}</span>
                           {task.completed ? (
                             <Tag theme="success" size="small">
@@ -293,7 +359,10 @@ function PlanList({ onPlanClick }: PlanListProps) {
                               removeTaskById(task.id);
                               setSelectedPlan((prev) => ({
                                 ...prev!,
-                                Tasks: prev?.Tasks?.filter((t) => t.id !== task.id) || [],
+                                Tasks:
+                                  prev?.Tasks?.filter(
+                                    (t) => t.id !== task.id
+                                  ) || [],
                               }));
                             }}
                           >
@@ -334,15 +403,34 @@ function PlanList({ onPlanClick }: PlanListProps) {
           </div>
         )}
       </Popup>
-      <Popup visible={addTaskVisible} onVisibleChange={handleAddTaskVisibleChange} placement="bottom" style={{ height: "50%", zIndex: 1001 }}>
+      <Popup
+        visible={addTaskVisible}
+        onVisibleChange={handleAddTaskVisibleChange}
+        placement="bottom"
+        style={{ height: "50%", zIndex: 1001 }}
+      >
         <div className="add-task-title">添加任务</div>
         <div className="add-task-input">
-          <Input placeholder="请输入任务名" value={taskName} onChange={onTaskNameChange} />
+          <Input
+            placeholder="请输入任务名"
+            value={taskName}
+            onChange={onTaskNameChange}
+          />
         </div>
         <div className="add-task-input">
           <div>
-            <Calendar visible={dateVisible} onConfirm={handleConfirm} onClose={onClose} style={{ zIndex: 1002 }}></Calendar>
-            <Cell title="单个选择日期" arrow note={dataNote} onClick={() => setDateVisible(true)}></Cell>
+            <Calendar
+              visible={dateVisible}
+              onConfirm={handleConfirm}
+              onClose={onClose}
+              style={{ zIndex: 1002 }}
+            ></Calendar>
+            <Cell
+              title="单个选择日期"
+              arrow
+              note={dataNote}
+              onClick={() => setDateVisible(true)}
+            ></Cell>
           </div>
         </div>
         <div className="add-task-btn">
