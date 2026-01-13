@@ -20,9 +20,12 @@ jobs:
 
       - name: Checkout submodules
         run: |
+          if [ -z "${{ secrets.MY_PAT }}" ]; then
+            echo "Error: MY_PAT is not set in Secrets. Cannot checkout private submodules."
+            exit 1
+          fi
           git config --global url."https://${{ secrets.MY_PAT }}@github.com/".insteadOf "https://github.com/"
           git submodule update --init --recursive
-        if: "${{ secrets.MY_PAT != '' }}"
 
       - name: setup node
         uses: actions/setup-node@v4
