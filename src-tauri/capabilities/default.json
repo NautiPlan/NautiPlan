@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Capability for the main window",
+  "description": "Capability for the main android",
   "windows": ["main"],
   "permissions": [
     "core:default",
@@ -18,6 +18,10 @@
       ]
     },
     "sql:default",
-    "sql:allow-execute"
+    "sql:allow-execute",
+    "secure-storage:allow-delete",
+    "secure-storage:allow-get",
+    "secure-storage:allow-set",
+    "secure-storage:default"
   ]
 }

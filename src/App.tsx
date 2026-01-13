@@ -9,6 +9,7 @@ import PlanView from "./pages/PlanView";
 import TodoView from "./pages/TodoView";
 import { usePlanStore } from "./store/taskStore";
 import "./styles/components/transitions.css";
+import { secureSetKey, secureGetKey } from "./utils/apiKey";
 
 const pages = ["/", "/calendar", "/chat", "/myPlan"];
 
