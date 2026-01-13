@@ -50,21 +50,36 @@ function App() {
   }, [location]);
 
   const handlers = useSwipeable({
-    onSwipedLeft: () => {
+    onSwiping: (eventData) => {
+      // 在滑动过程中检测是否在 no-swipe 区域，如果是则不处理
+      const target = eventData.event.target as HTMLElement;
+      if (target.closest(".no-swipe")) {
+        return;
+      }
+    },
+    onSwipedLeft: (eventData) => {
+      // 检查事件目标是否在 no-swipe 区域内
+      const target = eventData.event.target as HTMLElement;
+      if (target.closest(".no-swipe")) return;
+
       const currentIndex = pages.indexOf(location.pathname);
       if (currentIndex < pages.length - 1) {
         setDirection("forward");
         navigate(pages[currentIndex + 1]);
       }
     },
-    onSwipedRight: () => {
+    onSwipedRight: (eventData) => {
+      // 检查事件目标是否在 no-swipe 区域内
+      const target = eventData.event.target as HTMLElement;
+      if (target.closest(".no-swipe")) return;
+
       const currentIndex = pages.indexOf(location.pathname);
       if (currentIndex > 0) {
         setDirection("backward");
         navigate(pages[currentIndex - 1]);
       }
     },
-    preventScrollOnSwipe: true,
+    preventScrollOnSwipe: false,
     trackMouse: true,
   });
 
@@ -72,7 +87,11 @@ function App() {
     <div className="App">
       <main className="app-content" {...handlers}>
         <TransitionGroup component="div">
-          <CSSTransition key={location.pathname} classNames={`slide-${getCurrentDirection()}`} timeout={300}>
+          <CSSTransition
+            key={location.pathname}
+            classNames={`slide-${getCurrentDirection()}`}
+            timeout={300}
+          >
             <div className="page-container">
               <Routes location={location}>
                 <Route path="/chat" element={<AIPlannerView />} />

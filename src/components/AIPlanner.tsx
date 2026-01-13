@@ -7,10 +7,10 @@ import {
   Cell,
   Input,
   Popup,
-  Slider,
   Textarea,
   Toast,
 } from "tdesign-mobile-react";
+import { Slider } from "antd-mobile";
 import { v4 as uuidv4 } from "uuid";
 import { FileWithMeta } from "../interface/fileWithMeta";
 import { Plan, Task, TaskDescription } from "../interface/task";
@@ -52,10 +52,6 @@ function AIPlanner() {
 
   // 优先级
   const [priorityValue, setpriorityValue] = useState(50);
-  const onPriorityChange = (value: number | number[]) => {
-    const pValue = Array.isArray(value) ? value[0] : value;
-    setpriorityValue(pValue);
-  };
 
   // plan弹窗
   const [planVisible, setPlanVisible] = useState(false);
@@ -302,10 +298,19 @@ function AIPlanner() {
           }}
         />
       </div>
-      <div className="item">
-        重要度
+      <div className="item no-swipe" style={{ touchAction: "none" }}>
+        重要度: {priorityValue}
         <div className="wrapper-label">
-          <Slider label value={priorityValue} onChange={onPriorityChange} />
+          <Slider
+            min={0}
+            max={100}
+            step={1}
+            value={priorityValue}
+            onChange={(value) => {
+              const pValue = Array.isArray(value) ? value[0] : value;
+              setpriorityValue(pValue);
+            }}
+          />
         </div>
       </div>
       <div className="item">
