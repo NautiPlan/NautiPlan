@@ -459,6 +459,51 @@ body {
   padding: 0.625rem;
   border-bottom: 1px solid #e5e7eb;
   transition: background-color 0.2s;
+  position: relative;
+}
+
+/* 飞行的任务元素 */
+.flying-task {
+  position: fixed;
+  background: transparent;
+  color: #1f2937;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  z-index: 9999;
+  pointer-events: none;
+  animation: arcFlyToTrash 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes arcFlyToTrash {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(calc(var(--target-x) * 0.3), calc(var(--target-y) - 40px)) scale(0.8) rotate(-15deg);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(calc(var(--target-x) * 0.7), calc(var(--target-y) - 20px)) scale(0.5) rotate(10deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--target-x), var(--target-y)) scale(0.1) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+/* 原文本隐藏 */
+.todo-text.hiding {
+  opacity: 0;
+  transition: opacity 0.1s;
 }
 
 @media (min-width: 768px) {

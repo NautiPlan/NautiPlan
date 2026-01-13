@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Checkbox } from "tdesign-mobile-react";
 import { v4 as uuidv4 } from "uuid";
 import { Task } from "../interface/task";
@@ -7,6 +7,9 @@ import "../styles/components/Nautilus.css";
 
 const TodoPanel: React.FC = () => {
   const [newTask, setNewTask] = useState("");
+  const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+  const taskTextRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const deleteButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const {
     getTasksByDate,
     toggleTaskById,
@@ -40,6 +43,48 @@ const TodoPanel: React.FC = () => {
     if (e.key === "Enter") {
       handleAddTask();
     }
+  };
+
+  const handleDeleteTask = (taskId: string) => {
+    const textEl = taskTextRefs.current.get(taskId);
+    const btnEl = deleteButtonRefs.current.get(taskId);
+
+    if (!textEl || !btnEl) {
+      removeTaskById(taskId);
+      return;
+    }
+
+    const textRect = textEl.getBoundingClientRect();
+    const btnRect = btnEl.getBoundingClientRect();
+
+    // 创建飞行的克隆元素
+    const flyingEl = document.createElement("div");
+    flyingEl.className = "flying-task";
+    flyingEl.textContent =
+      textEl.querySelector(".todo-name")?.textContent || "";
+    flyingEl.style.left = `${textRect.left}px`;
+    flyingEl.style.top = `${textRect.top}px`;
+    flyingEl.style.width = `${textRect.width}px`;
+
+    // 计算目标位置（垃圾桶中心）
+    const targetX =
+      btnRect.left + btnRect.width / 2 - textRect.left - textRect.width / 2;
+    const targetY =
+      btnRect.top + btnRect.height / 2 - textRect.top - textRect.height / 2;
+
+    flyingEl.style.setProperty("--target-x", `${targetX}px`);
+    flyingEl.style.setProperty("--target-y", `${targetY}px`);
+
+    document.body.appendChild(flyingEl);
+
+    setDeletingTaskId(taskId);
+
+    // 动画结束后删除
+    setTimeout(() => {
+      flyingEl.remove();
+      removeTaskById(taskId);
+      setDeletingTaskId(null);
+    }, 600);
   };
 
   return (
@@ -80,7 +125,12 @@ const TodoPanel: React.FC = () => {
         {tasks.length > 0 ? (
           <div className="todo-list">
             {tasks.map((task, index) => (
-              <div key={index} className="todo-item">
+              <div
+                key={index}
+                className={`todo-item ${
+                  deletingTaskId === task.id ? "fly-to-trash" : ""
+                }`}
+              >
                 <Checkbox
                   icon="rectangle"
                   defaultChecked={getTaskById(task.id)?.completed}
@@ -88,7 +138,12 @@ const TodoPanel: React.FC = () => {
                 />
 
                 <div
-                  className={`todo-text ${task.completed ? "completed" : ""}`}
+                  ref={(el) => {
+                    if (el) taskTextRefs.current.set(task.id, el);
+                  }}
+                  className={`todo-text ${task.completed ? "completed" : ""} ${
+                    deletingTaskId === task.id ? "hiding" : ""
+                  }`}
                 >
                   <div className="todo-name">{task.name}</div>
                   {task.date && (
@@ -99,7 +154,10 @@ const TodoPanel: React.FC = () => {
                 </div>
                 <div className="todo-actions">
                   <button
-                    onClick={() => removeTaskById(task.id)}
+                    ref={(el) => {
+                      if (el) deleteButtonRefs.current.set(task.id, el);
+                    }}
+                    onClick={() => handleDeleteTask(task.id)}
                     className="todo-action-button delete-button"
                   >
                     🗑️
