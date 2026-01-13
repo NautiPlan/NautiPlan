@@ -9,7 +9,7 @@ import PlanView from "./pages/PlanView";
 import TodoView from "./pages/TodoView";
 import { usePlanStore } from "./store/taskStore";
 import "./styles/components/transitions.css";
-import { secureSetKey, secureGetKey } from "./utils/apiKey";
+import ApiKeyButton from "./components/ApiKey";
 
 const pages = ["/", "/calendar", "/chat", "/myPlan"];
 
@@ -86,6 +86,7 @@ function App() {
 
   return (
     <div className="App">
+      <ApiKeyButton defaultKeyName="ALIAPI_KEY" />
       <main className="app-content" {...handlers}>
         <TransitionGroup component="div">
           <CSSTransition
