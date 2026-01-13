@@ -1,0 +1,58 @@
+name: Android Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "npm"
+
+      - name: install rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: setup android sdk
+        uses: android-actions/setup-android@v3
+
+      - name: install NDK
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "ndk;26.1.10909125" # Tauri v2 recommended NDK version or similar
+          echo "ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/26.1.10909125" >> $GITHUB_ENV
+
+      - name: install frontend dependencies
+        run: npm install
+
+      - name: build android
+        run: npm run tauri android build -- --target aarch64
+        env:
+          NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-aarch64-debug
+          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk
