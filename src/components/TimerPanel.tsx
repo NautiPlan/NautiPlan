@@ -40,7 +40,9 @@ const TimerPanel: React.FC = () => {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   // 处理计时器结束
@@ -115,7 +117,9 @@ const TimerPanel: React.FC = () => {
         // 页面切回
         if (currentState.isRunning && currentState.lastRunTimestamp) {
           const now = Date.now();
-          const elapsedSeconds = Math.floor((now - currentState.lastRunTimestamp) / 1000);
+          const elapsedSeconds = Math.floor(
+            (now - currentState.lastRunTimestamp) / 1000
+          );
 
           if (elapsedSeconds > 0 && currentState.timer > 0) {
             const newTime = Math.max(0, currentState.timer - elapsedSeconds);
@@ -148,22 +152,31 @@ const TimerPanel: React.FC = () => {
     <div className="timer-panel">
       <h2 className="panel-title">Timer</h2>
       <div className="timer-display-container">
-        <div className={`timer-display ${timerMode}`}>{formatTime(timer)}</div>
+        <div
+          className={`timer-display ${timerMode} ${isRunning ? "running" : ""}`}
+        >
+          {formatTime(timer)}
+        </div>
       </div>
       <div className="timer-status-container">
         <div className="current-mode-status">
           <span className="status-label">Current Mode :</span>
-          <span className={`status-value ${timerMode}`}>{getModeDisplayName(timerMode)}</span>
+          <span className={`status-value ${timerMode}`}>
+            {getModeDisplayName(timerMode)}
+          </span>
         </div>
         <div className="circle-mode-status">
           <span className="status-label">Circle Mode:</span>
-          <span className={`status-value ${isInCircleMode ? "active" : ""}`}>{isInCircleMode ? "On" : "Off"}</span>
+          <span className={`status-value ${isInCircleMode ? "active" : ""}`}>
+            {isInCircleMode ? "On" : "Off"}
+          </span>
         </div>
         {isInCircleMode && (
           <div className="circle-pattern-status">
             <span className="status-label">Circle Progress:</span>
             <span className="status-value">
-              {circleIndex + 1}/{circlePattern.length} - {getModeDisplayName(circlePattern[circleIndex])}
+              {circleIndex + 1}/{circlePattern.length} -{" "}
+              {getModeDisplayName(circlePattern[circleIndex])}
             </span>
           </div>
         )}
@@ -183,7 +196,9 @@ const TimerPanel: React.FC = () => {
             if (isInCircleMode) exitCircleMode();
             setTimerMode("shortBreak");
           }}
-          className={`mode-button ${timerMode === "shortBreak" ? "active" : ""}`}
+          className={`mode-button ${
+            timerMode === "shortBreak" ? "active" : ""
+          }`}
         >
           Short
         </button>
@@ -198,18 +213,32 @@ const TimerPanel: React.FC = () => {
         </button>
       </div>
       <div className="timer-control-buttons">
-        <button onClick={handleStartTimer} className="control-button start-button" disabled={isRunning}>
+        <button
+          onClick={handleStartTimer}
+          className="control-button start-button"
+          disabled={isRunning}
+        >
           Start
         </button>
-        <button onClick={handlePauseTimer} className="control-button pause-button" disabled={!isRunning}>
+        <button
+          onClick={handlePauseTimer}
+          className="control-button pause-button"
+          disabled={!isRunning}
+        >
           Pause
         </button>
-        <button onClick={handleResetTimer} className="control-button reset-button">
+        <button
+          onClick={handleResetTimer}
+          className="control-button reset-button"
+        >
           Reset
         </button>
       </div>
       <div className="timer-control-buttons">
-        <button onClick={handleCircleTimer} className="control-button circle-button">
+        <button
+          onClick={handleCircleTimer}
+          className="control-button circle-button"
+        >
           Start a circle
         </button>
       </div>

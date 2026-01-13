@@ -77,6 +77,25 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
+.timer-display.running {
+  animation: ripple-pulse 1s ease-in-out infinite;
+}
+
+@keyframes ripple-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
 @media (min-width: 768px) {
   .timer-display-container {
     margin-bottom: 1rem;
