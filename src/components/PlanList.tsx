@@ -51,14 +51,14 @@ function PlanList({ onPlanClick }: PlanListProps) {
   };
 
   const getPriorityColor = (priority: number) => {
-    if (priority >= 8) return "danger";
-    if (priority >= 5) return "warning";
+    if (priority >= 80) return "danger";
+    if (priority >= 50) return "warning";
     return "success";
   };
 
   const getPriorityText = (priority: number) => {
-    if (priority >= 8) return "高优先级";
-    if (priority >= 5) return "中优先级";
+    if (priority >= 80) return "高优先级";
+    if (priority >= 50) return "中优先级";
     return "低优先级";
   };
 
@@ -222,9 +222,9 @@ function PlanList({ onPlanClick }: PlanListProps) {
 
             // 根据优先级获取边框颜色
             const getBorderColor = (priority: number) => {
-              if (priority >= 8) return "#ffccc7"; // 浅红色
-              if (priority >= 5) return "#ffe58f"; // 浅黄色
-              return "#b7eb8f"; // 浅绿色
+              if (priority >= 80) return "#ffccc7"; // 浅红色 - 高优先级
+              if (priority >= 50) return "#ffe58f"; // 浅黄色 - 中优先级
+              return "#b7eb8f"; // 浅绿色 - 低优先级
             };
 
             return (
@@ -363,7 +363,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 {selectedPlan.name}
               </div>
               <div
-                style={{ fontSize: "12px", color: "#888", marginTop: "4px", display: "flex", gap: "12px" }}
+                style={{
+                  fontSize: "12px",
+                  color: "#888",
+                  marginTop: "4px",
+                  display: "flex",
+                  gap: "12px",
+                }}
               >
                 <span>开始: {formatDate(selectedPlan.startDate)}</span>
                 <span>截止: {formatDate(selectedPlan.dueDate)}</span>
