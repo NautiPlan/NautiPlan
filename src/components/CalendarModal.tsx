@@ -68,9 +68,13 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
         </button>
         {selectedDate ? (
           <>
-            <h3 className="modal-title">
-              {selectedDate.toLocaleDateString("zh-CN")} 的任务
-            </h3>
+            <div className="modal-title">
+              <div className="modal-title-date">
+                {selectedDate.getFullYear()}年{selectedDate.getMonth() + 1}月
+                {selectedDate.getDate()}日
+              </div>
+              <div className="modal-title-subtitle">任务列表</div>
+            </div>
             <div className="modal-body">
               {tasks.length === 0 ? (
                 <div className="modal-empty">这一天没有任务</div>
@@ -131,11 +135,13 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   className="modal-select"
                   value={selectedPlanId}
                   onChange={(e) => setSelectedPlanId(e.target.value)}
-                  style={{ width: "100%", marginBottom: 12, padding: 6 }}
                 >
+                  <option value="">请选择计划</option>
                   {plans.map((plan) => (
                     <option key={plan.id} value={plan.id}>
-                      {plan.name}
+                      {plan.name.length > 15
+                        ? `${plan.name.slice(0, 15)}...`
+                        : plan.name}
                     </option>
                   ))}
                 </select>
