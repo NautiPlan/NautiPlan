@@ -33,7 +33,10 @@ function CalendarView() {
   const today = useMemo(() => new Date(), []);
   const weekdays = useMemo(() => generateWeekdays(), []);
 
-  const { daysInMonth, startingDay, monthName, year } = useMemo(() => getMonthInfo(currentDate), [currentDate]);
+  const { daysInMonth, startingDay, monthName, year } = useMemo(
+    () => getMonthInfo(currentDate),
+    [currentDate]
+  );
 
   // 点击日期时，设置选中日期并打开弹窗
   const handleDateClick = useCallback((date: Date) => {
@@ -99,12 +102,13 @@ function CalendarView() {
     <div className="calendar-container">
       <div className="calendar-header">
         <div className="calendar-controls">
-          <button onClick={() => changeMonth(-1)}>&lt; 上月</button>
+          <button onClick={() => changeMonth(-1)}>上月</button>
           <button onClick={goToToday}>今天</button>
-          <button onClick={() => changeMonth(1)}>下月 &gt;</button>
+          <button onClick={() => changeMonth(1)}>下月</button>
         </div>
         <h2>
-          {monthName} {year}
+          <span className="calendar-month">{monthName}</span>
+          <span className="calendar-year">{year}</span>
         </h2>
       </div>
       <div className="calendar-weekdays">
@@ -116,9 +120,18 @@ function CalendarView() {
       </div>
       <div className="calendar-body">{calendarWeeks}</div>
 
-      <RecommendedResources selectedDate={selectedDate} currentDate={currentDate} />
+      <RecommendedResources
+        selectedDate={selectedDate}
+        currentDate={currentDate}
+      />
 
-      <CalendarModal open={sidebarOpen} selectedDate={selectedDate} onClose={closeSidebar} modelChange={modelChange} setModelChange={setModelChange} />
+      <CalendarModal
+        open={sidebarOpen}
+        selectedDate={selectedDate}
+        onClose={closeSidebar}
+        modelChange={modelChange}
+        setModelChange={setModelChange}
+      />
     </div>
   );
 }
