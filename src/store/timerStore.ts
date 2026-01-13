@@ -61,12 +61,20 @@ export const useTimerStore = create<TimerState>()((set, get) => ({
 
   // 设置计时器模式
   setTimerMode: (mode) => {
+    const { timerIntervalId } = get();
+    // 停止当前运行的计时器
+    if (timerIntervalId !== null) {
+      clearInterval(timerIntervalId);
+    }
+    
     set({
       timerMode: mode,
       timer: DEFAULT_TIMES[mode] || DEFAULT_TIMES[TIMER_MODES.POMODORO],
       isRunning: false,
       isInCircleMode: false, // 切换模式时退出循环模式
       circleIndex: 0, // 重置循环索引
+      timerIntervalId: null, // 清除计时器ID
+      lastRunTimestamp: null, // 清除时间戳
     });
   },
 
@@ -85,13 +93,19 @@ export const useTimerStore = create<TimerState>()((set, get) => ({
 
   // 重置计时器
   resetTimer: () => {
-    const { timerMode } = get();
+    const { timerMode, timerIntervalId } = get();
+    // 停止当前运行的计时器
+    if (timerIntervalId !== null) {
+      clearInterval(timerIntervalId);
+    }
+    
     set({
       timer: DEFAULT_TIMES[timerMode] || DEFAULT_TIMES[TIMER_MODES.POMODORO],
       isRunning: false,
       lastRunTimestamp: null,
       isInCircleMode: false, // 重置时退出循环模式
       circleIndex: 0, // 重置循环索引
+      timerIntervalId: null, // 清除计时器ID
     });
   },
 
