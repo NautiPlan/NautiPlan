@@ -150,13 +150,28 @@ function PlanList({ onPlanClick }: PlanListProps) {
     <div className="plan-list-container">
       {/* 筛选按钮 */}
       <div className="plan-list-filters">
-        <Button size="small" theme={filter === "all" ? "primary" : "default"} onClick={() => setFilter("all")}>
+        <Button 
+          size="small" 
+          theme="default"
+          style={filter === "all" ? { backgroundColor: "#e6f4ff", borderColor: "#91caff", color: "#0958d9" } : {}}
+          onClick={() => setFilter("all")}
+        >
           全部 ({Plans.length})
         </Button>
-        <Button size="small" theme={filter === "pending" ? "primary" : "default"} onClick={() => setFilter("pending")}>
+        <Button 
+          size="small" 
+          theme={filter === "pending" ? "default" : "default"} 
+          style={filter === "pending" ? { backgroundColor: "#fffbe6", borderColor: "#ffe58f", color: "#d48806" } : {}}
+          onClick={() => setFilter("pending")}
+        >
           进行中 ({Plans.filter((p) => !p.completed).length})
         </Button>
-        <Button size="small" theme={filter === "completed" ? "primary" : "default"} onClick={() => setFilter("completed")}>
+        <Button 
+          size="small" 
+          theme={filter === "completed" ? "default" : "default"} 
+          style={filter === "completed" ? { backgroundColor: "#f6ffed", borderColor: "#b7eb8f", color: "#389e0d" } : {}}
+          onClick={() => setFilter("completed")}
+        >
           已完成 ({Plans.filter((p) => p.completed).length})
         </Button>
       </div>
