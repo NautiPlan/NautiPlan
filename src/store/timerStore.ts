@@ -65,6 +65,8 @@ export const useTimerStore = create<TimerState>()((set, get) => ({
       timerMode: mode,
       timer: DEFAULT_TIMES[mode] || DEFAULT_TIMES[TIMER_MODES.POMODORO],
       isRunning: false,
+      isInCircleMode: false, // 切换模式时退出循环模式
+      circleIndex: 0, // 重置循环索引
     });
   },
 
@@ -88,6 +90,8 @@ export const useTimerStore = create<TimerState>()((set, get) => ({
       timer: DEFAULT_TIMES[timerMode] || DEFAULT_TIMES[TIMER_MODES.POMODORO],
       isRunning: false,
       lastRunTimestamp: null,
+      isInCircleMode: false, // 重置时退出循环模式
+      circleIndex: 0, // 重置循环索引
     });
   },
 
@@ -136,10 +140,10 @@ export const useTimerStore = create<TimerState>()((set, get) => ({
   // 新增：退出Circle模式
   exitCircleMode: () => {
     // 保持当前模式，但退出循环状态
-    // set((state) => ({
-    //   isInCircleMode: false,
-    //   circleIndex: 0,
-    // }));
+    set({
+      isInCircleMode: false,
+      circleIndex: 0,
+    });
   },
 
   handleTimerComplete: () => {

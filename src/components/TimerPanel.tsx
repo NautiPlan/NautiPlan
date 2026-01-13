@@ -89,11 +89,6 @@ const TimerPanel: React.FC = () => {
   const handleResetTimer = () => {
     handlePauseTimer();
     resetTimer();
-
-    // 如果在Circle模式中，也退出Circle模式
-    if (isInCircleMode) {
-      exitCircleMode();
-    }
   };
 
   // 启动循环模式
@@ -184,7 +179,6 @@ const TimerPanel: React.FC = () => {
       <div className="timer-mode-buttons">
         <button
           onClick={() => {
-            if (isInCircleMode) exitCircleMode();
             setTimerMode("pomodoro");
           }}
           className={`mode-button ${timerMode === "pomodoro" ? "active" : ""}`}
@@ -193,7 +187,6 @@ const TimerPanel: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            if (isInCircleMode) exitCircleMode();
             setTimerMode("shortBreak");
           }}
           className={`mode-button ${
@@ -204,7 +197,6 @@ const TimerPanel: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            if (isInCircleMode) exitCircleMode();
             setTimerMode("longBreak");
           }}
           className={`mode-button ${timerMode === "longBreak" ? "active" : ""}`}
