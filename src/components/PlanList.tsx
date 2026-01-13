@@ -220,9 +220,23 @@ function PlanList({ onPlanClick }: PlanListProps) {
             const tasks = getTasks(plan);
             const completedTasks = tasks.filter((t) => t.completed);
 
+            // 根据优先级获取边框颜色
+            const getBorderColor = (priority: number) => {
+              if (priority >= 8) return "#ffccc7"; // 浅红色
+              if (priority >= 5) return "#ffe58f"; // 浅黄色
+              return "#b7eb8f"; // 浅绿色
+            };
+
             return (
               <Cell
                 key={plan.id}
+                style={{
+                  margin: "8px 4px",
+                  borderRadius: "12px",
+                  border: `2px solid ${getBorderColor(plan.priority)}`,
+                  backgroundColor: "#fff",
+                  boxSizing: "border-box",
+                }}
                 title={
                   <div className="plan-item-title">
                     <span className="plan-name">{plan.name}</span>

@@ -489,3 +489,17 @@
     font-size: 15px;
   }
 }
+
+/* 修复计划卡片边框显示 */
+.plan-list-scroll-area .t-cell {
+  box-sizing: border-box !important;
+  overflow: hidden;
+}
+
+.plan-list-scroll-area .t-cell__wrapper {
+  overflow: hidden;
+}
+
+.plan-list-scroll-area .t-list {
+  padding: 0 8px;
+}
