@@ -21,7 +21,12 @@ struct Message {
     content: Option<String>,
 }
 
-pub async fn call_image_gpt(images: Vec<FileData>, api_key: String) -> Result<String, String> {
+pub async fn call_image_gpt(
+    app: tauri::AppHandle,
+    images: Vec<FileData>,
+) -> Result<String, String> {
+    let api_key = crate::commands::load_ali_api_key(&app)?;
+
     if images.is_empty() {
         return Err("images 不能为空".to_string());
     }

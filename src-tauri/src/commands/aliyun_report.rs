@@ -23,7 +23,9 @@ pub struct MonthlyReport {
     pub recommendations: Vec<String>,
 }
 
-pub async fn call_report_gpt(prompt: String, api_key: String) -> Result<String, String> {
+pub async fn call_report_gpt(app: tauri::AppHandle, prompt: String) -> Result<String, String> {
+    let api_key = crate::commands::load_ali_api_key(&app)?;
+
     if prompt.trim().is_empty() {
         return Err("prompt 不能为空".to_string());
     }

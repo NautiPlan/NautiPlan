@@ -2,28 +2,28 @@ mod commands;
 
 #[tauri::command]
 async fn aliyun_image(
+    app: tauri::AppHandle,
     images: Vec<commands::aliyun_image::FileData>,
-    api_key: String,
 ) -> Result<String, String> {
-    commands::aliyun_image::call_image_gpt(images, api_key).await
+    commands::aliyun_image::call_image_gpt(app, images).await
 }
 
 #[tauri::command]
 async fn aliyun_audio(
+    app: tauri::AppHandle,
     audios: Vec<commands::aliyun_audio::FileData>,
-    api_key: String,
 ) -> Result<String, String> {
-    commands::aliyun_audio::call_audio_gpt(audios, api_key).await
+    commands::aliyun_audio::call_audio_gpt(app, audios).await
 }
 
 #[tauri::command]
-async fn aliyun_gpt(prompt: String, api_key: String) -> Result<String, String> {
-    commands::aliyun_gpt::call_gpt(prompt, api_key).await
+async fn aliyun_gpt(app: tauri::AppHandle, prompt: String) -> Result<String, String> {
+    commands::aliyun_gpt::call_gpt(app, prompt).await
 }
 
 #[tauri::command]
-async fn aliyun_report(prompt: String, api_key: String) -> Result<String, String> {
-    commands::aliyun_report::call_report_gpt(prompt, api_key).await
+async fn aliyun_report(app: tauri::AppHandle, prompt: String) -> Result<String, String> {
+    commands::aliyun_report::call_report_gpt(app, prompt).await
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

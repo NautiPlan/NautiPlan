@@ -31,7 +31,12 @@ struct ContentItem {
     text: Option<String>,
 }
 
-pub async fn call_audio_gpt(audios: Vec<FileData>, api_key: String) -> Result<String, String> {
+pub async fn call_audio_gpt(
+    app: tauri::AppHandle,
+    audios: Vec<FileData>,
+) -> Result<String, String> {
+    let api_key = crate::commands::load_ali_api_key(&app)?;
+
     if audios.is_empty() {
         return Err("audios 不能为空".to_string());
     }

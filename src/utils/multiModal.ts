@@ -1,8 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { FileWithMeta, FileData } from "../interface/fileWithMeta";
 
-const API_KEY = import.meta.env.VITE_ALIAPI_KEY as string;
-
 const encodeFile = (file: FileWithMeta): FileData => {
   const data = file.type;
 
@@ -22,10 +20,7 @@ export async function callImageGpt(
 ): Promise<string | null> {
   const images: FileData[] = files.map((file) => encodeFile(file));
   try {
-    const response = await invoke<string>("aliyun_image", {
-      images,
-      apiKey: API_KEY,
-    });
+    const response = await invoke<string>("aliyun_image", { images });
     console.log("aliyun_image 调用成功:", response);
     return response ?? null;
   } catch (error) {
@@ -39,10 +34,7 @@ export async function callAudioGpt(
 ): Promise<string | null> {
   const audios: FileData[] = files.map((file) => encodeFile(file));
   try {
-    const response = await invoke<string>("aliyun_audio", {
-      audios,
-      apiKey: API_KEY,
-    });
+    const response = await invoke<string>("aliyun_audio", { audios });
     console.log("aliyun_audio 调用成功:", response);
     return response ?? null;
   } catch (error) {

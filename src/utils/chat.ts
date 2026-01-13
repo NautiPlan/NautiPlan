@@ -1,8 +1,6 @@
 import { Plan, Task, TaskDescription } from "../interface/task";
 import { invoke } from "@tauri-apps/api/core";
 
-const API_KEY = import.meta.env.VITE_ALIAPI_KEY as string;
-
 interface TempTask {
   id: string;
   name: string;
@@ -46,7 +44,6 @@ export async function callGpt(
   try {
     const response = await invoke<string>("aliyun_gpt", {
       prompt: JSON.stringify(taskDescription),
-      apiKey: API_KEY,
     });
     console.log("aliyun_gpt 调用成功:", response);
     // 这里的response是一个JSON字符串，形式为TempTask[]，时间为1,2,3
