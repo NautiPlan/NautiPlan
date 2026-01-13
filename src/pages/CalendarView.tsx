@@ -51,8 +51,8 @@ function CalendarView() {
   const goToToday = useCallback(() => {
     const now = new Date();
     setCurrentDate(now);
-    setSelectedDate(now);
-    setSidebarOpen(true);
+    setSelectedDate(null);
+    setSidebarOpen(false);
   }, []);
 
   const changeMonth = useCallback((offset: number) => {

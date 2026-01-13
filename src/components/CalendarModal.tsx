@@ -77,23 +77,32 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
               ) : (
                 <ul className="modal-task-list">
                   {tasks.map((task) => (
-                    <li key={task.id} className="modal-task-item">
+                    <li
+                      key={task.id}
+                      className={`modal-task-item ${
+                        task.completed ? "completed" : "pending"
+                      }`}
+                    >
                       <div className="modal-task-header">
-                        <strong className="modal-task-name">{task.name}</strong>
-                        <span
-                          className={`modal-task-status ${
-                            task.completed ? "completed" : "pending"
-                          }`}
-                        >
-                          {task.completed ? "已完成" : "未完成"}
-                        </span>
-                        <button
-                          className="modal-task-delete"
-                          onClick={() => handleDelete(task.id)}
-                          title="删除任务"
-                        >
-                          删除
-                        </button>
+                        <div className="modal-task-main">
+                          <div className="modal-task-name">{task.name}</div>
+                          <span
+                            className={`modal-task-status ${
+                              task.completed ? "completed" : "pending"
+                            }`}
+                          >
+                            {task.completed ? "已完成" : "未完成"}
+                          </span>
+                        </div>
+                        <div className="modal-task-actions">
+                          <button
+                            className="modal-task-delete"
+                            onClick={() => handleDelete(task.id)}
+                            title="删除任务"
+                          >
+                            删除
+                          </button>
+                        </div>
                       </div>
                     </li>
                   ))}

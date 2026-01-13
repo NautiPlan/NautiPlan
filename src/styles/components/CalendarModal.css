@@ -80,6 +80,7 @@
     flex: 1;
     overflow-y: auto;
     padding-right: 4px;
+    padding-bottom: 20px;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -115,13 +116,13 @@
 }
 
 .modal-task-item {
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 16px;
-    padding: 16px 18px;
+    background: linear-gradient(145deg, #ffffff, #fafafa);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 20px 24px;
     margin-bottom: 0;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04),
-                0 1px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06),
+                0 2px 8px rgba(0, 0, 0, 0.04);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -133,72 +134,107 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 4px;
-    background: linear-gradient(to bottom, #4caf50, #66bb6a);
+    width: 5px;
+    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
     opacity: 0.8;
 }
 
+.modal-task-item.completed::before {
+    background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+    opacity: 0.9;
+}
+
+.modal-task-item.pending::before {
+    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+    opacity: 0.9;
+}
+
 .modal-task-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
-                0 2px 8px rgba(0, 0, 0, 0.04);
-    border-color: rgba(76, 175, 80, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
+                0 4px 16px rgba(0, 0, 0, 0.08);
+    border-color: rgba(102, 126, 234, 0.3);
 }
 
 .modal-task-header {
     display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 16px;
+}
+
+.modal-task-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal-task-actions {
+    display: flex;
     align-items: center;
-    margin-bottom: 6px;
-    gap: 12px;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .modal-task-name {
-.modal-task-name {
-    font-size: 16px;
-    font-weight: 500;
-    color: #2c3e50;
-    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1a202c;
+    line-height: 1.4;
+    margin: 0;
 }
 
 .modal-task-status {
     font-size: 12px;
-    font-weight: 600;
-    border-radius: 12px;
-    padding: 4px 12px;
-    letter-spacing: 0.2px;
+    font-weight: 700;
+    border-radius: 16px;
+    padding: 6px 12px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
+    white-space: nowrap;
+    align-self: flex-start;
+    display: inline-block;
 }
 
 .modal-task-status.completed {
-    color: #2e7d32;
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    border: 1px solid rgba(46, 125, 50, 0.2);
+    color: #2d5016;
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.1);
 }
 
 .modal-task-status.pending {
-    color: #d32f2f;
-    background: linear-gradient(135deg, #ffebee, #ffcdd2);
-    border: 1px solid rgba(211, 47, 47, 0.2);
+    color: #7c2d12;
+    background: linear-gradient(135deg, #fef2f2, #fecaca);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
 }
 
 .modal-task-delete {
-    color: #f44336;
-    background: rgba(244, 67, 54, 0.08);
-    border: 1px solid rgba(244, 67, 54, 0.2);
+    color: #dc2626;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+    border: 1px solid rgba(239, 68, 68, 0.3);
     cursor: pointer;
-    font-size: 12px;
-    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 12px;
     border-radius: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 500;
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: center;
 }
 
 .modal-task-delete:hover {
-    background: rgba(244, 67, 54, 0.15);
-    color: #d32f2f;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+    color: #b91c1c;
     transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
 }
+
 
 .modal-create-overlay {
     background: rgba(0, 0, 0, 0.5);
