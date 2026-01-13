@@ -128,8 +128,8 @@ const TodoPanel: React.FC = () => {
               <div
                 key={index}
                 className={`todo-item ${
-                  deletingTaskId === task.id ? "fly-to-trash" : ""
-                }`}
+                  task.completed ? "completed" : "pending"
+                } ${deletingTaskId === task.id ? "fly-to-trash" : ""}`}
               >
                 <Checkbox
                   icon="rectangle"
@@ -146,11 +146,6 @@ const TodoPanel: React.FC = () => {
                   }`}
                 >
                   <div className="todo-name">{task.name}</div>
-                  {task.date && (
-                    <div className="todo-date">
-                      🗓️ {new Date(task.date).toLocaleDateString()}
-                    </div>
-                  )}
                 </div>
                 <div className="todo-actions">
                   <button

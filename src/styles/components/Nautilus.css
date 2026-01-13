@@ -451,15 +451,50 @@ body {
 .todo-list {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
 }
 
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 0.625rem;
-  border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.2s;
+  padding: 16px 18px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04),
+              0 1px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  overflow: hidden;
+}
+
+.todo-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+  opacity: 0.8;
+}
+
+.todo-item.completed::before {
+  background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+  opacity: 0.9;
+}
+
+.todo-item.pending::before {
+  background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+  opacity: 0.9;
+}
+
+.todo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
+              0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: rgba(102, 126, 234, 0.2);
 }
 
 /* 飞行的任务元素 */
@@ -508,92 +543,116 @@ body {
 
 @media (min-width: 768px) {
   .todo-item {
-    padding: 0.75rem;
+    padding: 18px 20px;
   }
 }
 
-.todo-item:hover {
-  background-color: #f9fafb;
-}
+/* 移除这个旧的hover样式，已经在上面重新定义了 */
 
 .todo-item.active-pomodoro {
-  background-color: #fee2e2;
+  background: linear-gradient(145deg, #fee2e2, #fecaca);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.todo-item.active-pomodoro::before {
+  background: linear-gradient(135deg, #f87171, #ef4444);
 }
 
 .todo-item.active-short-break {
-  background-color: #dcfce7;
+  background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.todo-item.active-short-break::before {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
 }
 
 .todo-item.active-long-break {
-  background-color: #dbeafe;
+  background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.todo-item.active-long-break::before {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
 }
 
 .todo-checkbox {
-  width: 1.125rem;
-  height: 1.125rem;
-  margin-right: 0.625rem;
-  border-radius: 0.25rem;
+  width: 20px;
+  height: 20px;
+  margin-right: 16px;
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
   .todo-checkbox {
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0.75rem;
+    width: 22px;
+    height: 22px;
+    margin-right: 18px;
   }
 }
 
 .todo-text {
   flex: 1;
   color: #1f2937;
-  font-size: 0.9375rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  min-width: 0;
 }
 
 .todo-name {
-  font-weight: 500;
-}
-
-.todo-date {
-  font-size: 0.8rem;
-  color: #6b7280;
+  font-weight: 600;
+  color: #1a202c;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 @media (min-width: 768px) {
   .todo-text {
-    font-size: 1rem;
+    font-size: 17px;
+  }
+  
+  .todo-item {
+    padding: 18px 20px;
   }
 }
 
 .todo-text.completed {
   text-decoration: line-through;
   color: #9ca3af;
+  opacity: 0.7;
 }
 
 .todo-actions {
   display: flex;
-  gap: 0.25rem;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .todo-action-button {
-  padding: 0.5rem;
-  border-radius: 9999px;
-  background-color: transparent;
-  color: #6b7280;
-  border: none;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 16px;
+  min-width: 36px;
+  height: 36px;
 }
 
 .todo-action-button:hover,
 .todo-action-button:active {
-  background-color: #fee2e2;
+  background: rgba(239, 68, 68, 0.15);
   color: #b91c1c;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
 }
 
 .todo-action-button.active {
