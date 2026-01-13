@@ -306,9 +306,24 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 top: "50%",
                 transform: "translate(-50%, -50%)",
                 fontWeight: "500",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              任务列表
+              <span>任务列表</span>
+              {selectedPlan && (
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "#999",
+                    fontWeight: "normal",
+                    marginTop: "2px",
+                  }}
+                >
+                  共{getTasks(selectedPlan).length}个任务
+                </span>
+              )}
             </div>
             <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
               {manageMode ? "完成" : "管理"}
@@ -334,9 +349,25 @@ function PlanList({ onPlanClick }: PlanListProps) {
             }}
           >
             <div
-              style={{ marginBottom: "12px", fontSize: "14px", color: "#666" }}
+              style={{
+                marginBottom: "16px",
+                padding: "12px 16px",
+                background: "linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)",
+                borderRadius: "10px",
+                borderLeft: "4px solid #91caff",
+              }}
             >
-              {selectedPlan.name} - 共{getTasks(selectedPlan).length}个任务
+              <div
+                style={{ fontSize: "16px", fontWeight: "500", color: "#333" }}
+              >
+                {selectedPlan.name}
+              </div>
+              <div
+                style={{ fontSize: "12px", color: "#888", marginTop: "4px", display: "flex", gap: "12px" }}
+              >
+                <span>开始: {formatDate(selectedPlan.startDate)}</span>
+                <span>截止: {formatDate(selectedPlan.dueDate)}</span>
+              </div>
             </div>
             {getTasks(selectedPlan).length === 0 ? (
               <Empty description="暂无任务" />
@@ -345,6 +376,14 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 {getTasks(selectedPlan).map((task) => (
                   <Cell
                     key={task.id}
+                    style={{
+                      margin: "8px 0",
+                      borderRadius: "10px",
+                      border: `2px solid ${
+                        task.completed ? "#b7eb8f" : "#ffccc7"
+                      }`,
+                      backgroundColor: "#fff",
+                    }}
                     title={
                       <>
                         <div
