@@ -10,7 +10,7 @@ import {
   Popup,
   Tag,
 } from "tdesign-mobile-react";
-import { Button as AntButton } from "antd-mobile"; // Import Ant Design Mobile Button
+import Pagination from "./Pagination";
 import { v4 as uuidv4 } from "uuid";
 import { Plan, Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
@@ -306,75 +306,12 @@ function PlanList({ onPlanClick }: PlanListProps) {
         )}
 
         {/* Pagination Control */}
-        {reorderedPlans.length > pageSize && ( // Updated variable name
-          <div
-            style={{
-              padding: "16px 0",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "8px", // Reduced gap to fit more buttons
-            }}
-          >
-            <AntButton
-              size="small"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(1)}
-              style={{
-                backgroundColor: "#e6f7ff",
-                borderColor: "#1890ff",
-                color: "#1890ff",
-              }} // Light blue theme
-            >
-              首页
-            </AntButton>
-            <AntButton
-              size="small"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => p - 1)}
-              style={{
-                backgroundColor: "#e6f7ff",
-                borderColor: "#1890ff",
-                color: "#1890ff",
-              }}
-            >
-              上一页
-            </AntButton>
-            <span
-              style={{
-                fontSize: "14px",
-                color: "#666",
-                minWidth: "40px",
-                textAlign: "center",
-              }}
-            >
-              {currentPage} / {totalPages}
-            </span>
-            <AntButton
-              size="small"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => p + 1)}
-              style={{
-                backgroundColor: "#e6f7ff",
-                borderColor: "#1890ff",
-                color: "#1890ff",
-              }}
-            >
-              下一页
-            </AntButton>
-            <AntButton
-              size="small"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(totalPages)}
-              style={{
-                backgroundColor: "#e6f7ff",
-                borderColor: "#1890ff",
-                color: "#1890ff",
-              }}
-            >
-              尾页
-            </AntButton>
-          </div>
+        {reorderedPlans.length > pageSize && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         )}
       </div>
 

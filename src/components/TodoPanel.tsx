@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/Nautilus.css";
-import { Button } from "antd-mobile";
+import Pagination from "./Pagination";
 
 const TodoPanel: React.FC = () => {
   const [newTask, setNewTask] = useState("");
@@ -176,74 +176,11 @@ const TodoPanel: React.FC = () => {
       </div>
 
       {tasks.length > pageSize && (
-        <div
-          style={{
-            padding: "16px 0",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <Button
-            size="small"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(1)}
-            style={{
-              backgroundColor: "#40a9ff",
-              borderColor: "#40a9ff",
-              color: "#fff",
-            }}
-          >
-            首页
-          </Button>
-          <Button
-            size="small"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => p - 1)}
-            style={{
-              backgroundColor: "#40a9ff",
-              borderColor: "#40a9ff",
-              color: "#fff",
-            }}
-          >
-            上一页
-          </Button>
-          <span
-            style={{
-              fontSize: "14px",
-              color: "#666",
-              minWidth: "40px",
-              textAlign: "center",
-            }}
-          >
-            {currentPage} / {totalPages}
-          </span>
-          <Button
-            size="small"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((p) => p + 1)}
-            style={{
-              backgroundColor: "#40a9ff",
-              borderColor: "#40a9ff",
-              color: "#fff",
-            }}
-          >
-            下一页
-          </Button>
-          <Button
-            size="small"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(totalPages)}
-            style={{
-              backgroundColor: "#40a9ff",
-              borderColor: "#40a9ff",
-              color: "#fff",
-            }}
-          >
-            尾页
-          </Button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       )}
     </div>
   );
