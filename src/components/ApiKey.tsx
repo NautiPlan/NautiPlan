@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { SecureKeyName } from "../utils/apiKey";
 import { secureDeleteKey, secureGetKey, secureSetKey } from "../utils/apiKey";
+import { Picker } from "antd-mobile";
 
 type Props = {
   defaultKeyName?: SecureKeyName;
@@ -21,6 +22,7 @@ export default function ApiKeyButton(props: Props) {
 
   const [open, setOpen] = useState(false);
   const [keyName, setKeyName] = useState<SecureKeyName>(defaultKeyName);
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [currentValue, setCurrentValue] = useState<string | null>(null);
@@ -123,7 +125,7 @@ export default function ApiKeyButton(props: Props) {
             alignItems: "center",
             justifyContent: "center",
             padding: 16,
-            zIndex: 9999,
+            zIndex: 900, // Reduced zIndex to allow ant-design components (usually zIndex 1000+) to appear on top
           }}
         >
           <div
@@ -162,20 +164,35 @@ export default function ApiKeyButton(props: Props) {
             <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
               <label style={{ display: "grid", gap: 6 }}>
                 <span style={{ fontSize: 12, color: "#555" }}>选择 Key</span>
-                <select
-                  value={keyName}
-                  onChange={(e) => setKeyName(e.target.value as SecureKeyName)}
+                <div
+                  onClick={() => setPickerVisible(true)}
                   style={{
                     width: "100%",
                     padding: "10px 12px",
                     borderRadius: 10,
                     border: "1px solid #ddd",
                     background: "#fff",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    boxSizing: "border-box", // Ensure padding doesn't affect width
                   }}
                 >
-                  <option value="ALIAPI_KEY">ALIAPI_KEY</option>
-                  <option value="WEBAPI_KEY">WEBAPI_KEY</option>
-                </select>
+                  {keyName}
+                </div>
+                <Picker
+                  columns={[
+                    [
+                      { label: "ALIAPI_KEY", value: "ALIAPI_KEY" },
+                      { label: "WEBAPI_KEY", value: "WEBAPI_KEY" },
+                    ],
+                  ]}
+                  visible={pickerVisible}
+                  onClose={() => setPickerVisible(false)}
+                  value={[keyName]}
+                  onConfirm={(v) => {
+                    setKeyName(v[0] as SecureKeyName);
+                  }}
+                />
               </label>
 
               <div style={{ display: "grid", gap: 6 }}>
