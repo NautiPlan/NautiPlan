@@ -342,6 +342,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
         </div>
         {selectedPlan && (
           <div
+            className="task-popup-content" // Added class for styling
             style={{
               padding: "16px",
               height: "calc(100% - 60px)", // 减去头部高度
@@ -391,46 +392,75 @@ function PlanList({ onPlanClick }: PlanListProps) {
                       backgroundColor: "#fff",
                     }}
                     title={
-                      <>
-                        <div
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          width: "100%",
+                        }}
+                      >
+                        <span
                           style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            flex: 1,
+                            wordBreak: "break-all",
+                            whiteSpace: "pre-wrap",
+                            marginRight: "8px",
+                            textAlign: "left", // 确保文字左对齐
                           }}
                         >
-                          <span>{task.name}</span>
-                          {task.completed ? (
-                            <Tag theme="success" size="small">
-                              已完成
-                            </Tag>
-                          ) : (
-                            <Tag theme="default" size="small">
-                              待完成
-                            </Tag>
+                          {task.name}
+                        </span>
+                        <div
+                          style={{
+                            width: "40px",
+                            minWidth: "40px",
+                            flexShrink: 0,
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {manageMode && (
+                            <button
+                              className="delete-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeTaskById(task.id);
+                                setSelectedPlan((prev) => ({
+                                  ...prev!,
+                                  Tasks:
+                                    prev?.Tasks?.filter(
+                                      (t) => t.id !== task.id
+                                    ) || [],
+                                }));
+                              }}
+                            >
+                              —
+                            </button>
                           )}
                         </div>
-                        {manageMode && (
-                          <button
-                            className="delete-button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeTaskById(task.id);
-                              setSelectedPlan((prev) => ({
-                                ...prev!,
-                                Tasks:
-                                  prev?.Tasks?.filter(
-                                    (t) => t.id !== task.id
-                                  ) || [],
-                              }));
-                            }}
-                          >
-                            —
-                          </button>
-                        )}
-                      </>
+                      </div>
                     }
-                    description={`日期: ${formatDate(task.date)}`}
+                    description={
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        {task.completed ? (
+                          <Tag theme="success" size="small">
+                            已完成
+                          </Tag>
+                        ) : (
+                          <Tag theme="default" size="small">
+                            待完成
+                          </Tag>
+                        )}
+                        <span>日期: {formatDate(task.date)}</span>
+                      </div>
+                    }
                   />
                 ))}
               </List>

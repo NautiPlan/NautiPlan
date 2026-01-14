@@ -469,6 +469,23 @@
   color: #6b7280;
 }
 
+/* 任务列表弹窗样式修正 */
+.task-popup-content .t-cell__title {
+  width: 100% !important;
+  flex: 1 !important;
+  /* remove display: flex to prevent changing layout of internal description if it resides here */
+}
+
+/* 确保内部的Flex容器能撑开 */
+.task-popup-content .t-cell__title > div {
+    width: 100% !important;
+}
+
+/* 确保任务文本能够正确换行或截断，并且title容器占满宽度 */
+.task-popup-content .t-cell__title-text {
+  width: 100%;
+}
+
 /* 响应式优化 */
 @media (max-width: 768px) {
   .add-task-title {
@@ -502,4 +519,21 @@
 
 .plan-list-scroll-area .t-list {
   padding: 0 8px;
+}
+
+/* 任务列表弹窗样式修正 */
+.task-popup-content .t-cell__title {
+  width: 100% !important;
+  flex: 1 !important;
+  /* remove display: flex to prevent changing layout of internal description if it resides here */
+}
+
+/* 确保内部的Flex容器能撑开 */
+.task-popup-content .t-cell__title > div {
+    width: 100% !important;
+}
+
+/* 确保任务文本能够正确换行或截断，并且title容器占满宽度 */
+.task-popup-content .t-cell__title-text {
+  width: 100%;
 }
