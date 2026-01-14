@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { InfoCircleFilledIcon } from "tdesign-icons-react";
 import {
-  Button,
+  Button as TButton, // Alias TDesign Button
   Calendar,
   Cell,
   Empty,
@@ -10,6 +10,7 @@ import {
   Popup,
   Tag,
 } from "tdesign-mobile-react";
+import { Button as AntButton } from "antd-mobile"; // Import Ant Design Mobile Button
 import { v4 as uuidv4 } from "uuid";
 import { Plan, Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
@@ -28,6 +29,10 @@ function PlanList({ onPlanClick }: PlanListProps) {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [visible, setVisible] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+
   useEffect(() => {
     let filtered = Plans;
 
@@ -43,7 +48,24 @@ function PlanList({ onPlanClick }: PlanListProps) {
     );
 
     setFilteredPlans(filtered);
-  }, [Plans, filter]);
+    setCurrentPage(1); // Reset to first page when filter changes
+  }, [Plans, filter, isDefaultPlan]); // Added isDefaultPlan dependency
+
+  // Logic to put default plan at the very top of page 1, regardless of sort
+  // This logic runs AFTER the filter and basic sort
+  const reorderedPlans = [...filteredPlans].sort((a, b) => {
+    const isADefault = isDefaultPlan(a.id);
+    const isBDefault = isDefaultPlan(b.id);
+    if (isADefault && !isBDefault) return -1;
+    if (!isADefault && isBDefault) return 1;
+    return 0; // Maintain original sort order for non-default plans
+  });
+
+  const totalPages = Math.ceil(reorderedPlans.length / pageSize);
+  const currentPlans = reorderedPlans.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const formatDate = (date: Date | null) => {
     if (!date) return "无";
@@ -163,7 +185,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
     <div className="plan-list-container">
       {/* 筛选按钮 */}
       <div className="plan-list-filters">
-        <Button
+        <TButton
           size="small"
           theme="default"
           style={
@@ -178,8 +200,8 @@ function PlanList({ onPlanClick }: PlanListProps) {
           onClick={() => setFilter("all")}
         >
           全部 ({Plans.length})
-        </Button>
-        <Button
+        </TButton>
+        <TButton
           size="small"
           theme={filter === "pending" ? "default" : "default"}
           style={
@@ -194,8 +216,8 @@ function PlanList({ onPlanClick }: PlanListProps) {
           onClick={() => setFilter("pending")}
         >
           进行中 ({Plans.filter((p) => !p.completed).length})
-        </Button>
-        <Button
+        </TButton>
+        <TButton
           size="small"
           theme={filter === "completed" ? "default" : "default"}
           style={
@@ -210,13 +232,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
           onClick={() => setFilter("completed")}
         >
           已完成 ({Plans.filter((p) => p.completed).length})
-        </Button>
+        </TButton>
       </div>
 
       {/* 可滚动的列表区域 */}
       <div className="plan-list-scroll-area">
         <List>
-          {filteredPlans.map((plan) => {
+          {currentPlans.map((plan) => {
             const tasks = getTasks(plan);
             const completedTasks = tasks.filter((t) => t.completed);
 
@@ -281,6 +303,78 @@ function PlanList({ onPlanClick }: PlanListProps) {
               filter === "completed" ? "暂无已完成的计划" : "暂无进行中的计划"
             }
           />
+        )}
+
+        {/* Pagination Control */}
+        {reorderedPlans.length > pageSize && ( // Updated variable name
+          <div
+            style={{
+              padding: "16px 0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "8px", // Reduced gap to fit more buttons
+            }}
+          >
+            <AntButton
+              size="small"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+              style={{
+                backgroundColor: "#e6f7ff",
+                borderColor: "#1890ff",
+                color: "#1890ff",
+              }} // Light blue theme
+            >
+              首页
+            </AntButton>
+            <AntButton
+              size="small"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => p - 1)}
+              style={{
+                backgroundColor: "#e6f7ff",
+                borderColor: "#1890ff",
+                color: "#1890ff",
+              }}
+            >
+              上一页
+            </AntButton>
+            <span
+              style={{
+                fontSize: "14px",
+                color: "#666",
+                minWidth: "40px",
+                textAlign: "center",
+              }}
+            >
+              {currentPage} / {totalPages}
+            </span>
+            <AntButton
+              size="small"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => p + 1)}
+              style={{
+                backgroundColor: "#e6f7ff",
+                borderColor: "#1890ff",
+                color: "#1890ff",
+              }}
+            >
+              下一页
+            </AntButton>
+            <AntButton
+              size="small"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+              style={{
+                backgroundColor: "#e6f7ff",
+                borderColor: "#1890ff",
+                color: "#1890ff",
+              }}
+            >
+              尾页
+            </AntButton>
+          </div>
         )}
       </div>
 
@@ -475,7 +569,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
                   marginTop: "16px",
                 }}
               >
-                <Button
+                <TButton
                   size="large"
                   theme="primary"
                   variant="text"
@@ -486,7 +580,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
                   onClick={() => handleAddTaskBTN()}
                 >
                   +
-                </Button>
+                </TButton>
               </div>
             )}
           </div>
@@ -523,7 +617,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
           </div>
         </div>
         <div className="add-task-btn">
-          <Button
+          <TButton
             theme="primary"
             style={{
               width: "100%",
@@ -535,7 +629,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
             }}
           >
             提交
-          </Button>
+          </TButton>
         </div>
       </Popup>
     </div>

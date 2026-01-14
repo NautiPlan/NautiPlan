@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/Nautilus.css";
+import { Button } from "antd-mobile";
 
 const TodoPanel: React.FC = () => {
   const [newTask, setNewTask] = useState("");
@@ -23,6 +24,14 @@ const TodoPanel: React.FC = () => {
   today.setHours(0, 0, 0, 0);
 
   const tasks: Task[] = getTasksByDate(new Date());
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+  const totalPages = Math.ceil(tasks.length / pageSize);
+  const currentTasks = tasks.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const completedCount = tasks.filter((tasks) => tasks.completed).length;
 
@@ -124,7 +133,7 @@ const TodoPanel: React.FC = () => {
       <div className="todo-list-container">
         {tasks.length > 0 ? (
           <div className="todo-list">
-            {tasks.map((task, index) => (
+            {currentTasks.map((task, index) => (
               <div
                 key={index}
                 className={`todo-item ${
@@ -153,7 +162,7 @@ const TodoPanel: React.FC = () => {
                       if (el) deleteButtonRefs.current.set(task.id, el);
                     }}
                     onClick={() => handleDeleteTask(task.id)}
-                    className="todo-action-button delete-button"
+                    className="delete-button"
                   >
                     🗑️
                   </button>
@@ -162,11 +171,80 @@ const TodoPanel: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="empty-state">
-            <p>No tasks yet. Add one above!</p>
-          </div>
+          <div className="empty-state">No tasks for today</div>
         )}
       </div>
+
+      {tasks.length > pageSize && (
+        <div
+          style={{
+            padding: "16px 0",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <Button
+            size="small"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(1)}
+            style={{
+              backgroundColor: "#40a9ff",
+              borderColor: "#40a9ff",
+              color: "#fff",
+            }}
+          >
+            首页
+          </Button>
+          <Button
+            size="small"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => p - 1)}
+            style={{
+              backgroundColor: "#40a9ff",
+              borderColor: "#40a9ff",
+              color: "#fff",
+            }}
+          >
+            上一页
+          </Button>
+          <span
+            style={{
+              fontSize: "14px",
+              color: "#666",
+              minWidth: "40px",
+              textAlign: "center",
+            }}
+          >
+            {currentPage} / {totalPages}
+          </span>
+          <Button
+            size="small"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => p + 1)}
+            style={{
+              backgroundColor: "#40a9ff",
+              borderColor: "#40a9ff",
+              color: "#fff",
+            }}
+          >
+            下一页
+          </Button>
+          <Button
+            size="small"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(totalPages)}
+            style={{
+              backgroundColor: "#40a9ff",
+              borderColor: "#40a9ff",
+              color: "#fff",
+            }}
+          >
+            尾页
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

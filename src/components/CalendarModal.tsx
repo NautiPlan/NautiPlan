@@ -138,14 +138,14 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   onClick={() => setPlanPickerVisible(true)}
                   style={{
                     border: "1px solid #ddd",
-                    padding: "8px 12px", // This already provides left/right padding
+                    padding: "8px 12px",
                     borderRadius: "4px",
                     marginBottom: "12px",
                     cursor: "pointer",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    margin: "0 4px", // Add small margin to ensure box itself is not enhancing touching edges if container is tight
+                    margin: "0 4px",
                   }}
                 >
                   {plans.find((p) => p.id === selectedPlanId)?.name ||
