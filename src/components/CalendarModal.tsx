@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { usePlanStore } from "../store/taskStore";
 import "../styles/components/CalendarModal.css";
+import { Picker } from "antd-mobile";
 
 interface CalendarModalProps {
   open: boolean;
@@ -28,6 +29,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   const [selectedPlanId, setSelectedPlanId] = useState(
     plans.length > 0 ? plans[0].id : ""
   );
+  const [planPickerVisible, setPlanPickerVisible] = useState(false);
 
   const handleDelete = (taskId: string) => {
     removeTaskById(taskId);
@@ -131,20 +133,40 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
               <h3 className="modal-title">新建任务</h3>
               <div className="modal-body">
                 {/* 下拉选择计划 */}
-                <select
-                  className="modal-select"
-                  value={selectedPlanId}
-                  onChange={(e) => setSelectedPlanId(e.target.value)}
+                <div
+                  className="modal-select-trigger"
+                  onClick={() => setPlanPickerVisible(true)}
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px 12px", // This already provides left/right padding
+                    borderRadius: "4px",
+                    marginBottom: "12px",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    margin: "0 4px", // Add small margin to ensure box itself is not enhancing touching edges if container is tight
+                  }}
                 >
-                  <option value="">请选择计划</option>
-                  {plans.map((plan) => (
-                    <option key={plan.id} value={plan.id}>
-                      {plan.name.length > 15
-                        ? `${plan.name.slice(0, 15)}...`
-                        : plan.name}
-                    </option>
-                  ))}
-                </select>
+                  {plans.find((p) => p.id === selectedPlanId)?.name ||
+                    "请选择计划"}
+                </div>
+                <Picker
+                  columns={[
+                    plans.map((plan) => ({
+                      label: plan.name,
+                      value: plan.id,
+                    })),
+                  ]}
+                  visible={planPickerVisible}
+                  onClose={() => setPlanPickerVisible(false)}
+                  value={[selectedPlanId]}
+                  onConfirm={(v) => {
+                    if (v && v[0]) {
+                      setSelectedPlanId(v[0] as string);
+                    }
+                  }}
+                />
                 <input
                   className="modal-input"
                   type="text"

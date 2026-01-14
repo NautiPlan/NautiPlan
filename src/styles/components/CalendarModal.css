@@ -276,6 +276,19 @@
     flex-direction: column;
 }
 
+.modal-create-content .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 24px;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.modal-create-content .modal-body {
+    padding: 0 16px; /* 增加左右内边距，确保内容不贴边 */
+}
+
 .modal-input {
     width: 100%;
     padding: 12px 16px;
