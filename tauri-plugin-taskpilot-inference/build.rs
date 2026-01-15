@@ -118,7 +118,14 @@ fn main() {
     println!("cargo:rerun-if-changed={}", core_dir.join("CMakeLists.txt").display());
 
     // 7. Register plugin commands
-    const COMMANDS: &[&str] = &["llm_init", "llm_chat", "rag_init", "rag_retrieve"];
+    const COMMANDS: &[&str] = &[
+        "llm_init",
+        "llm_chat",
+        "llm_release",
+        "rag_init",
+        "rag_retrieve",
+        "rag_release",
+    ];
     tauri_plugin::Builder::new(COMMANDS)
         .android_path("android")
         .build();

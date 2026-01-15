@@ -22,6 +22,7 @@
     "secure-storage:allow-delete",
     "secure-storage:allow-get",
     "secure-storage:allow-set",
-    "secure-storage:default"
+    "secure-storage:default",
+    "taskpilot-inference:default"
   ]
 }
