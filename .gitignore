@@ -12,7 +12,6 @@ dist
 dist-ssr
 *.local
 
-src-tauri/gen/android/keystore.properties
 
 # Test directories and files
 test/
