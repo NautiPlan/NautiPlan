@@ -1,3 +1,6 @@
 [submodule "taskPilot-InferrenceCore"]
 	path = taskPilot-InferrenceCore
 	url = https://github.com/chuanshanjia666/taskPilot-InferrenceCore.git
+[submodule "tauri-plugin-secure-storage"]
+	path = tauri-plugin-secure-storage
+	url = https://github.com/markzhang12345/tauri-plugin-secure-storage.git
