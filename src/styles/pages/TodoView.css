@@ -1,26 +1,23 @@
 /* Todo 待办页面样式 */
 .todo-view {
-  height: 100vh;
-  overflow: auto;
+  /* 移除固定高度和独立滚动，让父级 page-container 接管滚动 */
+  min-height: 100%; 
   display: flex;
   flex-direction: column;
-  padding-bottom: 80px; /* 为TabBar预留空间 */
+  /* padding-bottom 由 page-container 统一处理，这里移除避免双重 padding */
   box-sizing: border-box;
 }
 
 .todo-view .main-content {
   flex: 1;
-  overflow: auto;
+  /* 移除内部滚动 */
+  /* overflow: auto; */
   padding: 20px;
   padding-bottom: 40px; /* 额外的底部空间 */
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
-  .todo-view {
-    padding-bottom: 90px; /* 移动端需要更多空间 */
-  }
-
   .todo-view .main-content {
     padding: 16px;
     padding-bottom: 50px;

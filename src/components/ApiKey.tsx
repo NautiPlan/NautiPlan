@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { SecureKeyName } from "../utils/apiKey";
 import { secureDeleteKey, secureGetKey, secureSetKey } from "../utils/apiKey";
 import { Picker } from "antd-mobile";
@@ -112,207 +113,211 @@ export default function ApiKeyButton(props: Props) {
         </svg>
       </button>
 
-      {open && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setOpen(false)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.45)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 16,
-            zIndex: 900, // Reduced zIndex to allow ant-design components (usually zIndex 1000+) to appear on top
-          }}
-        >
+      {open &&
+        createPortal(
           <div
-            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setOpen(false)}
             style={{
-              width: "min(520px, 100%)",
-              background: "#fff",
-              borderRadius: 12,
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.45)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               padding: 16,
-              boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+              zIndex: 900,
             }}
           >
             <div
+              onClick={(e) => e.stopPropagation()}
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
+                width: "min(520px, 100%)",
+                background: "#fff",
+                borderRadius: 12,
+                padding: 16,
+                boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
               }}
             >
-              <div style={{ fontSize: 16, fontWeight: 600 }}>API Key 设置</div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                style={{
-                  border: "1px solid #ddd",
-                  background: "#fff",
-                  borderRadius: 8,
-                  padding: "6px 10px",
-                  cursor: "pointer",
-                }}
-              >
-                关闭
-              </button>
-            </div>
-
-            <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
-              <label style={{ display: "grid", gap: 6 }}>
-                <span style={{ fontSize: 12, color: "#555" }}>选择 Key</span>
-                <div
-                  onClick={() => setPickerVisible(true)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: 10,
-                    border: "1px solid #ddd",
-                    background: "#fff",
-                    textAlign: "left",
-                    cursor: "pointer",
-                    boxSizing: "border-box", // Ensure padding doesn't affect width
-                  }}
-                >
-                  {keyName}
-                </div>
-                <Picker
-                  columns={[
-                    [
-                      { label: "ALIAPI_KEY", value: "ALIAPI_KEY" },
-                      { label: "WEBAPI_KEY", value: "WEBAPI_KEY" },
-                    ],
-                  ]}
-                  visible={pickerVisible}
-                  onClose={() => setPickerVisible(false)}
-                  value={[keyName]}
-                  onConfirm={(v) => {
-                    setKeyName(v[0] as SecureKeyName);
-                  }}
-                />
-              </label>
-
-              <div style={{ display: "grid", gap: 6 }}>
-                <div style={{ fontSize: 12, color: "#555" }}>当前值</div>
-                <div
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 10,
-                    border: "1px solid #eee",
-                    background: "#fafafa",
-                    fontFamily:
-                      "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-                    fontSize: 13,
-                    color: "#222",
-                    wordBreak: "break-all",
-                  }}
-                >
-                  {loading
-                    ? "读取中..."
-                    : currentValue
-                    ? maskKey(currentValue)
-                    : "未设置"}
-                </div>
-                <div style={{ fontSize: 12, color: "#666" }}>
-                  提示：输入后点击“保存”写入安全存储；点击“删除”会清除该 Key。
-                </div>
-              </div>
-
-              <label style={{ display: "grid", gap: 6 }}>
-                <span style={{ fontSize: 12, color: "#555" }}>输入新值</span>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <input
-                    type={showPlain ? "text" : "password"}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="粘贴/输入你的 Key"
-                    style={{
-                      flex: 1,
-                      padding: "10px 12px",
-                      borderRadius: 10,
-                      border: "1px solid #ddd",
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPlain((v) => !v)}
-                    style={{
-                      border: "1px solid #ddd",
-                      background: "#fff",
-                      borderRadius: 10,
-                      padding: "10px 12px",
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {showPlain ? "隐藏" : "显示"}
-                  </button>
-                </div>
-              </label>
-
-              {message && (
-                <div
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 10,
-                    background: "#fff7ed",
-                    border: "1px solid #fed7aa",
-                    color: "#7c2d12",
-                    fontSize: 13,
-                  }}
-                >
-                  {message}
-                </div>
-              )}
-
               <div
                 style={{
                   display: "flex",
-                  gap: 10,
-                  justifyContent: "flex-end",
-                  marginTop: 6,
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
+                <div style={{ fontSize: 16, fontWeight: 600 }}>
+                  API Key 设置
+                </div>
                 <button
                   type="button"
-                  onClick={onDelete}
-                  disabled={loading}
+                  onClick={() => setOpen(false)}
                   style={{
-                    border: "1px solid #ef4444",
+                    border: "1px solid #ddd",
                     background: "#fff",
-                    color: "#ef4444",
-                    borderRadius: 10,
-                    padding: "10px 14px",
+                    borderRadius: 8,
+                    padding: "6px 10px",
                     cursor: "pointer",
-                    opacity: loading ? 0.6 : 1,
                   }}
                 >
-                  删除 Key
-                </button>
-                <button
-                  type="button"
-                  onClick={onSave}
-                  disabled={loading || !inputValue.trim()}
-                  style={{
-                    border: "1px solid #111827",
-                    background: "#111827",
-                    color: "#fff",
-                    borderRadius: 10,
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    opacity: loading || !inputValue.trim() ? 0.6 : 1,
-                  }}
-                >
-                  保存 Key
+                  关闭
                 </button>
               </div>
+
+              <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
+                <label style={{ display: "grid", gap: 6 }}>
+                  <span style={{ fontSize: 12, color: "#555" }}>选择 Key</span>
+                  <div
+                    onClick={() => setPickerVisible(true)}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      border: "1px solid #ddd",
+                      background: "#fff",
+                      textAlign: "left",
+                      cursor: "pointer",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    {keyName}
+                  </div>
+                  <Picker
+                    columns={[
+                      [
+                        { label: "ALIAPI_KEY", value: "ALIAPI_KEY" },
+                        { label: "WEBAPI_KEY", value: "WEBAPI_KEY" },
+                      ],
+                    ]}
+                    visible={pickerVisible}
+                    onClose={() => setPickerVisible(false)}
+                    value={[keyName]}
+                    onConfirm={(v) => {
+                      setKeyName(v[0] as SecureKeyName);
+                    }}
+                  />
+                </label>
+
+                <div style={{ display: "grid", gap: 6 }}>
+                  <div style={{ fontSize: 12, color: "#555" }}>当前值</div>
+                  <div
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      border: "1px solid #eee",
+                      background: "#fafafa",
+                      fontFamily:
+                        "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                      fontSize: 13,
+                      color: "#222",
+                      wordBreak: "break-all",
+                    }}
+                  >
+                    {loading
+                      ? "读取中..."
+                      : currentValue
+                      ? maskKey(currentValue)
+                      : "未设置"}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#666" }}>
+                    提示：输入后点击“保存”写入安全存储；点击“删除”会清除该 Key。
+                  </div>
+                </div>
+
+                <label style={{ display: "grid", gap: 6 }}>
+                  <span style={{ fontSize: 12, color: "#555" }}>输入新值</span>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input
+                      type={showPlain ? "text" : "password"}
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="粘贴/输入你的 Key"
+                      style={{
+                        flex: 1,
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        border: "1px solid #ddd",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPlain((v) => !v)}
+                      style={{
+                        border: "1px solid #ddd",
+                        background: "#fff",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {showPlain ? "隐藏" : "显示"}
+                    </button>
+                  </div>
+                </label>
+
+                {message && (
+                  <div
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      background: "#fff7ed",
+                      border: "1px solid #fed7aa",
+                      color: "#7c2d12",
+                      fontSize: 13,
+                    }}
+                  >
+                    {message}
+                  </div>
+                )}
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    justifyContent: "flex-end",
+                    marginTop: 6,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={onDelete}
+                    disabled={loading}
+                    style={{
+                      border: "1px solid #ef4444",
+                      background: "#fff",
+                      color: "#ef4444",
+                      borderRadius: 10,
+                      padding: "10px 14px",
+                      cursor: "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    删除 Key
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onSave}
+                    disabled={loading || !inputValue.trim()}
+                    style={{
+                      border: "1px solid #111827",
+                      background: "#111827",
+                      color: "#fff",
+                      borderRadius: 10,
+                      padding: "10px 14px",
+                      cursor: "pointer",
+                      opacity: loading || !inputValue.trim() ? 0.6 : 1,
+                    }}
+                  >
+                    保存 Key
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </>
   );
 }
