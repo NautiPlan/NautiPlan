@@ -91,7 +91,6 @@ pub async fn web_search(app: tauri::AppHandle, query: String) -> Result<Vec<WebS
     Ok(out)
 }
 
-#[tauri::command]
 pub async fn rerank_web_search_results(
     app: tauri::AppHandle,
     query: String,

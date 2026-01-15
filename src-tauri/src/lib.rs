@@ -35,7 +35,7 @@ async fn web_search(
 }
 
 #[tauri::command]
-async fn rerank_web_search(
+async fn rerank_web_search_results(
     app: tauri::AppHandle,
     query: String,
     documents: Vec<commands::web_search::WebSearchRes>,
@@ -56,7 +56,7 @@ pub fn run() {
             aliyun_gpt,
             aliyun_report,
             web_search,
-            rerank_web_search
+            rerank_web_search_results
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
