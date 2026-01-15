@@ -64,5 +64,5 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-aarch64-debug
-          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk
+          name: app-aarch64-release
+          path: src-tauri/gen/android/app/build/outputs/apk/*/release/*.apk
