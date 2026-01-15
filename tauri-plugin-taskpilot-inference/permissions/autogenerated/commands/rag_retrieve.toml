@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-rag-retrieve"
+description = "Enables the rag_retrieve command without any pre-configured scope."
+commands.allow = ["rag_retrieve"]
+
+[[permission]]
+identifier = "deny-rag-retrieve"
+description = "Denies the rag_retrieve command without any pre-configured scope."
+commands.deny = ["rag_retrieve"]

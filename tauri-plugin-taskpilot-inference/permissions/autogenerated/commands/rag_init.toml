@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-rag-init"
+description = "Enables the rag_init command without any pre-configured scope."
+commands.allow = ["rag_init"]
+
+[[permission]]
+identifier = "deny-rag-init"
+description = "Denies the rag_init command without any pre-configured scope."
+commands.deny = ["rag_init"]

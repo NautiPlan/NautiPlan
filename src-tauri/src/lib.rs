@@ -50,6 +50,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(tauri_plugin_secure_storage::init())
+        .plugin(tauri_plugin_taskpilot_inference::init())
         .invoke_handler(tauri::generate_handler![
             aliyun_image,
             aliyun_audio,

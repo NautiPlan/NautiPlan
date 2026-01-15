@@ -1,0 +1,12 @@
+target/
+android/build/
+android/.gradle/
+android/local.properties
+android/src/main/jniLibs/
+android/.idea/
+android/*.iml
+android/.tauri/
+.DS_Store
+.idea/
+.vscode/
+Cargo.lock
