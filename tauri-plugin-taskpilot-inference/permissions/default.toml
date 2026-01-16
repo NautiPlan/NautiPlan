@@ -1,14 +1,28 @@
-# Permissions for the taskpilot-inference plugin
+# Default permissions for the taskpilot-inference plugin
 
 "$schema" = "schemas/schema.json"
 
 [default]
-description = "Default permissions for the plugin"
+description = "Default permissions for taskpilot-inference"
 permissions = [
+    # LLM
     "allow-llm-init",
-    "allow-llm-chat",
     "allow-llm-release",
+    "allow-llm-chat",
+    "allow-llm-chat-stream",
+    "allow-llm-server-start",
+    "allow-llm-server-url",
+    "allow-llm-status",
+    # Embedding
+    "allow-embedding-init",
+    "allow-embedding-release",
+    "allow-embedding-encode",
+    "allow-embedding-status",
+    # RAG
     "allow-rag-init",
+    "allow-rag-release",
+    "allow-rag-add-document",
+    "allow-rag-clear",
     "allow-rag-retrieve",
-    "allow-rag-release"
+    "allow-rag-status",
 ]

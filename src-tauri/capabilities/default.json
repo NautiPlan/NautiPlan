@@ -19,9 +19,6 @@
     },
     "sql:default",
     "sql:allow-execute",
-    "secure-storage:allow-delete",
-    "secure-storage:allow-get",
-    "secure-storage:allow-set",
     "secure-storage:default",
     "taskpilot-inference:default"
   ]

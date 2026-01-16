@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-rag-status"
+description = "Enables the rag_status command without any pre-configured scope."
+commands.allow = ["rag_status"]
+
+[[permission]]
+identifier = "deny-rag-status"
+description = "Denies the rag_status command without any pre-configured scope."
+commands.deny = ["rag_status"]

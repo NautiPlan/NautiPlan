@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-rag-add-document"
+description = "Enables the rag_add_document command without any pre-configured scope."
+commands.allow = ["rag_add_document"]
+
+[[permission]]
+identifier = "deny-rag-add-document"
+description = "Denies the rag_add_document command without any pre-configured scope."
+commands.deny = ["rag_add_document"]

@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-embedding-encode"
+description = "Enables the embedding_encode command without any pre-configured scope."
+commands.allow = ["embedding_encode"]
+
+[[permission]]
+identifier = "deny-embedding-encode"
+description = "Denies the embedding_encode command without any pre-configured scope."
+commands.deny = ["embedding_encode"]

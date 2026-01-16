@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-embedding-init"
+description = "Enables the embedding_init command without any pre-configured scope."
+commands.allow = ["embedding_init"]
+
+[[permission]]
+identifier = "deny-embedding-init"
+description = "Denies the embedding_init command without any pre-configured scope."
+commands.deny = ["embedding_init"]
