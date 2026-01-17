@@ -311,11 +311,6 @@ function PlanList({ onPlanClick }: PlanListProps) {
                           已完成
                         </Tag>
                       )}
-                      {!isDefault && displayPriority !== plan.priority && (
-                        <Tag theme="primary" size="small">
-                          动态
-                        </Tag>
-                      )}
                       {modeInfo && modeInfo.isStrict && (
                         <Tag theme="danger" size="small" variant="outline">
                           严格
