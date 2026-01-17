@@ -1,6 +1,6 @@
 .calendar-container {
   padding: 24px 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-color: #f5f5f5;
   min-height: 100vh;
   max-width: 1200px;
   margin: 0 auto;
@@ -12,14 +12,12 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   padding: 20px 24px;
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08),
               0 2px 8px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e0e0e0;
 }
 
 .calendar-header h2 {
@@ -80,12 +78,11 @@
   margin-bottom: 16px;
   font-weight: 600;
   color: #64748b;
-  background: rgba(255, 255, 255, 0.8);
+  background: white;
   padding: 16px 0;
   border-radius: 16px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
 }
 
 .weekday {
@@ -98,14 +95,12 @@
 .calendar-body {
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08),
               0 2px 8px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e0e0e0;
 }
 
 .calendar-week {
@@ -217,7 +212,7 @@
 .selected-date {
   margin-top: 24px;
   padding: 20px;
-  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  background: white;
   border-radius: 16px;
   text-align: center;
   font-weight: 500;
@@ -225,7 +220,7 @@
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
               0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid #e0e0e0;
 }
 
 /* 弹窗样式 */
@@ -312,13 +307,11 @@
   margin-top: 32px;
   margin-bottom: 32px;
   padding: 24px;
-  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  background: white;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
               0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #e0e0e0;
 }
 
 .section-header {
