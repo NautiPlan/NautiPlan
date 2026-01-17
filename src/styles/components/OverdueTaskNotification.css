@@ -1,0 +1,161 @@
+/* Overdue Task Notification Styles */
+
+.overdue-notification-popup {
+  width: 90%;
+  max-width: 420px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.overdue-notification-card {
+  border-radius: 16px;
+  box-shadow: none;
+  border: none;
+}
+
+.overdue-header {
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.overdue-pagination {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  border-radius: 16px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.overdue-icon {
+  font-size: 48px;
+  color: #ff9800;
+  margin-bottom: 12px;
+}
+
+.overdue-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.overdue-plan-card {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  color: #333;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+}
+
+.overdue-plan-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e65100;
+}
+
+.overdue-plan-icon {
+  font-size: 18px;
+}
+
+.overdue-tasks-container {
+  width: 100%;
+  padding: 0 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.overdue-task-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #fff;
+  border-radius: 8px;
+  border-left: 3px solid #ff9800;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.overdue-task-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.overdue-task-date {
+  font-size: 12px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.overdue-task-date-icon {
+  font-size: 12px;
+  color: #ff9800;
+}
+
+.overdue-question {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.overdue-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.overdue-button-primary {
+  width: 100%;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.overdue-button-secondary {
+  width: 100%;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.overdue-button-text {
+  width: 100%;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #999;
+}
+
+/* 滚动条美化 */
+.overdue-tasks-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overdue-tasks-container::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 2px;
+}
+
+.overdue-tasks-container::-webkit-scrollbar-track {
+  background: transparent;
+}
