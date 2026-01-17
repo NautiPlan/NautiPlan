@@ -36,9 +36,13 @@ const TodoPanel: React.FC = () => {
   const completedCount = tasks.filter((tasks) => tasks.completed).length;
 
   const handleAddTask = () => {
+    // 验证任务名称不为空
+    const trimmedTaskName = newTask.trim();
+    if (!trimmedTaskName) return;
+
     const newTaskData: Task = {
       id: uuidv4(),
-      name: newTask.trim(),
+      name: trimmedTaskName,
       date: today,
       completed: false,
       planId: defaultPlanId,

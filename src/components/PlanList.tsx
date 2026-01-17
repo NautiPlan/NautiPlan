@@ -189,11 +189,13 @@ function PlanList({ onPlanClick }: PlanListProps) {
 
   // 提交任务
   const handleAddTask = () => {
-    if (!selectedPlan || !taskName || !dataNote) return;
+    // 验证任务名称不为空
+    const trimmedTaskName = taskName.trim();
+    if (!selectedPlan || !trimmedTaskName || !dataNote) return;
 
     const newTask: Task = {
       id: uuidv4(),
-      name: taskName,
+      name: trimmedTaskName,
       date: dateValue!,
       completed: false,
       planId: selectedPlan.id,
