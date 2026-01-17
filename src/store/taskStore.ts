@@ -2,6 +2,7 @@ import Database from "@tauri-apps/plugin-sql";
 import { create } from "zustand";
 import { Plan, Task } from "../interface/task";
 import { loadDatabase } from "../utils/database";
+import { calculateDynamicPriority, getTasksNeedReschedule } from "../utils/priority";
 
 interface PlanStore {
   Plans: Plan[];
@@ -25,6 +26,16 @@ interface PlanStore {
   toggleTaskById: (taskId: string) => void;
   getPlanByTaskId: (taskId: string) => Plan | undefined;
   isPlanCompleted: (planId: string) => boolean;
+  
+  // 动态优先级相关方法
+  getDynamicPriority: (planId: string) => number;
+  getPlansWithDynamicPriority: () => Array<Plan & { dynamicPriority: number }>;
+  getOverdueTasksForPlan: (planId: string) => Array<{
+    taskId: string;
+    taskName: string;
+    originalDate: Date;
+    isStrictMode: boolean;
+  }>;
 }
 
 const createDefaultPlan = (): Plan => {
@@ -277,6 +288,49 @@ export const usePlanStore = create<PlanStore>((set, get) => {
         return true;
       }
       return plan.Tasks?.every((task) => task.completed);
+    },
+
+    // 获取动态优先级
+    getDynamicPriority: (planId) => {
+      const plan = get().getPlanById(planId);
+      if (!plan) return 0;
+      
+      // 默认计划（未分类计划）使用固定低优先级
+      if (get().isDefaultPlan(planId)) {
+        return 0;
+      }
+      
+      return calculateDynamicPriority(plan);
+    },
+
+    // 获取带动态优先级的计划列表（用于排序显示）
+    getPlansWithDynamicPriority: () => {
+      const plans = get().Plans;
+      const defaultPlanId = get().defaultPlanId;
+      
+      return plans.map(plan => {
+        const dynamicPriority = plan.id === defaultPlanId 
+          ? 0  // 默认计划固定为0
+          : calculateDynamicPriority(plan);
+        
+        return {
+          ...plan,
+          dynamicPriority
+        };
+      });
+    },
+
+    // 获取计划中需要重新安排的超时任务
+    getOverdueTasksForPlan: (planId) => {
+      const plan = get().getPlanById(planId);
+      if (!plan) return [];
+      
+      // 默认计划不需要重新安排任务
+      if (get().isDefaultPlan(planId)) {
+        return [];
+      }
+      
+      return getTasksNeedReschedule(plan);
     },
   };
 });

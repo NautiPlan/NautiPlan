@@ -300,6 +300,9 @@ function AIPlanner() {
       </div>
       <div className="item no-swipe" style={{ touchAction: "none" }}>
         重要度: {priorityValue}
+        <div style={{ fontSize: "12px", color: "#999", marginTop: "4px" }}>
+          提示: 系统将根据重要度、时间紧迫度和完成进度自动计算动态优先级
+        </div>
         <div className="wrapper-label">
           <Slider
             min={0}

@@ -14,6 +14,7 @@ import Pagination from "./Pagination";
 import { v4 as uuidv4 } from "uuid";
 import { Plan, Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
+import { getPlanModeInfo, hasOverdueTasks } from "../utils/priority";
 import "../styles/components/PlanList.css";
 
 interface PlanListProps {
@@ -22,9 +23,17 @@ interface PlanListProps {
 }
 
 function PlanList({ onPlanClick }: PlanListProps) {
-  const { Plans, removePlan, isDefaultPlan, removeTaskById, addTaskToPlan } =
-    usePlanStore();
-  const [filteredPlans, setFilteredPlans] = useState<Plan[]>([]);
+  const {
+    Plans,
+    removePlan,
+    isDefaultPlan,
+    removeTaskById,
+    addTaskToPlan,
+    getPlansWithDynamicPriority,
+  } = usePlanStore();
+  const [filteredPlans, setFilteredPlans] = useState<
+    Array<Plan & { dynamicPriority: number }>
+  >([]);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [visible, setVisible] = useState(false);
@@ -34,35 +43,53 @@ function PlanList({ onPlanClick }: PlanListProps) {
   const pageSize = 5;
 
   useEffect(() => {
-    let filtered = Plans;
+    // 获取带动态优先级的计划列表
+    let plansWithPriority = getPlansWithDynamicPriority();
 
+    // 根据筛选条件过滤
     if (filter === "completed") {
-      filtered = Plans.filter((plan) => plan.completed);
+      plansWithPriority = plansWithPriority.filter((plan) => plan.completed);
     } else if (filter === "pending") {
-      filtered = Plans.filter((plan) => !plan.completed);
+      plansWithPriority = plansWithPriority.filter((plan) => !plan.completed);
     }
 
-    filtered = filtered.sort(
-      (a, b) =>
-        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    );
+    // 排序：默认计划置顶，其他按动态优先级从高到低排序
+    const sorted = plansWithPriority.sort((a, b) => {
+      const isADefault = isDefaultPlan(a.id);
+      const isBDefault = isDefaultPlan(b.id);
 
-    setFilteredPlans(filtered);
-    setCurrentPage(1); // Reset to first page when filter changes
-  }, [Plans, filter, isDefaultPlan]); // Added isDefaultPlan dependency
+      // 默认计划始终置顶
+      if (isADefault && !isBDefault) return -1;
+      if (!isADefault && isBDefault) return 1;
 
-  // Logic to put default plan at the very top of page 1, regardless of sort
-  // This logic runs AFTER the filter and basic sort
-  const reorderedPlans = [...filteredPlans].sort((a, b) => {
-    const isADefault = isDefaultPlan(a.id);
-    const isBDefault = isDefaultPlan(b.id);
-    if (isADefault && !isBDefault) return -1;
-    if (!isADefault && isBDefault) return 1;
-    return 0; // Maintain original sort order for non-default plans
-  });
+      // 其他计划按动态优先级降序排列（高优先级在前）
+      if (b.dynamicPriority !== a.dynamicPriority) {
+        return b.dynamicPriority - a.dynamicPriority;
+      }
 
-  const totalPages = Math.ceil(reorderedPlans.length / pageSize);
-  const currentPlans = reorderedPlans.slice(
+      // 优先级相同时，未截止的计划排在前面
+      const now = new Date();
+      const aOverdue = a.dueDate ? now > a.dueDate : false;
+      const bOverdue = b.dueDate ? now > b.dueDate : false;
+
+      if (aOverdue !== bOverdue) {
+        return aOverdue ? 1 : -1; // 未截止的(false)排在前面
+      }
+
+      // 都未截止或都已截止，按截止日期升序（最近的在前）
+      if (a.dueDate && b.dueDate) {
+        return a.dueDate.getTime() - b.dueDate.getTime();
+      }
+
+      return 0;
+    });
+
+    setFilteredPlans(sorted);
+    setCurrentPage(1);
+  }, [Plans, filter, isDefaultPlan, getPlansWithDynamicPriority]);
+
+  const totalPages = Math.ceil(filteredPlans.length / pageSize);
+  const currentPlans = filteredPlans.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -241,6 +268,16 @@ function PlanList({ onPlanClick }: PlanListProps) {
           {currentPlans.map((plan) => {
             const tasks = getTasks(plan);
             const completedTasks = tasks.filter((t) => t.completed);
+            const isDefault = isDefaultPlan(plan.id);
+
+            // 获取计划模式信息
+            const modeInfo = isDefault ? null : getPlanModeInfo(plan);
+            const hasOverdue = !isDefault && hasOverdueTasks(plan);
+
+            // 使用动态优先级显示（默认计划除外）
+            const displayPriority = isDefault
+              ? plan.priority
+              : plan.dynamicPriority;
 
             // 根据优先级获取边框颜色
             const getBorderColor = (priority: number) => {
@@ -255,7 +292,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 style={{
                   margin: "8px 4px",
                   borderRadius: "12px",
-                  border: `2px solid ${getBorderColor(plan.priority)}`,
+                  border: `2px solid ${getBorderColor(displayPriority)}`,
                   backgroundColor: "#fff",
                   boxSizing: "border-box",
                 }}
@@ -263,12 +300,35 @@ function PlanList({ onPlanClick }: PlanListProps) {
                   <div className="plan-item-title">
                     <span className="plan-name">{plan.name}</span>
                     <div className="plan-tags">
-                      <Tag theme={getPriorityColor(plan.priority)} size="small">
-                        {getPriorityText(plan.priority)}
+                      <Tag
+                        theme={getPriorityColor(displayPriority)}
+                        size="small"
+                      >
+                        {getPriorityText(displayPriority)}
                       </Tag>
                       {plan.completed && (
                         <Tag theme="success" size="small">
                           已完成
+                        </Tag>
+                      )}
+                      {!isDefault && displayPriority !== plan.priority && (
+                        <Tag theme="primary" size="small">
+                          动态
+                        </Tag>
+                      )}
+                      {modeInfo && modeInfo.isStrict && (
+                        <Tag theme="danger" size="small" variant="outline">
+                          严格
+                        </Tag>
+                      )}
+                      {modeInfo && !modeInfo.isStrict && (
+                        <Tag theme="default" size="small" variant="outline">
+                          宽松
+                        </Tag>
+                      )}
+                      {hasOverdue && (
+                        <Tag theme="warning" size="small">
+                          超时
                         </Tag>
                       )}
                     </div>
@@ -288,6 +348,17 @@ function PlanList({ onPlanClick }: PlanListProps) {
                         </span>
                       )}
                     </div>
+                    {modeInfo && (
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "#999",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {modeInfo.description}
+                      </div>
+                    )}
                   </div>
                 }
                 arrow
@@ -306,7 +377,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
         )}
 
         {/* Pagination Control */}
-        {reorderedPlans.length > pageSize && (
+        {filteredPlans.length > pageSize && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
