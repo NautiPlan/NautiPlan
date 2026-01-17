@@ -5,6 +5,8 @@
 [default]
 description = "Default permissions for taskpilot-inference"
 permissions = [
+    # String
+    "allow-string-free",
     # LLM
     "allow-llm-init",
     "allow-llm-release",

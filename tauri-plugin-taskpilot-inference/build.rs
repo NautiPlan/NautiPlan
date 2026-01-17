@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const COMMANDS: &[&str] = &[
+    //String
+    "string_free",
     // LLM
     "llm_init",
     "llm_release",

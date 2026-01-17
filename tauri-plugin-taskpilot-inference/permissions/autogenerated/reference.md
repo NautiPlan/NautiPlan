@@ -4,6 +4,7 @@ Default permissions for taskpilot-inference
 
 #### This default permission set includes the following:
 
+- `allow-string-free`
 - `allow-llm-init`
 - `allow-llm-release`
 - `allow-llm-chat`
@@ -469,6 +470,32 @@ Enables the rag_status command without any pre-configured scope.
 <td>
 
 Denies the rag_status command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`taskpilot-inference:allow-string-free`
+
+</td>
+<td>
+
+Enables the string_free command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`taskpilot-inference:deny-string-free`
+
+</td>
+<td>
+
+Denies the string_free command without any pre-configured scope.
 
 </td>
 </tr>

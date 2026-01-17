@@ -499,10 +499,22 @@
           "markdownDescription": "Denies the rag_status command without any pre-configured scope."
         },
         {
-          "description": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`",
+          "description": "Enables the string_free command without any pre-configured scope.",
+          "type": "string",
+          "const": "allow-string-free",
+          "markdownDescription": "Enables the string_free command without any pre-configured scope."
+        },
+        {
+          "description": "Denies the string_free command without any pre-configured scope.",
+          "type": "string",
+          "const": "deny-string-free",
+          "markdownDescription": "Denies the string_free command without any pre-configured scope."
+        },
+        {
+          "description": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-string-free`\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`",
           "type": "string",
           "const": "default",
-          "markdownDescription": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`"
+          "markdownDescription": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-string-free`\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`"
         }
       ]
     }
