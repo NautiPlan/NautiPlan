@@ -10,7 +10,8 @@ import {
   Textarea,
   Toast,
 } from "tdesign-mobile-react";
-import { Slider } from "antd-mobile";
+import { Slider, Card, Space, Tag } from "antd-mobile";
+import { CheckCircleOutline, ClockCircleOutline } from "antd-mobile-icons";
 import { v4 as uuidv4 } from "uuid";
 import { FileWithMeta } from "../interface/fileWithMeta";
 import { Plan, Task, TaskDescription } from "../interface/task";
@@ -298,9 +299,9 @@ function AIPlanner() {
           }}
         />
       </div>
-      <div className="item no-swipe" style={{ touchAction: "none" }}>
+      <div className="item no-swipe">
         重要度: {priorityValue}
-        <div style={{ fontSize: "12px", color: "#999", marginTop: "4px" }}>
+        <div className="priority-hint">
           提示: 系统将根据重要度、时间紧迫度和完成进度自动计算动态优先级
         </div>
         <div className="wrapper-label">
@@ -322,7 +323,7 @@ function AIPlanner() {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          style={{ display: "none" }}
+          className="file-input-hidden"
           multiple
           accept="image/*,audio/*"
         />
@@ -330,24 +331,15 @@ function AIPlanner() {
           size="large"
           theme="default"
           onClick={handleUploadClick}
-          style={{ marginTop: "10px" }}
+          className="file-upload-button"
         >
           选择文件
         </Button>
         {files.length > 0 && (
           <>
-            <div style={{ marginTop: "10px", color: "#666" }}>
-              已添加 {files.length} 个文件
-            </div>
+            <div className="files-count">已添加 {files.length} 个文件</div>
             {files.map((file) => (
-              <div
-                key={file.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "5px",
-                }}
-              >
+              <div key={file.id} className="file-item">
                 {" "}
                 <span>
                   {file.name} ({Math.round(file.size / 1024)} KB)
@@ -356,7 +348,7 @@ function AIPlanner() {
                   size="small"
                   variant="text"
                   onClick={() => handleDeleteFile(file.id)}
-                  style={{ marginLeft: "8px", color: "#ff4d4f" }}
+                  className="file-delete-button"
                 >
                   ×
                 </Button>
@@ -374,29 +366,76 @@ function AIPlanner() {
         visible={planVisible}
         onVisibleChange={handlePlanVisibleChange}
         placement="center"
-        style={{ width: "240px", height: "240px" }}
+        className="plan-popup-wrapper"
       >
         {Plans.length > 0 ? (
-          <div className="plan-content">
-            <p className="plan-content-title">{Plans[Plans.length - 1].name}</p>
-            <p>
-              截止时间:{" "}
-              {new Date(Plans[Plans.length - 1].dueDate!).toLocaleDateString()}
-            </p>
-            <p>重要度: {Plans[Plans.length - 1].priority}</p>
-          </div>
+          <Card className="plan-success-card">
+            <Space direction="vertical" style={{ width: "100%" }} block>
+              <div className="plan-success-header">
+                <CheckCircleOutline className="plan-success-icon" />
+                <div className="plan-success-title">计划生成成功！</div>
+              </div>
+
+              <Card className="plan-name-card">
+                <div className="plan-name-content">
+                  <CheckCircleOutline className="plan-name-icon" />
+                  {Plans[Plans.length - 1].name}
+                </div>
+              </Card>
+
+              <Space
+                direction="vertical"
+                className="plan-details-container"
+                block
+              >
+                <div className="plan-detail-item">
+                  <ClockCircleOutline className="plan-detail-icon" />
+                  <span className="plan-detail-label">截止时间:</span>
+                  <span className="plan-detail-value">
+                    {new Date(
+                      Plans[Plans.length - 1].dueDate!
+                    ).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <div className="plan-detail-item">
+                  <Tag
+                    color={
+                      Plans[Plans.length - 1].priority >= 70
+                        ? "danger"
+                        : Plans[Plans.length - 1].priority >= 40
+                          ? "warning"
+                          : "default"
+                    }
+                    className="plan-priority-tag"
+                  >
+                    {Plans[Plans.length - 1].priority >= 70
+                      ? "高"
+                      : Plans[Plans.length - 1].priority >= 40
+                        ? "中"
+                        : "低"}
+                  </Tag>
+                  <span className="plan-detail-label">重要度:</span>
+                  <span className="plan-detail-value">
+                    {Plans[Plans.length - 1].priority}
+                  </span>
+                </div>
+              </Space>
+
+              <Button
+                theme="primary"
+                className="plan-close-button"
+                onClick={() => {
+                  setPlanVisible(false);
+                }}
+              >
+                我知道了
+              </Button>
+            </Space>
+          </Card>
         ) : (
-          <div>暂无计划</div>
+          <div className="plan-empty-state">暂无计划</div>
         )}
-        <Button
-          theme="primary"
-          className="view-plan-btm"
-          onClick={() => {
-            setPlanVisible(false);
-          }}
-        >
-          关闭
-        </Button>
       </Popup>
     </div>
   );

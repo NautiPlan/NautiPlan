@@ -178,53 +178,176 @@
 }
 .plan-content {
   background-color: #fff; /* White background */
-  border-radius: 8px; /* Rounded corners */
+  border-radius: 16px; /* Updated to match new design */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Soft shadow */
-  padding: 16px; /* Adjusted padding for the popup content */
+  padding: 20px; /* Increased padding */
   color: #333; /* Default text color */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   display: flex; /* Flex layout */
   flex-direction: column; /* Vertical arrangement */
-  gap: 8px; /* Gap between items */
-  height: 100%; /* Ensure it fills the parent height for absolute positioning of button */
+  gap: 12px; /* Increased gap between items */
+  min-height: 300px; /* Minimum height for better content display */
   text-align: center; /* Added for centering all text */
 }
 
 /* styles for the plan-content title */
 .plan-content-title {
   font-weight: bold; /* Bold font */
-  font-size: 18px; /* Larger font size */
-  margin-bottom: 8px; /* Bottom margin */
+  font-size: 20px; /* Increased font size */
+  margin-bottom: 12px; /* Increased bottom margin */
+  color: #333;
 }
 
 /* styles for other paragraphs within plan-content */
 .plan-content p:not(.plan-content-title) {
-  font-size: 14px; /* Smaller font size */
-  color: #888; /* Note text color */
-  margin-bottom: 4px; /* Small bottom margin */
+  font-size: 15px; /* Increased font size */
+  color: #666; /* Updated note text color */
+  margin-bottom: 6px; /* Increased bottom margin */
+  line-height: 1.6; /* Better line height */
 }
 
-/* styles for the view-plan-btm button */
-.view-plan-btm {
-  width: 100%; /* Full width */
-  padding: 12px 20px; /* Inner padding */
-  font-size: 18px; /* Font size */
-  font-weight: bold; /* Bold font */
-  border-radius: 8px; /* Changed to a single border-radius for all corners */
-  background-color: #0052d9; /* Primary blue background */
-  color: #fff; /* White text */
-  border: none; /* No border */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-  display: flex; /* Flex layout */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  position: absolute; /* Absolute positioning */
-  bottom: 0; /* Stick to the bottom */
-  left: 0; /* Align to the left */
+/* Popup overlay styles for better visual */
+.t-popup__content {
+  border-radius: 16px !important;
+  overflow: hidden;
 }
 
-.view-plan-btm:hover {
-  background-color: #003d99; /* Darker blue on hover */
-  box-shadow: 0 4px 12px rgba(0, 82, 217, 0.3); /* Shadow on hover */
+/* Plan success popup styles */
+.plan-popup-wrapper {
+  width: 90%;
+  max-width: 400px;
+  border-radius: 16px;
+  overflow: hidden;
 }
+
+.plan-success-card {
+  border-radius: 16px;
+  box-shadow: none;
+  border: none;
+}
+
+.plan-success-header {
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.plan-success-icon {
+  font-size: 48px;
+  color: #52c41a;
+  margin-bottom: 12px;
+}
+
+.plan-success-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.plan-name-card {
+  background: linear-gradient(135deg, #1fe2ec 0%, #1fe2ec 100%);
+  color: #fff;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.plan-name-content {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-name-icon {
+  font-size: 20px;
+}
+
+.plan-details-container {
+  width: 100%;
+  padding: 0 8px;
+}
+
+.plan-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 15px;
+  color: #666;
+}
+
+.plan-detail-icon {
+  font-size: 18px;
+  color: #1890ff;
+}
+
+.plan-detail-label {
+  color: #999;
+}
+
+.plan-detail-value {
+  font-weight: 500;
+  color: #333;
+}
+
+.plan-priority-tag {
+  margin-right: 4px;
+}
+
+.plan-close-button {
+  width: 100%;
+  margin-top: 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.plan-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+/* Priority hint text */
+.priority-hint {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
+/* File upload styles */
+.file-input-hidden {
+  display: none;
+}
+
+.file-upload-button {
+  margin-top: 10px;
+}
+
+.files-count {
+  margin-top: 10px;
+  color: #666;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.file-delete-button {
+  margin-left: 8px;
+  color: #ff4d4f;
+}
+
+/* No-swipe item for slider */
+.no-swipe {
+  touch-action: none;
+}
+
+/* Remove old button styles as we're using inline styles now */
+

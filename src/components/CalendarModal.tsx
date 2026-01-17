@@ -136,17 +136,6 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                 <div
                   className="modal-select-trigger"
                   onClick={() => setPlanPickerVisible(true)}
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px 12px",
-                    borderRadius: "4px",
-                    marginBottom: "12px",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    margin: "0 4px",
-                  }}
                 >
                   {plans.find((p) => p.id === selectedPlanId)?.name ||
                     "请选择计划"}
@@ -175,11 +164,10 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   placeholder="请输入任务名称"
                   autoFocus
                 />
-                <div style={{ marginTop: 16, textAlign: "right" }}>
+                <div className="modal-button-container">
                   <button
-                    className="modal-btn"
+                    className="modal-btn modal-button-spacing"
                     onClick={() => setShowCreate(false)}
-                    style={{ marginRight: 8 }}
                   >
                     取消
                   </button>

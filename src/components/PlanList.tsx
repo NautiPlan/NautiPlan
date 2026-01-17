@@ -387,51 +387,25 @@ function PlanList({ onPlanClick }: PlanListProps) {
         visible={visible}
         onVisibleChange={handleVisibleChange}
         placement="bottom"
-        style={{ height: "50%", zIndex: 1000 }}
+        className="task-popup"
       >
         <div className="tdesign-mobile-popup-demo__with-title header">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div
-              className="task-title"
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                fontWeight: "500",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+          <div className="task-popup-header">
+            <div className="task-title">
               <span>任务列表</span>
               {selectedPlan && (
-                <span
-                  style={{
-                    fontSize: "12px",
-                    color: "#999",
-                    fontWeight: "normal",
-                    marginTop: "2px",
-                  }}
-                >
+                <span className="task-count">
                   共{getTasks(selectedPlan).length}个任务
                 </span>
               )}
             </div>
-            <div style={{ color: "#ff4757" }} onClick={handleManageClick}>
+            <div className="task-action-button" onClick={handleManageClick}>
               {manageMode ? "完成" : "管理"}
             </div>
 
             {selectedPlan && !isDefaultPlan(selectedPlan.id) && (
               <div
                 className="task-remove"
-                style={{ color: "#ff4757", cursor: "pointer" }}
                 onClick={() => selectedPlan && handleRemovePlan(selectedPlan)}
               >
                 删除计划
@@ -440,37 +414,10 @@ function PlanList({ onPlanClick }: PlanListProps) {
           </div>
         </div>
         {selectedPlan && (
-          <div
-            className="task-popup-content" // Added class for styling
-            style={{
-              padding: "16px",
-              height: "calc(100% - 60px)", // 减去头部高度
-              overflowY: "auto", // 允许滚动
-            }}
-          >
-            <div
-              style={{
-                marginBottom: "16px",
-                padding: "12px 16px",
-                background: "linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)",
-                borderRadius: "10px",
-                borderLeft: "4px solid #91caff",
-              }}
-            >
-              <div
-                style={{ fontSize: "16px", fontWeight: "500", color: "#333" }}
-              >
-                {selectedPlan.name}
-              </div>
-              <div
-                style={{
-                  fontSize: "12px",
-                  color: "#888",
-                  marginTop: "4px",
-                  display: "flex",
-                  gap: "12px",
-                }}
-              >
+          <div className="task-popup-content task-popup-body">
+            <div className="task-plan-info">
+              <div className="task-plan-name">{selectedPlan.name}</div>
+              <div className="task-plan-dates">
                 <span>开始: {formatDate(selectedPlan.startDate)}</span>
                 <span>截止: {formatDate(selectedPlan.dueDate)}</span>
               </div>
@@ -482,43 +429,11 @@ function PlanList({ onPlanClick }: PlanListProps) {
                 {getTasks(selectedPlan).map((task) => (
                   <Cell
                     key={task.id}
-                    style={{
-                      margin: "8px 0",
-                      borderRadius: "10px",
-                      border: `2px solid ${
-                        task.completed ? "#b7eb8f" : "#ffccc7"
-                      }`,
-                      backgroundColor: "#fff",
-                    }}
+                    className={`task-cell ${task.completed ? "completed" : ""}`}
                     title={
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          width: "100%",
-                        }}
-                      >
-                        <span
-                          style={{
-                            flex: 1,
-                            wordBreak: "break-all",
-                            whiteSpace: "pre-wrap",
-                            marginRight: "8px",
-                            textAlign: "left", // 确保文字左对齐
-                          }}
-                        >
-                          {task.name}
-                        </span>
-                        <div
-                          style={{
-                            width: "40px",
-                            minWidth: "40px",
-                            flexShrink: 0,
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
+                      <div className="task-cell-title">
+                        <span className="task-name">{task.name}</span>
+                        <div className="task-delete-container">
                           {manageMode && (
                             <button
                               className="delete-button"
@@ -541,13 +456,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
                       </div>
                     }
                     description={
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
+                      <div className="task-description">
                         {task.completed ? (
                           <Tag theme="success" size="small">
                             已完成
@@ -565,23 +474,12 @@ function PlanList({ onPlanClick }: PlanListProps) {
               </List>
             )}
             {manageMode && (
-              <div
-                className="add-task"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "100%",
-                  marginTop: "16px",
-                }}
-              >
+              <div className="add-task-container">
                 <TButton
                   size="large"
                   theme="primary"
                   variant="text"
-                  style={{
-                    width: "100%",
-                    textAlign: "center",
-                  }}
+                  className="add-task-button"
                   onClick={() => handleAddTaskBTN()}
                 >
                   +
@@ -595,7 +493,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
         visible={addTaskVisible}
         onVisibleChange={handleAddTaskVisibleChange}
         placement="bottom"
-        style={{ height: "50%", zIndex: 1001 }}
+        className="add-task-popup"
       >
         <div className="add-task-title">添加任务</div>
         <div className="add-task-input">
@@ -611,7 +509,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
               visible={dateVisible}
               onConfirm={handleConfirm}
               onClose={onClose}
-              style={{ zIndex: 1002 }}
+              className="add-task-date-cell"
             ></Calendar>
             <Cell
               title="单个选择日期"
@@ -624,10 +522,7 @@ function PlanList({ onPlanClick }: PlanListProps) {
         <div className="add-task-btn">
           <TButton
             theme="primary"
-            style={{
-              width: "100%",
-              textAlign: "center",
-            }}
+            className="add-task-button"
             onClick={() => {
               handleAddTask();
               setAddTaskVisible(false);
