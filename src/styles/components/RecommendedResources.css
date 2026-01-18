@@ -79,6 +79,70 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* 智能建议卡片 */
+.suggestion-card {
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  grid-column: 1 / -1; /* 占据整行，因为建议内容通常较长 */
+}
+
+.suggestion-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-icon {
+  width: 24px;
+  height: 24px;
+  color: #3498db;
+  flex-shrink: 0;
+}
+
+.suggestion-title {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0;
+  color: #222;
+}
+
+.suggestion-content {
+  font-size: 0.95em;
+  color: #444;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* 卡片头部样式 */
+.resource-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.site-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
 /* 卡片内联元素 */
 .resource-type-badge {
   display: flex;
@@ -106,6 +170,7 @@
   /* 限制描述文本行数 */
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
