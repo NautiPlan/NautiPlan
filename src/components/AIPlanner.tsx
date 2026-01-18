@@ -11,7 +11,7 @@ import {
   Toast,
   Switch,
 } from "tdesign-mobile-react";
-import { Slider, Card, Space, Tag } from "antd-mobile";
+import { Slider, Card, Space, Tag, Modal } from "antd-mobile";
 import { CheckCircleOutline, ClockCircleOutline } from "antd-mobile-icons";
 import { v4 as uuidv4 } from "uuid";
 import { FileWithMeta } from "../interface/fileWithMeta";
@@ -41,25 +41,43 @@ function AIPlanner() {
       const checked = !!value;
       if (checked) {
         await enableOnDevice();
-        Toast({
-          message: "端侧模型已启用",
-          theme: "success",
-          duration: 2000,
+        Modal.show({
+          content: "端侧模型已成功启用",
+          closeOnAction: true,
+          actions: [
+            {
+              key: "confirm",
+              text: "确定",
+              primary: true,
+            },
+          ],
         });
       } else {
         await disableOnDevice();
-        Toast({
-          message: "端侧模型已关闭",
-          theme: "success",
-          duration: 2000,
+        Modal.show({
+          content: "端侧模型已成功关闭",
+          closeOnAction: true,
+          actions: [
+            {
+              key: "confirm",
+              text: "确定",
+              primary: true,
+            },
+          ],
         });
       }
     } catch (error) {
       console.error("端侧模型切换失败:", error);
-      Toast({
-        message: `切换失败: ${error}`,
-        theme: "error",
-        duration: 3000,
+      Modal.show({
+        content: `切换失败: ${error}`,
+        closeOnAction: true,
+        actions: [
+          {
+            key: "confirm",
+            text: "确定",
+            danger: true,
+          },
+        ],
       });
     } finally {
       setIsEdgeSwitching(false);
