@@ -47,6 +47,8 @@ export async function recommendResources(date: Date) {
     const rerankedResults: RerankedWebSearchRes[] =
       await rerankWebSearchResults(originalQuery, webSearchRes);
 
+    console.log(rerankedResults);
+
     // 转换
     const recommendedResources = rerankedResults.map((result) => {
       const doc = result.document;
@@ -54,7 +56,7 @@ export async function recommendResources(date: Date) {
         id: doc.id,
         title: doc.name,
         url: doc.url,
-        relevanceScore: result.relevance_score,
+        relevanceScore: result.relevanceScore,
         siteIcon: doc.siteIcon || "",
       };
     });

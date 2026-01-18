@@ -18,5 +18,5 @@ export interface WebSearchRes {
 export interface RerankedWebSearchRes {
   index: number;
   document: WebSearchRes;
-  relevance_score: number;
+  relevanceScore: number;
 }
