@@ -22,6 +22,7 @@ interface PlanStore {
   getTaskById: (taskId: string) => Task | undefined;
   removeTaskById: (taskId: string) => void;
   addTaskToPlan: (planId: string, task: Task) => void;
+  updateTaskDate: (taskId: string, newDate: Date) => Promise<void>;
   getTasksByDate: (date: Date) => Task[];
   toggleTaskById: (taskId: string) => void;
   getPlanByTaskId: (taskId: string) => Plan | undefined;
@@ -101,6 +102,13 @@ export const usePlanStore = create<PlanStore>((set, get) => {
               completed: JSON.parse(rawTask.completed as unknown as string),
               planId: rawTask.planId,
             }));
+
+            // 按日期升序排序任务（早的日期在前）
+            formattedTasks.sort((a, b) => {
+              const dateA = new Date(a.date).getTime();
+              const dateB = new Date(b.date).getTime();
+              return dateA - dateB;
+            });
 
             formattedPlan.Tasks = formattedTasks;
             return formattedPlan;
@@ -215,15 +223,25 @@ export const usePlanStore = create<PlanStore>((set, get) => {
         if (!plan) return state;
 
         return {
-          Plans: state.Plans.map((p) =>
-            p.id === planId
-              ? {
-                  ...p,
-                  Tasks: [...(p.Tasks || []), task],
-                  completed: task.completed ? p.completed : false,
-                }
-              : p
-          ),
+          Plans: state.Plans.map((p) => {
+            if (p.id === planId) {
+              const updatedTasks = [...(p.Tasks || []), task];
+              
+              // 按日期升序排序任务（早的日期在前）
+              updatedTasks.sort((a, b) => {
+                const dateA = new Date(a.date).getTime();
+                const dateB = new Date(b.date).getTime();
+                return dateA - dateB;
+              });
+              
+              return {
+                ...p,
+                Tasks: updatedTasks,
+                completed: task.completed ? p.completed : false,
+              };
+            }
+            return p;
+          }),
         };
       });
 
@@ -235,6 +253,37 @@ export const usePlanStore = create<PlanStore>((set, get) => {
           await db?.execute("UPDATE Plans SET completed = ? WHERE id = ?", [false, planId]);
         }
       }
+    },
+
+    updateTaskDate: async (taskId, newDate) => {
+      const db = get().db;
+      
+      // 更新数据库
+      await db?.execute(
+        "UPDATE Tasks SET date = ? WHERE id = ?",
+        [newDate.toISOString(), taskId]
+      );
+
+      // 更新内存状态并重新排序任务
+      set((state) => ({
+        Plans: state.Plans.map((plan) => {
+          const updatedTasks = plan.Tasks?.map((task) =>
+            task.id === taskId ? { ...task, date: newDate } : task
+          );
+          
+          // 按日期升序排序任务（早的日期在前）
+          const sortedTasks = updatedTasks?.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+            return dateA - dateB;
+          });
+          
+          return {
+            ...plan,
+            Tasks: sortedTasks,
+          };
+        }),
+      }));
     },
 
     getTaskById: (taskId) => {

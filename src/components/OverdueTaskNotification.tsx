@@ -21,8 +21,13 @@ interface OverdueTaskInfo {
 }
 
 function OverdueTaskNotification() {
-  const { Plans, isDefaultPlan, getOverdueTasksForPlan, getPlanById } =
-    usePlanStore();
+  const {
+    Plans,
+    isDefaultPlan,
+    getOverdueTasksForPlan,
+    getPlanById,
+    updateTaskDate,
+  } = usePlanStore();
 
   const [allOverduePlans, setAllOverduePlans] = useState<OverdueTaskInfo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -70,7 +75,7 @@ function OverdueTaskNotification() {
     return () => clearTimeout(timer);
   }, [Plans, isDefaultPlan, getOverdueTasksForPlan]);
 
-  const handleRescheduleToday = () => {
+  const handleRescheduleToday = async () => {
     if (!currentOverdueInfo) return;
 
     const plan = getPlanById(currentOverdueInfo.planId);
@@ -79,19 +84,18 @@ function OverdueTaskNotification() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 重新安排任务到今天
-    currentOverdueInfo.tasks.forEach((taskInfo) => {
-      const task = plan.Tasks.find((t) => t.id === taskInfo.taskId);
-      if (task) {
-        task.date = today;
-      }
-    });
+    // 重新安排任务到今天，并更新数据库
+    await Promise.all(
+      currentOverdueInfo.tasks.map((taskInfo) =>
+        updateTaskDate(taskInfo.taskId, today)
+      )
+    );
 
     // 处理完当前计划，显示下一个
     handleNextPlan();
   };
 
-  const handleRescheduleTomorrow = () => {
+  const handleRescheduleTomorrow = async () => {
     if (!currentOverdueInfo) return;
 
     const plan = getPlanById(currentOverdueInfo.planId);
@@ -101,13 +105,12 @@ function OverdueTaskNotification() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
 
-    // 重新安排任务到明天
-    currentOverdueInfo.tasks.forEach((taskInfo) => {
-      const task = plan.Tasks.find((t) => t.id === taskInfo.taskId);
-      if (task) {
-        task.date = tomorrow;
-      }
-    });
+    // 重新安排任务到明天，并更新数据库
+    await Promise.all(
+      currentOverdueInfo.tasks.map((taskInfo) =>
+        updateTaskDate(taskInfo.taskId, tomorrow)
+      )
+    );
 
     // 处理完当前计划，显示下一个
     handleNextPlan();
