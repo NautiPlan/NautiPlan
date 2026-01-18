@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { invoke } from "@tauri-apps/api/core";
 import TabBarBase from "./components/TabBarBase";
 import AIPlannerView from "./pages/AIPlannerView";
 import CalendarView from "./pages/CalendarView";
@@ -11,42 +10,6 @@ import TodoView from "./pages/TodoView";
 import { usePlanStore } from "./store/taskStore";
 import "./styles/components/transitions.css";
 import ApiKeyButton from "./components/ApiKey";
-
-// ============ 插件测试函数 ============
-async function testInferencePlugin() {
-  console.log("[PluginTest] 开始测试 taskpilot-inference 插件...");
-
-  try {
-    // 1. 检查 LLM 状态
-    const llmStatus = await invoke<{ initialized: boolean }>(
-      "plugin:taskpilot-inference|llm_status"
-    );
-    console.log("[PluginTest] LLM 状态:", llmStatus);
-
-    // 2. 检查 Embedding 状态
-    const embStatus = await invoke<{ initialized: boolean }>(
-      "plugin:taskpilot-inference|embedding_status"
-    );
-    console.log("[PluginTest] Embedding 状态:", embStatus);
-
-    // 3. 检查 RAG 状态
-    const ragStatus = await invoke<{ initialized: boolean }>(
-      "plugin:taskpilot-inference|rag_status"
-    );
-    console.log("[PluginTest] RAG 状态:", ragStatus);
-
-    console.log("[PluginTest] ✅ 插件命令调用成功（状态查询）");
-
-    // 如果需要测试初始化，取消下面注释并提供正确路径：
-    // await invoke("plugin:taskpilot-inference|llm_init", {
-    //   payload: { configPath: "/path/to/llm_config.json" }
-    // });
-    // console.log("[PluginTest] LLM 初始化成功");
-  } catch (error) {
-    console.error("[PluginTest] ❌ 插件调用失败:", error);
-  }
-}
-// ============ 插件测试结束 ============
 
 const pages = ["/", "/calendar", "/chat", "/myPlan"];
 
@@ -63,11 +26,6 @@ function App() {
 
   useEffect(() => {
     syncToDatabase();
-
-    // 启动时测试插件（暂时禁用，排查闪退）
-    if (import.meta.env.DEV) {
-      testInferencePlugin();
-    }
   }, []);
 
   // 手动监听 TouchStart 以确保在任何滑动发生前准确捕获滚动位置

@@ -17,8 +17,6 @@ pub use stream::StreamToken;
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
     Builder::new("taskpilot-inference")
         .invoke_handler(tauri::generate_handler![
-            // String 命令
-            commands::string_free,
             // LLM 命令
             commands::llm_init,
             commands::llm_release,
