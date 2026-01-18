@@ -10,6 +10,7 @@ import TodoView from "./pages/TodoView";
 import { usePlanStore } from "./store/taskStore";
 import "./styles/components/transitions.css";
 import ApiKeyButton from "./components/ApiKey";
+import { useInferenceStore, InferenceConfig } from "./store/llmStore";
 
 const pages = ["/", "/calendar", "/chat", "/myPlan"];
 
@@ -23,6 +24,19 @@ function App() {
 
   const [showApiKey, setShowApiKey] = useState(false);
   const isSwipingFromTop = useRef(false);
+
+  // 设置 llm 路径
+  const { setConfig } = useInferenceStore();
+  const cfg: InferenceConfig = {
+    llmConfigPath:
+      "data/local/tmp/models/Qwen2.5-1.5B-Instruct-MNN/llm_config.json",
+    embeddingConfigPath:
+      "data/local/tmp/models/bge-large-zh-MNN/llm_config.json",
+    ragDbPath: "data/local/tmp/models/rag",
+  };
+  useEffect(() => {
+    setConfig(cfg);
+  }, []);
 
   useEffect(() => {
     syncToDatabase();

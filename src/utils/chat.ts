@@ -1,7 +1,7 @@
 import { Plan, Task, TaskDescription } from "../interface/task";
 import { invoke } from "@tauri-apps/api/core";
 
-interface TempTask {
+export interface TempTask {
   id: string;
   name: string;
   day: string;
@@ -13,7 +13,7 @@ function addDays(base: Date, days: number): Date {
   return d;
 }
 
-function tempTasksToTasks(
+export function tempTasksToTasks(
   tempTasks: TempTask[],
   taskDescription: TaskDescription
 ): Task[] {

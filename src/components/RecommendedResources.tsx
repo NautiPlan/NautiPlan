@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { RecommendedResource } from "../interface/resource";
 import "../styles/components/RecommendedResources.css";
-import { recommendResources } from "../utils/recommendRes";
+import { recommendResources, llmSuggestion } from "../utils/recommendRes";
+import { useInferenceStore } from "../store/llmStore";
 
 interface RecommendedResourcesProps {
   selectedDate: Date | null;
@@ -30,9 +31,22 @@ function RecommendedResources({
     }
   };
 
+  const { onDeviceEnabled } = useInferenceStore();
+  const [suggestion, setSuggestion] = useState("");
+
+  const fetchLlmSuggestion = async (targetDate: Date) => {
+    try {
+      const newSuggestion = await llmSuggestion(targetDate);
+      setSuggestion(newSuggestion || "");
+    } catch (error) {
+      console.log("failed to get suggestion : ", error);
+    }
+  };
+
   useEffect(() => {
     const targetDate = selectedDate || currentDate;
-    fetchRecommendedResources(targetDate);
+    if (!onDeviceEnabled) fetchRecommendedResources(targetDate);
+    else if (onDeviceEnabled) fetchLlmSuggestion(targetDate);
   }, []);
 
   return (
@@ -49,7 +63,9 @@ function RecommendedResources({
         </div>
       ) : (
         <div className="resources-grid">
-          {recommendedResources.length > 0 ? (
+          {onDeviceEnabled ? (
+            <div>{suggestion}</div>
+          ) : recommendedResources.length > 0 ? (
             recommendedResources.map((resource) => (
               <div key={resource.id} className="resource-card">
                 <div className="resource-card-header">

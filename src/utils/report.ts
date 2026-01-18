@@ -7,8 +7,6 @@ import { usePlanStore } from "../store/taskStore";
 import { Task } from "../interface/task";
 import { invoke } from "@tauri-apps/api/core";
 
-const API_KEY = import.meta.env.VITE_ALIAPI_KEY as string;
-
 function formatTasksForPrompt(tasks: TaskSummary[]): string {
   if (!tasks || tasks.length === 0) {
     return "本月没有记录任何任务。";
@@ -111,7 +109,6 @@ export async function generateMonthlyReport(): Promise<
   try {
     const response = await invoke<string>("aliyun_report", {
       prompt,
-      apiKey: API_KEY,
     });
 
     const reportContent = JSON.parse(response);

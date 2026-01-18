@@ -95,16 +95,21 @@ export const useInferenceStore = create<InferenceStore>((set, get) => ({
   clearError: () => set({ lastError: undefined }),
 
   enableOnDevice: async () => {
-    set({ onDeviceEnabled: true });
-    await get().llmInit();
+    try {
+      await get().llmInit();
+      set({ onDeviceEnabled: true });
+    } catch (e) {
+      throw e;
+    }
   },
 
   disableOnDevice: async () => {
-    set({ onDeviceEnabled: false });
-    // 关闭端侧llm
-    await get()
-      .llmRelease()
-      .catch(() => undefined);
+    try {
+      await get().llmRelease();
+      set({ onDeviceEnabled: false });
+    } catch (e) {
+      throw e;
+    }
   },
 
   llmInit: async () => {

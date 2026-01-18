@@ -9,6 +9,7 @@ import {
   Popup,
   Textarea,
   Toast,
+  Switch,
 } from "tdesign-mobile-react";
 import { Slider, Card, Space, Tag } from "antd-mobile";
 import { CheckCircleOutline, ClockCircleOutline } from "antd-mobile-icons";
@@ -20,10 +21,50 @@ import "../styles/components/AIPlanner.css";
 import { callGpt } from "../utils/chat";
 import { callImageGpt, callAudioGpt } from "../utils/multiModal";
 import { prePrompts } from "../utils/prompt";
+import { useInferenceStore } from "../store/llmStore";
+import { callOnDevicePlanner } from "../utils/llmChat";
 
 function AIPlanner() {
   // 状态管理
   const { addPlan, Plans } = usePlanStore();
+
+  const { onDeviceEnabled, enableOnDevice, disableOnDevice } =
+    useInferenceStore();
+
+  // 端侧模型切换状态
+  const [isEdgeSwitching, setIsEdgeSwitching] = useState(false);
+
+  const onEdgeChange = async (value: any) => {
+    if (isEdgeSwitching) return;
+    setIsEdgeSwitching(true);
+    try {
+      const checked = !!value;
+      if (checked) {
+        await enableOnDevice();
+        Toast({
+          message: "端侧模型已启用",
+          theme: "success",
+          duration: 2000,
+        });
+      } else {
+        await disableOnDevice();
+        Toast({
+          message: "端侧模型已关闭",
+          theme: "success",
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      console.error("端侧模型切换失败:", error);
+      Toast({
+        message: `切换失败: ${error}`,
+        theme: "error",
+        duration: 3000,
+      });
+    } finally {
+      setIsEdgeSwitching(false);
+    }
+  };
 
   // 任务名称
   const [taskName, setTaskName] = useState("");
@@ -193,7 +234,10 @@ function AIPlanner() {
     });
 
     try {
-      const result = await callGpt(taskDescription);
+      let result;
+      if (!onDeviceEnabled) result = await callGpt(taskDescription);
+      else if (onDeviceEnabled)
+        result = await callOnDevicePlanner(taskDescription);
       // 关闭loading toast
       if (loadingToast) {
         Toast.clear();
@@ -260,6 +304,16 @@ function AIPlanner() {
       </div>
       <div className="item">
         <Cell
+          title="端侧模型"
+          rightIcon={
+            <Switch
+              value={onDeviceEnabled}
+              onChange={onEdgeChange}
+              disabled={isEdgeSwitching}
+            />
+          }
+        />
+        <Cell
           title="预设prompt"
           note={note}
           arrow
@@ -317,46 +371,48 @@ function AIPlanner() {
           />
         </div>
       </div>
-      <div className="item">
-        上传图片或音频（可选）
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          className="file-input-hidden"
-          multiple
-          accept="image/*,audio/*"
-        />
-        <Button
-          size="large"
-          theme="default"
-          onClick={handleUploadClick}
-          className="file-upload-button"
-        >
-          选择文件
-        </Button>
-        {files.length > 0 && (
-          <>
-            <div className="files-count">已添加 {files.length} 个文件</div>
-            {files.map((file) => (
-              <div key={file.id} className="file-item">
-                {" "}
-                <span>
-                  {file.name} ({Math.round(file.size / 1024)} KB)
-                </span>
-                <Button
-                  size="small"
-                  variant="text"
-                  onClick={() => handleDeleteFile(file.id)}
-                  className="file-delete-button"
-                >
-                  ×
-                </Button>
-              </div>
-            ))}
-          </>
-        )}
-      </div>
+      {!onDeviceEnabled && (
+        <div className="item">
+          上传图片或音频（可选）
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="file-input-hidden"
+            multiple
+            accept="image/*,audio/*"
+          />
+          <Button
+            size="large"
+            theme="default"
+            onClick={handleUploadClick}
+            className="file-upload-button"
+          >
+            选择文件
+          </Button>
+          {files.length > 0 && (
+            <>
+              <div className="files-count">已添加 {files.length} 个文件</div>
+              {files.map((file) => (
+                <div key={file.id} className="file-item">
+                  {" "}
+                  <span>
+                    {file.name} ({Math.round(file.size / 1024)} KB)
+                  </span>
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={() => handleDeleteFile(file.id)}
+                    className="file-delete-button"
+                  >
+                    ×
+                  </Button>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
       <div className="item">
         <Button size="large" theme="primary" onClick={commit}>
           生成计划
