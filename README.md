@@ -5,7 +5,7 @@
 运行 App，手机或模拟器，模型路径默认在 data/local/tmp/models，可使用 adb 命令如下
 
 ```
-adb push "./tauri-plugin-taskpilot-inference/taskPilot-InferrenceCore/models/models/" "/data/local/tmp/
+adb push "./tauri-plugin-taskpilot-inference/taskPilot-InferrenceCore/models/models/" "/data/local/tmp/"
 ```
 
 ## 环境要求
