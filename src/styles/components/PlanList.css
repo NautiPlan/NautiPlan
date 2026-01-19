@@ -255,6 +255,8 @@
   font-weight: 500;
   color: #333;
   line-height: 1.4;
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 /* 任务日期样式 */
@@ -371,15 +373,31 @@
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 0.875rem;
-  padding: 0.25rem;
-  margin-left: auto;
   font-size: 1.2rem;
   padding: 0.5rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  visibility: visible;
+}
+
+.delete-button:hover {
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 .delete-button:active {
   color: #b91c1c;
+  background-color: rgba(239, 68, 68, 0.15);
+  transform: scale(0.95);
+}
+
+.delete-button.hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 .add-task-title {
   padding: 16px;
@@ -575,7 +593,8 @@
 .task-name {
   flex: 1;
   word-break: break-all;
-  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  white-space: normal;
   margin-right: 8px;
   text-align: left;
 }
@@ -586,6 +605,7 @@
   flex-shrink: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .task-description {

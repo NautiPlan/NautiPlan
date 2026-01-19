@@ -434,24 +434,22 @@ function PlanList({ onPlanClick }: PlanListProps) {
                       <div className="task-cell-title">
                         <span className="task-name">{task.name}</span>
                         <div className="task-delete-container">
-                          {manageMode && (
-                            <button
-                              className="delete-button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeTaskById(task.id);
-                                setSelectedPlan((prev) => ({
-                                  ...prev!,
-                                  Tasks:
-                                    prev?.Tasks?.filter(
-                                      (t) => t.id !== task.id
-                                    ) || [],
-                                }));
-                              }}
-                            >
-                              —
-                            </button>
-                          )}
+                          <button
+                            className={`delete-button ${!manageMode ? "hidden" : ""}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeTaskById(task.id);
+                              setSelectedPlan((prev) => ({
+                                ...prev!,
+                                Tasks:
+                                  prev?.Tasks?.filter(
+                                    (t) => t.id !== task.id
+                                  ) || [],
+                              }));
+                            }}
+                          >
+                            －
+                          </button>
                         </div>
                       </div>
                     }
