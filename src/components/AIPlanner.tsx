@@ -413,18 +413,16 @@ function AIPlanner() {
               <div className="files-count">已添加 {files.length} 个文件</div>
               {files.map((file) => (
                 <div key={file.id} className="file-item">
-                  {" "}
-                  <span>
+                  <span className="file-name">
                     {file.name} ({Math.round(file.size / 1024)} KB)
                   </span>
-                  <Button
-                    size="small"
-                    variant="text"
+                  <button
                     onClick={() => handleDeleteFile(file.id)}
-                    className="file-delete-button"
+                    className="file-delete-icon"
+                    title="删除文件"
                   >
-                    ×
-                  </Button>
+                    ✕
+                  </button>
                 </div>
               ))}
             </>
