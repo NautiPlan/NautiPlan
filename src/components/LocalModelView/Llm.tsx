@@ -1,0 +1,147 @@
+import React from "react";
+import { Button, RadioGroup, Input, Progress } from "tdesign-mobile-react";
+import {
+  CloudDownloadOutlined,
+  RocketOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
+
+type ModelStatus = "not-downloaded" | "downloading" | "downloaded";
+
+type DemoModel = {
+  id: string;
+  name: string;
+  size: string;
+  status: ModelStatus;
+  progress?: number;
+};
+
+const backends = [
+  { label: "CPU", value: 0 },
+  { label: "GPU (OpenCL)", value: 3 },
+  { label: "NPU (Android)", value: 5 },
+  { label: "Vulkan", value: 7 },
+  { label: "自动", value: 4 },
+];
+
+const demoModels: DemoModel[] = [
+  {
+    id: "qwen2.5-1.5b",
+    name: "Qwen2.5-1.5B-Instruct",
+    size: "1.2GB",
+    status: "downloaded",
+  },
+  {
+    id: "qwen2.5-7b",
+    name: "Qwen2.5-7B-Instruct (GGUF)",
+    size: "5.5GB",
+    status: "downloading",
+    progress: 45,
+  },
+];
+
+const Llm: React.FC = () => {
+  const selectedId = demoModels[0].id;
+  const status = "idle";
+
+  return (
+    <div className="tab-container" style={{ padding: "16px 0" }}>
+      <div className="card">
+        <div className="card-title">
+          <RocketOutlined /> LLM 后端配置
+        </div>
+        {/* @ts-ignore */}
+        <RadioGroup value={0} onChange={() => undefined} options={backends} />
+      </div>
+
+      <div className="card">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "12px",
+          }}
+        >
+          <div className="card-title" style={{ margin: 0 }}>
+            运行状态
+          </div>
+          <div className={`status-value status-${status}`}>
+            {status.toUpperCase()}
+          </div>
+        </div>
+        <Button theme="primary" block disabled>
+          激活 LLM 模型
+        </Button>
+      </div>
+
+      <div className="card">
+        <div className="card-title">
+          <CloudDownloadOutlined /> LLM 模型仓库
+        </div>
+        <div className="model-list">
+          {demoModels.map((model) => (
+            <div
+              key={model.id}
+              className={`model-item ${selectedId === model.id ? "selected" : ""}`}
+              style={{
+                padding: "12px",
+                border:
+                  selectedId === model.id
+                    ? "1.5px solid #0052d9"
+                    : "1px solid #eee",
+                borderRadius: "8px",
+                marginBottom: "8px",
+                background: selectedId === model.id ? "#f0f7ff" : "white",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <div className="model-name" style={{ fontWeight: "bold" }}>
+                    {model.name}
+                  </div>
+                  <div
+                    className="model-meta"
+                    style={{ fontSize: "12px", color: "#666" }}
+                  >
+                    {model.size} | {model.status}
+                  </div>
+                </div>
+
+                {model.status !== "downloaded" && (
+                  <Button size="small" theme="primary" disabled>
+                    下载
+                  </Button>
+                )}
+              </div>
+
+              {model.status === "downloading" && (
+                <Progress
+                  percentage={model.progress ?? 0}
+                  style={{ marginTop: "8px" }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">
+          <CheckCircleOutlined /> 推理独立测试
+        </div>
+        <Input placeholder="输入对话 Prompt" style={{ marginBottom: "8px" }} />
+        <Button theme="primary" variant="outline" block disabled>
+          对话测试
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default Llm;
