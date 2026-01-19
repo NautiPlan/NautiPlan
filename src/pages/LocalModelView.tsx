@@ -9,13 +9,12 @@ const LocalModelView: React.FC = () => {
   return (
     <div className="local-model-view">
       <Tabs>
-        <Tabs.Tab title="LLM 推理" key="llm">
+        <Tabs.Tab title="LLM(演示)" key="llm">
           <Llm />
         </Tabs.Tab>
-        <Tabs.Tab title="Embedding" key="embedding">
+        <Tabs.Tab title="Embedding(演示)" key="embedding">
           <Embedding />
         </Tabs.Tab>
-
         <Tabs.Tab title="RAG 检索" key="rag">
           <Rag />
         </Tabs.Tab>

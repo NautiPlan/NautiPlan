@@ -1,8 +1,18 @@
 import React from "react";
 import { Button, Input } from "tdesign-mobile-react";
+import { useInferenceStore } from "../../store/llmStore";
 
 const Rag: React.FC = () => {
-  const status = "idle";
+  const { retrievalStatus, retrievalInit, retrievalRelease } =
+    useInferenceStore();
+
+  const handleRetrievalChange = () => {
+    if (retrievalStatus === "ready") {
+      retrievalRelease();
+    } else {
+      retrievalInit();
+    }
+  };
 
   return (
     <div className="tab-container" style={{ padding: "16px 0" }}>
@@ -17,13 +27,27 @@ const Rag: React.FC = () => {
           <div className="card-title" style={{ margin: 0 }}>
             RAG 引擎状态
           </div>
-          <div className={`status-value status-${status}`}>
-            {status.toUpperCase()}
+          <div className={`status-value status-${retrievalStatus}`}>
+            {retrievalStatus}
           </div>
         </div>
-        <Button theme="primary" block disabled>
-          激活 RAG 引擎
-        </Button>
+        {retrievalStatus === "ready" ? (
+          <Button theme="primary" onClick={handleRetrievalChange} block>
+            释放 RAG 引擎
+          </Button>
+        ) : retrievalStatus === "initializing" ? (
+          <Button theme="default" block disabled>
+            RAG 引擎初始化中...
+          </Button>
+        ) : retrievalStatus === "releasing" ? (
+          <Button theme="default" block disabled>
+            RAG 引擎释放中...
+          </Button>
+        ) : (
+          <Button theme="primary" onClick={handleRetrievalChange} block>
+            激活 RAG 引擎
+          </Button>
+        )}
       </div>
 
       <div className="card">

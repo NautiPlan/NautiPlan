@@ -43,11 +43,11 @@ const Embedding: React.FC = () => {
 
   return (
     <div className="tab-container" style={{ padding: "16px 0" }}>
+      <>此页面仅作演示，具体功能实现需结合OPPO能力支持</>
       <div className="card">
         <div className="card-title">
           <RocketOutlined /> Vector 后端配置
         </div>
-        {/* @ts-ignore */}
         <RadioGroup value={0} onChange={() => undefined} options={backends} />
       </div>
 

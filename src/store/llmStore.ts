@@ -223,6 +223,12 @@ export const useInferenceStore = create<InferenceStore>((set, get) => ({
         get().touchRetrieval();
       } catch (e: any) {
         set({ retrievalStatus: "error", lastError: String(e?.message ?? e) });
+        // 如果 rag 初始化失败，尝试释放已经成功初始化的 embedding 避免资源泄露
+        try {
+          await invoke("plugin:taskpilot-inference|embedding_release").catch(
+            () => undefined
+          );
+        } catch {}
         throw e;
       } finally {
         retrievalInitPromise = null;

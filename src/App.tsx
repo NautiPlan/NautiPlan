@@ -12,6 +12,7 @@ import { usePlanStore } from "./store/taskStore";
 import "./styles/components/transitions.css";
 import ApiKeyButton from "./components/ApiKey";
 import { useInferenceStore, InferenceConfig } from "./store/llmStore";
+import { invoke } from "@tauri-apps/api/core";
 
 const pages = ["/", "/calendar", "/chat", "/myPlan", "/model"];
 
@@ -28,16 +29,26 @@ function App() {
 
   // 设置 llm 路径
   const { setConfig } = useInferenceStore();
-  const cfg: InferenceConfig = {
-    llmConfigPath:
-      "data/local/tmp/models/Qwen2.5-1.5B-Instruct-MNN/llm_config.json",
-    embeddingConfigPath:
-      "data/local/tmp/models/bge-large-zh-MNN/llm_config.json",
-    ragDbPath: "data/local/tmp/models/rag",
-  };
+
   useEffect(() => {
-    setConfig(cfg);
-  }, []);
+    (async () => {
+      try {
+        const sandbox = await invoke<string>("get_sandbox_dir");
+        const ragDbPath = `${sandbox.replace(/\/$/, "")}/ragDb.db`;
+        console.log("RAG DB Path:", ragDbPath);
+        const cfg: InferenceConfig = {
+          llmConfigPath:
+            "/data/local/tmp/models/Qwen2.5-1.5B-Instruct-MNN/config.json",
+          embeddingConfigPath:
+            "/data/local/tmp/models/bge-large-zh-MNN/config.json",
+          ragDbPath,
+        };
+        setConfig(cfg);
+      } catch (e) {
+        console.error("failed to get sandbox dir:", e);
+      }
+    })();
+  }, [setConfig]);
 
   useEffect(() => {
     syncToDatabase();

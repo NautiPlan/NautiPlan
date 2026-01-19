@@ -5,6 +5,7 @@ import {
   RocketOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
+import { useInferenceStore } from "../../store/llmStore";
 
 type ModelStatus = "not-downloaded" | "downloading" | "downloaded";
 
@@ -42,15 +43,16 @@ const demoModels: DemoModel[] = [
 
 const Llm: React.FC = () => {
   const selectedId = demoModels[0].id;
-  const status = "idle";
+
+  const { llmStatus } = useInferenceStore();
 
   return (
     <div className="tab-container" style={{ padding: "16px 0" }}>
+      <>此页面仅作演示，具体功能实现需结合OPPO能力支持</>
       <div className="card">
         <div className="card-title">
           <RocketOutlined /> LLM 后端配置
         </div>
-        {/* @ts-ignore */}
         <RadioGroup value={0} onChange={() => undefined} options={backends} />
       </div>
 
@@ -65,9 +67,7 @@ const Llm: React.FC = () => {
           <div className="card-title" style={{ margin: 0 }}>
             运行状态
           </div>
-          <div className={`status-value status-${status}`}>
-            {status.toUpperCase()}
-          </div>
+          <div className={`status-value status-${llmStatus}`}>{llmStatus}</div>
         </div>
         <Button theme="primary" block disabled>
           激活 LLM 模型
@@ -135,7 +135,7 @@ const Llm: React.FC = () => {
         <div className="card-title">
           <CheckCircleOutlined /> 推理独立测试
         </div>
-        <Input placeholder="输入对话 Prompt" style={{ marginBottom: "8px" }} />
+        <Input placeholder="输入测试 Prompt" style={{ marginBottom: "8px" }} />
         <Button theme="primary" variant="outline" block disabled>
           对话测试
         </Button>

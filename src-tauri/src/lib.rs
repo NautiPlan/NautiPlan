@@ -43,6 +43,11 @@ async fn rerank_web_search_results(
     commands::web_search::rerank_web_search_results(app, query, documents).await
 }
 
+#[tauri::command]
+async fn get_sandbox_dir(app: tauri::AppHandle) -> Result<String, String> {
+    commands::get_sandbox_dir::get_sandbox_dir(app)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -57,7 +62,8 @@ pub fn run() {
             aliyun_gpt,
             aliyun_report,
             web_search,
-            rerank_web_search_results
+            rerank_web_search_results,
+            get_sandbox_dir,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

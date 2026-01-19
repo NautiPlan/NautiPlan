@@ -2,6 +2,7 @@ pub mod aliyun_audio;
 pub mod aliyun_gpt;
 pub mod aliyun_image;
 pub mod aliyun_report;
+pub mod get_sandbox_dir;
 pub mod web_search;
 
 use tauri_plugin_secure_storage::{GetRequest, SecureStorageExt};
