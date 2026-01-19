@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Checkbox } from "tdesign-mobile-react";
+import { Button, Input, Space } from "antd-mobile";
+import { AddOutline } from "antd-mobile-icons";
 import { v4 as uuidv4 } from "uuid";
 import { Task } from "../interface/task";
 import { usePlanStore } from "../store/taskStore";
@@ -10,7 +12,7 @@ const TodoPanel: React.FC = () => {
   const [newTask, setNewTask] = useState("");
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
   const taskTextRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const deleteButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const deleteButtonRefs = useRef<Map<string, HTMLElement>>(new Map());
   const {
     getTasksByDate,
     toggleTaskById,
@@ -52,17 +54,17 @@ const TodoPanel: React.FC = () => {
     setNewTask("");
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleAddTask();
-    }
-  };
-
   const handleDeleteTask = (taskId: string) => {
     const textEl = taskTextRefs.current.get(taskId);
     const btnEl = deleteButtonRefs.current.get(taskId);
 
-    if (!textEl || !btnEl) {
+    if (!textEl) {
+      removeTaskById(taskId);
+      return;
+    }
+
+    if (!btnEl) {
+      // 如果没有按钮元素,直接删除(保证删除功能可用)
       removeTaskById(taskId);
       return;
     }
@@ -103,18 +105,37 @@ const TodoPanel: React.FC = () => {
   return (
     <div className="todo-panel">
       <h2 className="panel-title">Tasks</h2>
-      <div className="add-todo-form">
-        <input
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          onKeyUp={handleKeyPress}
-          type="text"
-          placeholder="Add a new task..."
-          className="todo-input"
-        />
-        <button onClick={handleAddTask} className="add-button">
-          Add
-        </button>
+      <div className="add-todo-form-modern">
+        <Space direction="vertical" block style={{ "--gap": "12px" }}>
+          <Input
+            value={newTask}
+            onChange={(val) => setNewTask(val)}
+            onEnterPress={handleAddTask}
+            placeholder="What needs to be done today?"
+            clearable
+            style={{
+              "--font-size": "15px",
+              "--placeholder-color": "#999",
+            }}
+          />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              onClick={handleAddTask}
+              color="primary"
+              size="middle"
+              disabled={!newTask.trim()}
+              style={{
+                "--border-radius": "8px",
+                minWidth: "140px",
+              }}
+            >
+              <Space style={{ "--gap": "6px" }}>
+                <AddOutline fontSize={18} />
+                <span>Add Task</span>
+              </Space>
+            </Button>
+          </div>
+        </Space>
       </div>
       <div className="progress-container">
         <div className="progress-info">
@@ -161,15 +182,20 @@ const TodoPanel: React.FC = () => {
                   <div className="todo-name">{task.name}</div>
                 </div>
                 <div className="todo-actions">
-                  <button
+                  <div
                     ref={(el) => {
                       if (el) deleteButtonRefs.current.set(task.id, el);
                     }}
-                    onClick={() => handleDeleteTask(task.id)}
-                    className="delete-button"
                   >
-                    🗑️
-                  </button>
+                    <Button
+                      onClick={() => handleDeleteTask(task.id)}
+                      className="delete-button"
+                      fill="none"
+                      size="mini"
+                    >
+                      🗑️
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

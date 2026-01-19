@@ -398,6 +398,20 @@ body {
   background-color: #16a34a;
 }
 
+/* antd-mobile Input 组件样式 - 为 add-todo-form-modern 中的输入框添加边框 */
+.add-todo-form-modern .adm-input {
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  padding: 0.75rem 1rem !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.add-todo-form-modern .adm-input:focus-within {
+  border-color: #0052cc !important;
+  box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.15) !important;
+}
+
 .progress-container {
   margin-bottom: 0.75rem;
 }
@@ -451,14 +465,14 @@ body {
 .todo-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   padding: 8px 0;
 }
 
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 16px 18px;
+  padding: 10px 16px;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 16px;
@@ -543,7 +557,7 @@ body {
 
 @media (min-width: 768px) {
   .todo-item {
-    padding: 18px 20px;
+    padding: 12px 18px;
   }
 }
 
@@ -614,7 +628,7 @@ body {
   }
   
   .todo-item {
-    padding: 18px 20px;
+    padding: 12px 18px;
   }
 }
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Button } from "antd-mobile";
 import { useTimerStore } from "../store/timerStore";
 import "../styles/components/Nautilus.css";
 
@@ -177,62 +178,72 @@ const TimerPanel: React.FC = () => {
         )}
       </div>
       <div className="timer-mode-buttons">
-        <button
+        <Button
           onClick={() => {
             setTimerMode("pomodoro");
           }}
           className={`mode-button ${timerMode === "pomodoro" ? "active" : ""}`}
+          color={timerMode === "pomodoro" ? "primary" : "default"}
+          fill={timerMode === "pomodoro" ? "solid" : "outline"}
         >
           Focus
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             setTimerMode("shortBreak");
           }}
           className={`mode-button ${
             timerMode === "shortBreak" ? "active" : ""
           }`}
+          color={timerMode === "shortBreak" ? "primary" : "default"}
+          fill={timerMode === "shortBreak" ? "solid" : "outline"}
         >
           Short
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             setTimerMode("longBreak");
           }}
           className={`mode-button ${timerMode === "longBreak" ? "active" : ""}`}
+          color={timerMode === "longBreak" ? "primary" : "default"}
+          fill={timerMode === "longBreak" ? "solid" : "outline"}
         >
           Long
-        </button>
+        </Button>
       </div>
       <div className="timer-control-buttons">
-        <button
+        <Button
           onClick={handleStartTimer}
           className="control-button start-button"
           disabled={isRunning}
+          color="success"
         >
           Start
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handlePauseTimer}
           className="control-button pause-button"
           disabled={!isRunning}
+          color="warning"
         >
           Pause
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleResetTimer}
           className="control-button reset-button"
+          color="default"
         >
           Reset
-        </button>
+        </Button>
       </div>
       <div className="timer-control-buttons">
-        <button
+        <Button
           onClick={handleCircleTimer}
           className="control-button circle-button"
+          color="primary"
         >
           Start a circle
-        </button>
+        </Button>
       </div>
     </div>
   );
