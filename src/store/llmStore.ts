@@ -46,6 +46,8 @@ interface InferenceStore {
   retrievalInit: () => Promise<void>;
   retrievalRelease: () => Promise<void>;
   retrievalRetrieve: (query: string, topK?: number) => Promise<string>;
+  retrievalAdd(text: string): Promise<void>;
+  retrievalRemove(): Promise<void>;
 
   // 空闲回收
   touchLlm: () => void;
@@ -280,6 +282,33 @@ export const useInferenceStore = create<InferenceStore>((set, get) => ({
       { payload: { query, topK } }
     );
     return res?.context ?? "";
+  },
+  retrievalAdd: async (text: string) => {
+    if (get().retrievalStatus !== "ready") {
+      throw new Error(get().lastError ?? "检索引擎未就绪");
+    }
+    try {
+      await invoke("plugin:taskpilot-inference|rag_add_document", {
+        payload: { text, chunkSize: 500, chunkOverlap: 50 },
+      });
+      get().touchRetrieval();
+    } catch (e: any) {
+      set({ lastError: String(e?.message ?? e) });
+      throw e;
+    }
+  },
+
+  retrievalRemove: async () => {
+    if (get().retrievalStatus !== "ready") {
+      throw new Error(get().lastError ?? "检索引擎未就绪");
+    }
+    try {
+      await invoke("plugin:taskpilot-inference|rag_clear");
+      get().touchRetrieval();
+    } catch (e: any) {
+      set({ lastError: String(e?.message ?? e) });
+      throw e;
+    }
   },
 
   touchLlm: () => {

@@ -35,7 +35,6 @@ function App() {
       try {
         const sandbox = await invoke<string>("get_sandbox_dir");
         const ragDbPath = `${sandbox.replace(/\/$/, "")}/ragDb.db`;
-        console.log("RAG DB Path:", ragDbPath);
         const cfg: InferenceConfig = {
           llmConfigPath:
             "/data/local/tmp/models/Qwen2.5-1.5B-Instruct-MNN/config.json",
