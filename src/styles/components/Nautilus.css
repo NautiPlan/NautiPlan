@@ -62,7 +62,42 @@ body {
 .timer-display-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 0.75rem;
+}
+
+.timer-display-container > div {
+  /* CircularProgressbar 容器样式 */
+  width: 180px;
+  height: 180px;
+}
+
+.timer-progress-wrapper {
+  width: 180px;
+  height: 180px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-progress-wrapper.running {
+  animation: circular-ripple 2s ease-in-out infinite;
+}
+
+@keyframes circular-ripple {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 0 rgba(0, 0, 0, 0.15));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 0 8px rgba(0, 0, 0, 0));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 0 rgba(0, 0, 0, 0));
+  }
 }
 
 .timer-display {

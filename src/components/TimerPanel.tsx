@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { Button } from "antd-mobile";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import { useTimerStore } from "../store/timerStore";
 import "../styles/components/Nautilus.css";
 
@@ -35,6 +37,40 @@ const TimerPanel: React.FC = () => {
       longBreak: "Long",
     };
     return modeNames[mode] || mode;
+  };
+
+  // 计算进度百分比
+  const getTotalSeconds = (mode: string) => {
+    switch (mode) {
+      case "pomodoro":
+        return 25 * 60; // 25分钟
+      case "shortBreak":
+        return 5 * 60; // 5分钟
+      case "longBreak":
+        return 15 * 60; // 15分钟
+      default:
+        return 25 * 60;
+    }
+  };
+
+  const totalSeconds = useMemo(() => getTotalSeconds(timerMode), [timerMode]);
+  const percentage = useMemo(
+    () => ((totalSeconds - timer) / totalSeconds) * 100,
+    [timer, totalSeconds]
+  );
+
+  // 获取进度条颜色
+  const getPathColor = () => {
+    switch (timerMode) {
+      case "pomodoro":
+        return "#ef4444"; // 红色 - Focus
+      case "shortBreak":
+        return "#22c55e"; // 绿色 - Short Break
+      case "longBreak":
+        return "#3b82f6"; // 蓝色 - Long Break
+      default:
+        return "#ef4444";
+    }
   };
 
   // 格式化时间为 mm:ss，用于时钟
@@ -149,9 +185,22 @@ const TimerPanel: React.FC = () => {
       <h2 className="panel-title">Timer</h2>
       <div className="timer-display-container">
         <div
-          className={`timer-display ${timerMode} ${isRunning ? "running" : ""}`}
+          style={{ width: "180px", height: "180px" }}
+          className={`timer-progress-wrapper ${isRunning ? "running" : ""}`}
         >
-          {formatTime(timer)}
+          <CircularProgressbar
+            value={percentage}
+            text={formatTime(timer)}
+            styles={buildStyles({
+              rotation: 0,
+              strokeLinecap: "round",
+              textSize: "24px",
+              pathTransitionDuration: 0.5,
+              pathColor: getPathColor(),
+              textColor: "#1f2937",
+              trailColor: "#e5e7eb",
+            })}
+          />
         </div>
       </div>
       <div className="timer-status-container">
