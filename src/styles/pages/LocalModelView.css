@@ -5,6 +5,18 @@
   min-height: 100vh;
 }
 
+.local-model-view .api-key-section {
+  margin-bottom: 20px;
+  padding: 0% 10%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+}
+
 .local-model-view .card {
   background: white;
   border-radius: 12px;
