@@ -1,0 +1,102 @@
+.local-model-view {
+  padding: 16px;
+  padding-bottom: 80px;
+  background-color: var(--bg-color, #f5f5f5);
+  min-height: 100vh;
+}
+
+.local-model-view .card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.local-model-view .card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.local-model-view .status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.local-model-view .status-label {
+  color: #666;
+}
+
+.local-model-view .status-value {
+  font-weight: 500;
+}
+
+.local-model-view .status-ready {
+  color: #52c41a;
+}
+
+.local-model-view .status-error {
+  color: #ff4d4f;
+}
+
+.local-model-view .status-idle {
+  color: #faad14;
+}
+
+.local-model-view .status-initializing {
+  color: #1890ff;
+}
+
+.local-model-view .model-list {
+  margin-top: 12px;
+}
+
+.local-model-view .model-item {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.local-model-view .model-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.local-model-view .model-name {
+  font-weight: bold;
+}
+
+.local-model-view .model-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+.local-model-view .backend-selector {
+  margin-top: 16px;
+}
+
+.local-model-view .test-area {
+  margin-top: 16px;
+}
+
+.local-model-view .test-input {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.local-model-view .test-output {
+  margin-top: 12px;
+  padding: 8px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  min-height: 50px;
+  white-space: pre-wrap;
+  font-size: 14px;
+}

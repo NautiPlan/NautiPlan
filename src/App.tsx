@@ -7,12 +7,13 @@ import AIPlannerView from "./pages/AIPlannerView";
 import CalendarView from "./pages/CalendarView";
 import PlanView from "./pages/PlanView";
 import TodoView from "./pages/TodoView";
+import LocalModelView from "./pages/LocalModelView";
 import { usePlanStore } from "./store/taskStore";
 import "./styles/components/transitions.css";
 import ApiKeyButton from "./components/ApiKey";
 import { useInferenceStore, InferenceConfig } from "./store/llmStore";
 
-const pages = ["/", "/calendar", "/chat", "/myPlan"];
+const pages = ["/", "/calendar", "/chat", "/myPlan", "/model"];
 
 function App() {
   const { syncToDatabase } = usePlanStore();
@@ -183,6 +184,7 @@ function App() {
                 <Route path="/chat" element={<AIPlannerView />} />
                 <Route path="/calendar" element={<CalendarView />} />
                 <Route path="/myPlan" element={<PlanView />} />
+                <Route path="/model" element={<LocalModelView />} />
                 <Route path="/" element={<TodoView />} />
               </Routes>
             </div>

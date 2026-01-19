@@ -5,6 +5,7 @@ import {
   CalendarOutlined,
   RobotOutlined,
   ProjectOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { TabBar, TabBarItem } from "tdesign-mobile-react";
 import "../styles/components/TabBarBase.css";
@@ -15,6 +16,7 @@ function TabBarBase() {
     { value: "/calendar", icon: <CalendarOutlined />, ariaLabel: "Calendar" },
     { value: "/chat", icon: <RobotOutlined />, ariaLabel: "Chat" },
     { value: "/myPlan", icon: <ProjectOutlined />, ariaLabel: "MyPlan" },
+    { value: "/model", icon: <SettingOutlined />, ariaLabel: "Model" },
   ];
 
   const navigate = useNavigate();
