@@ -10,7 +10,7 @@
 .calendar-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 24px;
   background: white;
   padding: 20px 24px;
@@ -18,6 +18,7 @@
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08),
               0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1px solid #e0e0e0;
+  overflow: visible;
 }
 
 .calendar-header h2 {
@@ -30,6 +31,7 @@
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .calendar-month {
@@ -48,27 +50,28 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  overflow: visible;
+  min-height: auto;
 }
 
-.calendar-controls button {
-  background: linear-gradient(135deg, #87ceeb, #4fc3f7);
-  border: none;
-  padding: 8px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: white;
+/* 移除原生 button 样式，使用 antd-mobile Button */
+.calendar-controls .adm-button {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
   font-weight: 500;
-  font-size: 13px;
-  white-space: nowrap;
-  box-shadow: 0 2px 12px rgba(135, 206, 235, 0.3);
-  min-width: 60px;
+  padding: 6px 12px !important;
+  height: auto !important;
+  min-height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
 }
 
-.calendar-controls button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(135, 206, 235, 0.4);
-  background: linear-gradient(135deg, #7bc8e8, #42bdf5);
+.calendar-controls .adm-button svg {
+  font-size: 16px;
+  margin: 0 !important;
+  flex-shrink: 0;
 }
 
 .calendar-weekdays {

@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
+import { Button } from "antd-mobile";
+import { LeftOutline, RightOutline } from "antd-mobile-icons";
 import { generateCalendarCells } from "../components/CalendarCells";
 import CalendarModal from "../components/CalendarModal";
 import { generateWeekdays, getMonthInfo } from "../components/CalendarUtils";
@@ -102,9 +104,30 @@ function CalendarView() {
     <div className="calendar-container">
       <div className="calendar-header">
         <div className="calendar-controls">
-          <button onClick={() => changeMonth(-1)}>上月</button>
-          <button onClick={goToToday}>今天</button>
-          <button onClick={() => changeMonth(1)}>下月</button>
+          <Button
+            onClick={() => changeMonth(-1)}
+            size="middle"
+            fill="outline"
+            color="primary"
+          >
+            <LeftOutline /> 上月
+          </Button>
+          <Button
+            onClick={goToToday}
+            size="middle"
+            fill="solid"
+            color="primary"
+          >
+            今天
+          </Button>
+          <Button
+            onClick={() => changeMonth(1)}
+            size="middle"
+            fill="outline"
+            color="primary"
+          >
+            下月 <RightOutline />
+          </Button>
         </div>
         <h2>
           <span className="calendar-month">{monthName}</span>
