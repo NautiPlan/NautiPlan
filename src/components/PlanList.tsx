@@ -8,8 +8,8 @@ import {
   Input,
   List,
   Popup,
-  Tag,
 } from "tdesign-mobile-react";
+import { Tag } from "antd-mobile";
 import Pagination from "./Pagination";
 import { v4 as uuidv4 } from "uuid";
 import { Plan, Task } from "../interface/task";
@@ -302,32 +302,21 @@ function PlanList({ onPlanClick }: PlanListProps) {
                   <div className="plan-item-title">
                     <span className="plan-name">{plan.name}</span>
                     <div className="plan-tags">
-                      <Tag
-                        theme={getPriorityColor(displayPriority)}
-                        size="small"
-                      >
+                      <Tag color={getPriorityColor(displayPriority)}>
                         {getPriorityText(displayPriority)}
                       </Tag>
-                      {plan.completed && (
-                        <Tag theme="success" size="small">
-                          已完成
-                        </Tag>
-                      )}
+                      {plan.completed && <Tag color="success">已完成</Tag>}
                       {modeInfo && modeInfo.isStrict && (
-                        <Tag theme="danger" size="small" variant="outline">
+                        <Tag color="danger" fill="outline">
                           严格
                         </Tag>
                       )}
                       {modeInfo && !modeInfo.isStrict && (
-                        <Tag theme="default" size="small" variant="outline">
+                        <Tag color="default" fill="outline">
                           宽松
                         </Tag>
                       )}
-                      {hasOverdue && (
-                        <Tag theme="warning" size="small">
-                          超时
-                        </Tag>
-                      )}
+                      {hasOverdue && <Tag color="warning">超时</Tag>}
                     </div>
                   </div>
                 }
@@ -456,13 +445,9 @@ function PlanList({ onPlanClick }: PlanListProps) {
                     description={
                       <div className="task-description">
                         {task.completed ? (
-                          <Tag theme="success" size="small">
-                            已完成
-                          </Tag>
+                          <Tag color="success">已完成</Tag>
                         ) : (
-                          <Tag theme="default" size="small">
-                            待完成
-                          </Tag>
+                          <Tag color="default">待完成</Tag>
                         )}
                         <span>日期: {formatDate(task.date)}</span>
                       </div>

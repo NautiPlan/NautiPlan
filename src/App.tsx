@@ -67,7 +67,6 @@ function App() {
     }
 
     // 严格判断：只有当滚动条在顶部范围内（<20px，约0.5cm）才允许触发
-    // 用户提到的 0~2cm 约为 0~75px，这里取较小值确保精准
     const st = scrollContainer.scrollTop;
     isSwipingFromTop.current = st < 20;
   };
