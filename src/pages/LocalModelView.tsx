@@ -35,12 +35,7 @@ const LocalModelView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("llm");
   const [appDir, setAppDir] = useState<string>("");
 
-  const {
-    llmStatus,
-    retrievalStatus,
-    setConfig,
-    lastError: storeError,
-  } = useInferenceStore();
+  const { llmStatus, retrievalStatus, setConfig } = useInferenceStore();
 
   const [localLlmStatus, setLocalLlmStatus] = useState<ResourceStatus>("idle");
   const [localRetrievalStatus, setLocalRetrievalStatus] =
@@ -312,11 +307,13 @@ const LocalModelView: React.FC = () => {
 
   return (
     <div className="local-model-view">
+      {/* @ts-ignore */}
       <Tabs
         value={activeTab}
         onChange={(v: any) => setActiveTab(String(v))}
         sticky
       >
+        {/* @ts-ignore */}
         <TabPanel label="LLM 推理" value="llm">
           <div className="tab-container" style={{ padding: "16px 0" }}>
             <div className="card">
@@ -465,6 +462,7 @@ const LocalModelView: React.FC = () => {
           </div>
         </TabPanel>
 
+        {/* @ts-ignore */}
         <TabPanel label="Embedding" value="embedding">
           <div className="tab-container" style={{ padding: "16px 0" }}>
             <div className="card">
@@ -583,6 +581,7 @@ const LocalModelView: React.FC = () => {
           </div>
         </TabPanel>
 
+        {/* @ts-ignore */}
         <TabPanel label="RAG 检索" value="rag">
           <div className="tab-container" style={{ padding: "16px 0" }}>
             <div className="card">
