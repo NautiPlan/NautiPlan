@@ -16,14 +16,14 @@ export interface ModelInfo {
 const availableModels: ModelInfo[] = [
   {
     id: "MNN/Qwen2.5-1.5B-Instruct-MNN",
-    name: "Qwen2.5-1.5B-Instruct",
+    name: "Qwen2.5-1.5B-Instruct-MNN",
     size: "879MB",
     type: "llm",
     status: "not-downloaded",
   },
   {
     id: "MNN/bge-large-zh-MNN",
-    name: "bge-large-zh",
+    name: "bge-large-zh-MNN",
     size: "217MB",
     type: "embedding",
     status: "not-downloaded",
@@ -94,7 +94,7 @@ export const useModelStore = create<ModelStore>((set, get) => ({
       const names: string[] = await invoke("list_models");
       const models = get().models.map((model) => ({
         ...model,
-        status: names.includes(model.id)
+        status: names.includes(model.name)
           ? ("downloaded" as ModelStatus)
           : ("not-downloaded" as ModelStatus),
       }));

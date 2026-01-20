@@ -38,7 +38,7 @@ struct DownloadProgress {
 pub async fn list_models(app: tauri::AppHandle) -> Result<Vec<String>, String> {
     let mut files = Vec::new();
     let base_dir = get_sandbox_dir(app.clone())?;
-    let app_dir = std::path::Path::new(&base_dir).join("models");
+    let app_dir = std::path::Path::new(&base_dir).join("models").join("MNN");
 
     if !app_dir.exists() {
         return Ok(files);
