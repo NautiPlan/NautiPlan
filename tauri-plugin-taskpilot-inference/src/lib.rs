@@ -37,9 +37,6 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             commands::rag_clear,
             commands::rag_retrieve,
             commands::rag_status,
-            // 下载命令
-            commands::download_model,
-            commands::list_dir_contents,
         ])
         .setup(|app, _api| {
             // 注册全局状态

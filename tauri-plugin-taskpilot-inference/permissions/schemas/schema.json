@@ -295,18 +295,6 @@
       "type": "string",
       "oneOf": [
         {
-          "description": "Enables the download_model command without any pre-configured scope.",
-          "type": "string",
-          "const": "allow-download-model",
-          "markdownDescription": "Enables the download_model command without any pre-configured scope."
-        },
-        {
-          "description": "Denies the download_model command without any pre-configured scope.",
-          "type": "string",
-          "const": "deny-download-model",
-          "markdownDescription": "Denies the download_model command without any pre-configured scope."
-        },
-        {
           "description": "Enables the embedding_encode command without any pre-configured scope.",
           "type": "string",
           "const": "allow-embedding-encode",
@@ -353,18 +341,6 @@
           "type": "string",
           "const": "deny-embedding-status",
           "markdownDescription": "Denies the embedding_status command without any pre-configured scope."
-        },
-        {
-          "description": "Enables the list_dir_contents command without any pre-configured scope.",
-          "type": "string",
-          "const": "allow-list-dir-contents",
-          "markdownDescription": "Enables the list_dir_contents command without any pre-configured scope."
-        },
-        {
-          "description": "Denies the list_dir_contents command without any pre-configured scope.",
-          "type": "string",
-          "const": "deny-list-dir-contents",
-          "markdownDescription": "Denies the list_dir_contents command without any pre-configured scope."
         },
         {
           "description": "Enables the llm_chat command without any pre-configured scope.",
@@ -523,10 +499,10 @@
           "markdownDescription": "Denies the rag_status command without any pre-configured scope."
         },
         {
-          "description": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`\n- `allow-download-model`\n- `allow-list-dir-contents`",
+          "description": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`",
           "type": "string",
           "const": "default",
-          "markdownDescription": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`\n- `allow-download-model`\n- `allow-list-dir-contents`"
+          "markdownDescription": "Default permissions for taskpilot-inference\n#### This default permission set includes:\n\n- `allow-llm-init`\n- `allow-llm-release`\n- `allow-llm-chat`\n- `allow-llm-chat-stream`\n- `allow-llm-server-start`\n- `allow-llm-server-url`\n- `allow-llm-status`\n- `allow-embedding-init`\n- `allow-embedding-release`\n- `allow-embedding-encode`\n- `allow-embedding-status`\n- `allow-rag-init`\n- `allow-rag-release`\n- `allow-rag-add-document`\n- `allow-rag-clear`\n- `allow-rag-retrieve`\n- `allow-rag-status`"
         }
       ]
     }

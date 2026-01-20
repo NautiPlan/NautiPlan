@@ -48,6 +48,16 @@ async fn get_sandbox_dir(app: tauri::AppHandle) -> Result<String, String> {
     commands::get_sandbox_dir::get_sandbox_dir(app)
 }
 
+#[tauri::command]
+async fn list_models(app: tauri::AppHandle) -> Result<Vec<String>, String> {
+    commands::model_manage::list_models(app).await
+}
+
+#[tauri::command]
+async fn download(id: String, app: tauri::AppHandle) -> Result<String, String> {
+    commands::model_manage::download(id, app).await
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -64,6 +74,8 @@ pub fn run() {
             web_search,
             rerank_web_search_results,
             get_sandbox_dir,
+            list_models,
+            download,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
