@@ -21,6 +21,8 @@ Default permissions for taskpilot-inference
 - `allow-rag-clear`
 - `allow-rag-retrieve`
 - `allow-rag-status`
+- `allow-download-model`
+- `allow-list-dir-contents`
 
 ## Permission Table
 
@@ -30,6 +32,32 @@ Default permissions for taskpilot-inference
 <th>Description</th>
 </tr>
 
+
+<tr>
+<td>
+
+`taskpilot-inference:allow-download-model`
+
+</td>
+<td>
+
+Enables the download_model command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`taskpilot-inference:deny-download-model`
+
+</td>
+<td>
+
+Denies the download_model command without any pre-configured scope.
+
+</td>
+</tr>
 
 <tr>
 <td>
@@ -131,6 +159,32 @@ Enables the embedding_status command without any pre-configured scope.
 <td>
 
 Denies the embedding_status command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`taskpilot-inference:allow-list-dir-contents`
+
+</td>
+<td>
+
+Enables the list_dir_contents command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`taskpilot-inference:deny-list-dir-contents`
+
+</td>
+<td>
+
+Denies the list_dir_contents command without any pre-configured scope.
 
 </td>
 </tr>

@@ -471,24 +471,14 @@ body {
   }
 }
 
-.progress-bar-bg {
-  width: 100%;
-  height: 0.5rem;
-  background-color: #e5e7eb;
-  border-radius: 9999px;
+/* 进度条使用 antd-mobile ProgressBar 组件 */
+.progress-container .adm-progress-bar {
+  margin-top: 12px;
 }
 
-@media (min-width: 768px) {
-  .progress-bar-bg {
-    height: 0.625rem;
-  }
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background-color: #22c55e;
-  border-radius: 9999px;
-  transition: width 0.5s;
+.progress-container .adm-progress-bar {
+  --track-color: #e5e7eb;
+  --fill-color: #22c55e;
 }
 
 /* Todo列表容器 - 移除滚动逻辑 */
