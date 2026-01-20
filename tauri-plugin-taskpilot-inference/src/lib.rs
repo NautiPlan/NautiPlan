@@ -15,7 +15,7 @@ pub use stream::StreamToken;
 
 /// 初始化插件
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
-    Builder::new("taskpilot-inference")
+    Builder::<R>::new("taskpilot-inference")
         .invoke_handler(tauri::generate_handler![
             // LLM 命令
             commands::llm_init,
@@ -37,6 +37,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             commands::rag_clear,
             commands::rag_retrieve,
             commands::rag_status,
+            // 下载命令
+            commands::download_model,
+            commands::list_dir_contents,
         ])
         .setup(|app, _api| {
             // 注册全局状态

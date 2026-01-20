@@ -25,4 +25,7 @@ permissions = [
     "allow-rag-clear",
     "allow-rag-retrieve",
     "allow-rag-status",
+    # 下载
+    "allow-download-model",
+    "allow-list-dir-contents",
 ]

@@ -47,6 +47,9 @@ pub enum Error {
 
     #[error("资源已被初始化")]
     AlreadyInitialized,
+
+    #[error("下载失败: {0}")]
+    DownloadError(String),
 }
 
 impl Serialize for Error {

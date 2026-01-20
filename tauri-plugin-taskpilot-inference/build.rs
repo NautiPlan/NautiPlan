@@ -23,6 +23,9 @@ const COMMANDS: &[&str] = &[
     "rag_clear",
     "rag_retrieve",
     "rag_status",
+    // 下载模型
+    "download_model",
+    "list_dir_contents",
 ];
 
 fn main() {
