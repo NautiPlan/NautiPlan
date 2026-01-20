@@ -4794,15 +4794,11 @@ dependencies = [
 name = "tauri-plugin-taskpilot-inference"
 version = "0.1.0"
 dependencies = [
- "futures-util",
- "log",
- "reqwest 0.12.20",
  "serde",
  "serde_json",
  "tauri",
  "tauri-plugin",
  "thiserror 2.0.12",
- "tokio",
 ]
 
 [[package]]
@@ -5039,9 +5035,7 @@ dependencies = [
  "bytes",
  "libc",
  "mio",
- "parking_lot",
  "pin-project-lite",
- "signal-hook-registry",
  "socket2",
  "tokio-macros",
  "windows-sys 0.52.0",
