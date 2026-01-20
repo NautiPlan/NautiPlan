@@ -9,6 +9,7 @@ import PlanView from "./pages/PlanView";
 import TodoView from "./pages/TodoView";
 import LocalModelView from "./pages/LocalModelView";
 import { usePlanStore } from "./store/taskStore";
+import { useModelStore } from "./store/modelStore";
 import "./styles/components/transitions.css";
 import { useInferenceStore, InferenceConfig } from "./store/llmStore";
 import { invoke } from "@tauri-apps/api/core";
@@ -26,7 +27,13 @@ function App() {
   // 设置 llm 路径
   const { setConfig } = useInferenceStore();
 
+  const { updateModels, initDownloadProgressListener } = useModelStore();
+
   useEffect(() => {
+    syncToDatabase();
+    updateModels();
+    initDownloadProgressListener();
+
     (async () => {
       try {
         const sandbox = await invoke<string>("get_sandbox_dir");
@@ -43,10 +50,6 @@ function App() {
         console.error("failed to get sandbox dir:", e);
       }
     })();
-  }, [setConfig]);
-
-  useEffect(() => {
-    syncToDatabase();
   }, []);
 
   const getCurrentDirection = () => {

@@ -6,16 +6,8 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import { useInferenceStore } from "../../store/llmStore";
-
-type ModelStatus = "not-downloaded" | "downloading" | "downloaded";
-
-type DemoModel = {
-  id: string;
-  name: string;
-  size: string;
-  status: ModelStatus;
-  progress?: number;
-};
+import { useModelStore } from "../../store/modelStore";
+import { useState } from "react";
 
 const backends = [
   { label: "CPU", value: 0 },
@@ -25,25 +17,11 @@ const backends = [
   { label: "自动", value: 4 },
 ];
 
-const demoModels: DemoModel[] = [
-  {
-    id: "qwen2.5-1.5b",
-    name: "Qwen2.5-1.5B-Instruct",
-    size: "1.2GB",
-    status: "downloaded",
-  },
-  {
-    id: "qwen2.5-7b",
-    name: "Qwen2.5-7B-Instruct (GGUF)",
-    size: "5.5GB",
-    status: "downloading",
-    progress: 45,
-  },
-];
-
 const Llm: React.FC = () => {
-  const selectedId = demoModels[0].id;
-
+  const { models, downloadModel } = useModelStore();
+  const [selectedId, setSelectedId] = useState<string | null>(
+    "MNN/Qwen2.5-1.5B-Instruct-MNN"
+  );
   const { llmStatus } = useInferenceStore();
 
   return (
@@ -79,55 +57,78 @@ const Llm: React.FC = () => {
           <CloudDownloadOutlined /> LLM 模型仓库
         </div>
         <div className="model-list">
-          {demoModels.map((model) => (
-            <div
-              key={model.id}
-              className={`model-item ${selectedId === model.id ? "selected" : ""}`}
-              style={{
-                padding: "12px",
-                border:
-                  selectedId === model.id
-                    ? "1.5px solid #0052d9"
-                    : "1px solid #eee",
-                borderRadius: "8px",
-                marginBottom: "8px",
-                background: selectedId === model.id ? "#f0f7ff" : "white",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <div className="model-name" style={{ fontWeight: "bold" }}>
-                    {model.name}
-                  </div>
+          {models
+            .filter((model) => model.type === "llm")
+            .map((model) => {
+              const isSelected = selectedId === model.id;
+              const isDownloading = model.status === "downloading";
+              const isDownloaded = model.status === "downloaded";
+              return (
+                <div
+                  key={model.id}
+                  className={`model-item ${isSelected ? "selected" : ""}`}
+                  style={{
+                    padding: "12px",
+                    border: isSelected
+                      ? "1.5px solid #0052d9"
+                      : "1px solid #eee",
+                    borderRadius: "8px",
+                    marginBottom: "8px",
+                    background: isSelected ? "#f0f7ff" : "white",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setSelectedId(model.id)}
+                >
                   <div
-                    className="model-meta"
-                    style={{ fontSize: "12px", color: "#666" }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
                   >
-                    {model.size} | {model.status}
+                    <div>
+                      <div
+                        className="model-name"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        {model.name}
+                      </div>
+                      <div
+                        className="model-meta"
+                        style={{ fontSize: "12px", color: "#666" }}
+                      >
+                        {model.size} | {model.status ?? "not-downloaded"}
+                      </div>
+                    </div>
+
+                    {!isDownloaded ? (
+                      <Button
+                        size="small"
+                        theme="primary"
+                        disabled={isDownloading}
+                        onClick={(e) => {
+                          e.stopPropagation(); // 避免点按钮触发选中卡片
+                          void downloadModel(model.id);
+                        }}
+                      >
+                        {isDownloading ? "下载中" : "下载"}
+                      </Button>
+                    ) : (
+                      <div style={{ color: "#2ba471", fontSize: "12px" }}>
+                        已下载
+                      </div>
+                    )}
                   </div>
+
+                  {model.status === "downloading" && (
+                    <Progress
+                      percentage={model.progress ?? 0}
+                      style={{ marginTop: "8px" }}
+                    />
+                  )}
                 </div>
-
-                {model.status !== "downloaded" && (
-                  <Button size="small" theme="primary" disabled>
-                    下载
-                  </Button>
-                )}
-              </div>
-
-              {model.status === "downloading" && (
-                <Progress
-                  percentage={model.progress ?? 0}
-                  style={{ marginTop: "8px" }}
-                />
-              )}
-            </div>
-          ))}
+              );
+            })}
         </div>
       </div>
 
