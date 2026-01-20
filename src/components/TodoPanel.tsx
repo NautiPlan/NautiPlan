@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Checkbox } from "tdesign-mobile-react";
-import { Button, Input, Space } from "antd-mobile";
+import { Button, Input, Space, ProgressBar } from "antd-mobile";
 import { AddOutline } from "antd-mobile-icons";
 import { v4 as uuidv4 } from "uuid";
 import { Task } from "../interface/task";
@@ -146,14 +146,15 @@ const TodoPanel: React.FC = () => {
             {Math.round((completedCount / Math.max(tasks.length, 1)) * 100)}%
           </span>
         </div>
-        <div className="progress-bar-bg">
-          <div
-            className="progress-bar-fill"
-            style={{
-              width: `${(completedCount / Math.max(tasks.length, 1)) * 100}%`,
-            }}
-          ></div>
-        </div>
+        <ProgressBar
+          percent={(completedCount / Math.max(tasks.length, 1)) * 100}
+          style={
+            {
+              "--fill-color": "#22c55e",
+              "--track-color": "#e5e7eb",
+            } as React.CSSProperties
+          }
+        />
       </div>
       <div className="todo-list-container">
         {tasks.length > 0 ? (
