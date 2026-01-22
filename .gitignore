@@ -31,3 +31,4 @@ __test__/
 *.sw?
 
 .env
+*.bkp
