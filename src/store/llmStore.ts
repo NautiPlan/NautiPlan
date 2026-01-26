@@ -10,6 +10,9 @@ export interface InferenceConfig {
 }
 
 interface InferenceStore {
+  // 临时路径开关
+  tmpPath: boolean;
+
   // 端侧模式开关
   onDeviceEnabled: boolean;
 
@@ -74,6 +77,8 @@ function now() {
 }
 
 export const useInferenceStore = create<InferenceStore>((set, get) => ({
+  tmpPath: false,
+
   onDeviceEnabled: false,
 
   llmStatus: "idle",

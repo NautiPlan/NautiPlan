@@ -28,8 +28,26 @@ function AIPlanner() {
   // 状态管理
   const { addPlan, Plans } = usePlanStore();
 
+  // 引入仅测试用临时路径
+  const { config, setConfig, tmpPath } = useInferenceStore();
+
   const { onDeviceEnabled, enableOnDevice, disableOnDevice } =
     useInferenceStore();
+
+  // 切换测试用临时路径
+  const useTmpPath = () => {
+    const llmConfigPath =
+      "/data/local/tmp/models/Qwen2.5-1.5B-Instruct-MNN/config.json";
+    const embeddingConfigPath =
+      "/data/local/tmp/models/bge-large-zh-MNN/config.json";
+    setConfig({
+      ...config,
+      llmConfigPath: llmConfigPath,
+      embeddingConfigPath: embeddingConfigPath,
+    });
+
+    useInferenceStore.setState({ tmpPath: !tmpPath });
+  };
 
   // 端侧模型切换状态
   const [isEdgeSwitching, setIsEdgeSwitching] = useState(false);
@@ -328,6 +346,16 @@ function AIPlanner() {
               value={onDeviceEnabled}
               onChange={onEdgeChange}
               disabled={isEdgeSwitching}
+            />
+          }
+        />
+        <Cell
+          title="使用临时模型路径"
+          rightIcon={
+            <Switch
+              value={tmpPath}
+              onChange={useTmpPath}
+              disabled={onDeviceEnabled}
             />
           }
         />
