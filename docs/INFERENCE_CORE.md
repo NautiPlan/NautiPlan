@@ -4,16 +4,16 @@ TaskPilot 推理核心 (Inference Core) 是一个基于 [MNN](https://github.com
 
 ---
 
-## 🚀 核心功能 (Key Features)
+## 核心功能 (Key Features)
 
-- 🤖 **大语言模型 (LLM/VLM)**: 支持 Qwen, Llama, Phi 等主流模型，适配视觉语言模型 (VLM)。
-- 📚 **知识库增强 (RAG)**: 内置 SQLite 向量数据库，支持本地文档的语义检索与知识问答。
-- 🔌 **标准接口**: 提供纯 C 语言接口，易于集成到 Flutter, Rust (Tauri), C#, Java (JNI) 等各种环境中。
-- ⚡ **硬件加速**: 深度适配 CPU, GPU, 以及部分 NPU。
+- **大语言模型 (LLM/VLM)**: 支持 Qwen, Llama, Phi 等主流模型，适配视觉语言模型 (VLM)。
+- **知识库增强 (RAG)**: 内置 SQLite 向量数据库，支持本地文档的语义检索与知识问答。
+- **标准接口**: 提供纯 C 语言接口，易于集成到 Flutter, Rust (Tauri), C#, Java (JNI) 等各种环境中。
+- **硬件加速**: 深度适配 CPU, GPU, 以及部分 NPU。
 
 ---
 
-## 📊 硬件支持与精度
+## 硬件支持与精度
 
 以下内容引用自MNN仓库：
 
@@ -43,7 +43,7 @@ MNN适配的硬件架构与精度详见下表：
 
 注意：本仓库在32位环境下不支持HTTP相关服务
 
-## 📂 目录概览 (Directory Structure)
+## 目录概览 (Directory Structure)
 
 ```text
 taskPilot-InferrenceCore/
@@ -107,7 +107,7 @@ models/Qwen2.5-1.5B/
 
 ---
 
-## 🏗️ 构建指南 (Build)
+## 构建指南 (Build)
 
 ### 1. 环境依赖
 
@@ -179,7 +179,7 @@ cmake --build --preset linux-x86_64-opencl-release
 
 ---
 
-## 🧪 功能测试 (Testing)
+## 功能测试 (Testing)
 
 启用测试程序可以快速验证当前编译产物在目标环境（尤其是移动加速后端）下是否工作正常。
 
@@ -232,13 +232,13 @@ export MNN_PRINT_DEBUG_INFO=1
 
 ---
 
-## 🚀 NPU 加速专项建议
+## NPU 加速专项建议
 
 对于 NPU 后端（如 QNN/NNAPI），情况相对复杂，涉及特定的 SoC ID 与驱动版本匹配。建议在调试前详细阅读 [MNN 硬件加速文档](https://mnn-docs.readthedocs.io/en/latest/transformers/llm.html)。
 
 ---
 
-## 🔌 API 说明
+## API 说明
 
 本仓库导出了 C API 接口能力，可供 Tauri 插件（`tauri-plugin-taskpilot-inference`）在 Android 上调用，也可以直接作为 C 动态库进行二次开发。
 
