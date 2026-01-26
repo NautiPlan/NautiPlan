@@ -8,6 +8,7 @@ import {
 import { useInferenceStore } from "../../store/llmStore";
 import { useModelStore } from "../../store/modelStore";
 import { useState } from "react";
+import ModelDownload from "./ModelDownload";
 
 const backends = [
   { label: "CPU", value: 0 },
@@ -18,10 +19,6 @@ const backends = [
 ];
 
 const Llm: React.FC = () => {
-  const { models, downloadModel } = useModelStore();
-  const [selectedId, setSelectedId] = useState<string | null>(
-    "MNN/Qwen2.5-1.5B-Instruct-MNN"
-  );
   const { llmStatus } = useInferenceStore();
 
   return (
@@ -52,85 +49,7 @@ const Llm: React.FC = () => {
         </Button>
       </div>
 
-      <div className="card">
-        <div className="card-title">
-          <CloudDownloadOutlined /> LLM 模型仓库
-        </div>
-        <div className="model-list">
-          {models
-            .filter((model) => model.type === "llm")
-            .map((model) => {
-              const isSelected = selectedId === model.id;
-              const isDownloading = model.status === "downloading";
-              const isDownloaded = model.status === "downloaded";
-              return (
-                <div
-                  key={model.id}
-                  className={`model-item ${isSelected ? "selected" : ""}`}
-                  style={{
-                    padding: "12px",
-                    border: isSelected
-                      ? "1.5px solid #0052d9"
-                      : "1px solid #eee",
-                    borderRadius: "8px",
-                    marginBottom: "8px",
-                    background: isSelected ? "#f0f7ff" : "white",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedId(model.id)}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div>
-                      <div
-                        className="model-name"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        {model.name}
-                      </div>
-                      <div
-                        className="model-meta"
-                        style={{ fontSize: "12px", color: "#666" }}
-                      >
-                        {model.size} | {model.status ?? "not-downloaded"}
-                      </div>
-                    </div>
-
-                    {!isDownloaded ? (
-                      <Button
-                        size="small"
-                        theme="primary"
-                        disabled={isDownloading}
-                        onClick={(e) => {
-                          e.stopPropagation(); // 避免点按钮触发选中卡片
-                          void downloadModel(model.id);
-                        }}
-                      >
-                        {isDownloading ? "下载中" : "下载"}
-                      </Button>
-                    ) : (
-                      <div style={{ color: "#2ba471", fontSize: "12px" }}>
-                        已下载
-                      </div>
-                    )}
-                  </div>
-
-                  {model.status === "downloading" && (
-                    <Progress
-                      percentage={model.progress ?? 0}
-                      style={{ marginTop: "8px" }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-        </div>
-      </div>
+      <ModelDownload type="llm" />
 
       <div className="card">
         <div className="card-title">

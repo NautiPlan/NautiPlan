@@ -44,7 +44,6 @@ interface ModelStore {
   downloadStatus: Record<string, ModelStatus>;
   updateModels: () => Promise<void>;
   downloadModel: (id: string) => Promise<void>;
-  setModelStatus: (id: string, status: ModelStatus) => void;
   initDownloadProgressListener: () => Promise<void>;
 }
 
@@ -91,18 +90,30 @@ export const useModelStore = create<ModelStore>((set, get) => ({
 
   async updateModels() {
     try {
-      const names: string[] = await invoke("list_models");
-      const models = get().models.map((model) => ({
-        ...model,
-        status: names.includes(model.name)
-          ? ("downloaded" as ModelStatus)
-          : ("not-downloaded" as ModelStatus),
-      }));
+      const list: { model_id: string; completed: boolean }[] =
+        await invoke("list_models");
+
+      const models = get().models.map((model) => {
+        const remote = list.find((m) => m.model_id === model.name);
+
+        let status: ModelStatus = "not-downloaded";
+
+        if (remote) {
+          status = remote.completed ? "downloaded" : "not-downloaded";
+        }
+
+        return {
+          ...model,
+          status,
+        };
+      });
+
       set({ models });
     } catch (error) {
       console.error("Failed to list models:", error);
     }
   },
+
   async downloadModel(id: string) {
     set((state) => ({
       models: state.models.map((model) =>
@@ -131,11 +142,27 @@ export const useModelStore = create<ModelStore>((set, get) => ({
       console.error("下载失败：", error);
     }
   },
-  setModelStatus(id: string, status: ModelStatus) {
-    set((state) => ({
-      models: state.models.map((model) =>
-        model.id === id ? { ...model, status } : model
-      ),
-    }));
+
+  async uninstallModel(id: string) {
+    const prevStatus = get().models.find((m) => m.id === id)?.status;
+    try {
+      await invoke("uninstall", { id });
+      set((state) => ({
+        models: state.models.map((model) =>
+          model.id === id
+            ? { ...model, status: "not-downloaded" as ModelStatus }
+            : model
+        ),
+      }));
+    } catch (error) {
+      set((state) => ({
+        models: state.models.map((model) =>
+          model.id === id
+            ? { ...model, status: prevStatus ?? "not-downloaded" }
+            : model
+        ),
+      }));
+      console.error("卸载失败：", error);
+    }
   },
 }));
