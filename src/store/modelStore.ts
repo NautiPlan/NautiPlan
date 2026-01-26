@@ -45,6 +45,7 @@ interface ModelStore {
   updateModels: () => Promise<void>;
   downloadModel: (id: string) => Promise<void>;
   initDownloadProgressListener: () => Promise<void>;
+  uninstallModel: (id: string) => Promise<void>;
 }
 
 export const useModelStore = create<ModelStore>((set, get) => ({

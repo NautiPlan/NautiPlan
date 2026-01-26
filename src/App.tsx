@@ -37,12 +37,12 @@ function App() {
     (async () => {
       try {
         const sandbox = await invoke<string>("get_sandbox_dir");
+        const llmConfigPath = `${sandbox.replace(/\/$/, "")}/models/MNN/Qwen2.5-1.5B-Instruct-MNN/config.json`;
+        const embeddingConfigPath = `${sandbox.replace(/\/$/, "")}/models/MNN/bge-large-zh-MNN/config.json`;
         const ragDbPath = `${sandbox.replace(/\/$/, "")}/ragDb.db`;
         const cfg: InferenceConfig = {
-          llmConfigPath:
-            "/data/local/tmp/models/Qwen2.5-1.5B-Instruct-MNN/config.json",
-          embeddingConfigPath:
-            "/data/local/tmp/models/bge-large-zh-MNN/config.json",
+          llmConfigPath,
+          embeddingConfigPath,
           ragDbPath,
         };
         setConfig(cfg);

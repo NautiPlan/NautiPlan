@@ -1,13 +1,6 @@
 import React from "react";
-import { Button, RadioGroup, Input, Progress } from "tdesign-mobile-react";
-import {
-  CloudDownloadOutlined,
-  RocketOutlined,
-  CheckCircleOutlined,
-} from "@ant-design/icons";
-import { useInferenceStore } from "../../store/llmStore";
-import { useModelStore } from "../../store/modelStore";
-import { useState } from "react";
+import { Button, RadioGroup, Input } from "tdesign-mobile-react";
+import { RocketOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import ModelDownload from "./ModelDownload";
 
 const backends = [
@@ -19,8 +12,6 @@ const backends = [
 ];
 
 const Llm: React.FC = () => {
-  const { llmStatus } = useInferenceStore();
-
   return (
     <div className="tab-container" style={{ padding: "16px 0" }}>
       <>此页面仅作演示，具体功能实现需结合OPPO能力支持</>
@@ -29,24 +20,6 @@ const Llm: React.FC = () => {
           <RocketOutlined /> LLM 后端配置
         </div>
         <RadioGroup value={0} onChange={() => undefined} options={backends} />
-      </div>
-
-      <div className="card">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "12px",
-          }}
-        >
-          <div className="card-title" style={{ margin: 0 }}>
-            运行状态
-          </div>
-          <div className={`status-value status-${llmStatus}`}>{llmStatus}</div>
-        </div>
-        <Button theme="primary" block disabled>
-          激活 LLM 模型
-        </Button>
       </div>
 
       <ModelDownload type="llm" />

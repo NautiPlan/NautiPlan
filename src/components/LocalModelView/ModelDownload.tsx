@@ -7,7 +7,7 @@ interface ModelDownloadProps {
 }
 
 const ModelDownload: React.FC<ModelDownloadProps> = ({ type }) => {
-  const { models, downloadModel } = useModelStore();
+  const { models, downloadModel, uninstallModel } = useModelStore();
 
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
 
@@ -69,9 +69,16 @@ const ModelDownload: React.FC<ModelDownloadProps> = ({ type }) => {
                       {isDownloading ? "下载中" : "下载"}
                     </Button>
                   ) : (
-                    <div style={{ color: "#2ba471", fontSize: "12px" }}>
-                      已下载
-                    </div>
+                    <Button
+                      size="small"
+                      theme="default"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void uninstallModel(model.id);
+                      }}
+                    >
+                      卸载
+                    </Button>
                   )}
                 </div>
 
