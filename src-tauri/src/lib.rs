@@ -49,13 +49,20 @@ async fn get_sandbox_dir(app: tauri::AppHandle) -> Result<String, String> {
 }
 
 #[tauri::command]
-async fn list_models(app: tauri::AppHandle) -> Result<Vec<String>, String> {
+async fn list_models(
+    app: tauri::AppHandle,
+) -> Result<Vec<commands::model_manage::ModelStatus>, String> {
     commands::model_manage::list_models(app).await
 }
 
 #[tauri::command]
 async fn download(id: String, app: tauri::AppHandle) -> Result<String, String> {
     commands::model_manage::download(id, app).await
+}
+
+#[tauri::command]
+async fn uninstall(id: String, app: tauri::AppHandle) -> Result<(), String> {
+    commands::model_manage::uninstall(id, app).await
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -76,6 +83,7 @@ pub fn run() {
             get_sandbox_dir,
             list_models,
             download,
+            uninstall,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

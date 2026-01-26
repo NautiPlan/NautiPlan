@@ -35,27 +35,113 @@ struct DownloadProgress {
     total: u64,
 }
 
-pub async fn list_models(app: tauri::AppHandle) -> Result<Vec<String>, String> {
-    let mut files = Vec::new();
+#[derive(Serialize)]
+pub struct ModelStatus {
+    pub model_id: String,
+    pub completed: bool,
+}
+
+pub async fn verify_model_integrity(id: &str, app: tauri::AppHandle) -> Result<bool, String> {
     let base_dir = get_sandbox_dir(app.clone())?;
-    let app_dir = std::path::Path::new(&base_dir).join("models").join("MNN");
+    let model_dir = std::path::Path::new(&base_dir).join("models").join(id);
 
-    if !app_dir.exists() {
-        return Ok(files);
+    if !model_dir.exists() {
+        return Ok(false);
     }
 
-    let mut entries = fs::read_dir(app_dir).await.map_err(|e| e.to_string())?;
+    let client = reqwest::Client::builder()
+        .user_agent("Mozilla/5.0")
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let list_url = format!(
+        "https://modelscope.cn/api/v1/models/{}/repo/files?Recursive=true",
+        id
+    );
+
+    let resp = client
+        .get(&list_url)
+        .send()
+        .await
+        .map_err(|e| format!("Network error: {}", e))?;
+
+    if !resp.status().is_success() {
+        return Err(format!("ModelScope error: {}", resp.status()));
+    }
+
+    let files_resp = resp
+        .json::<ModelFilesResponse>()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let repo_files = files_resp
+        .data
+        .files
+        .into_iter()
+        .filter(|f| f.r#type == "blob");
+
+    for file in repo_files {
+        let local_path = model_dir.join(&file.path);
+
+        // 文件不存在
+        if !local_path.exists() {
+            return Ok(false);
+        }
+
+        let meta = fs::metadata(&local_path).await.map_err(|e| e.to_string())?;
+
+        // 文件大小不一致
+        if meta.len() != file.size {
+            return Ok(false);
+        }
+    }
+
+    Ok(true)
+}
+
+pub async fn list_models(app: tauri::AppHandle) -> Result<Vec<ModelStatus>, String> {
+    let mut models = Vec::new();
+    let base_dir = get_sandbox_dir(app.clone())?;
+    let models_dir = std::path::Path::new(&base_dir).join("models").join("MNN");
+
+    if !models_dir.exists() {
+        return Ok(models);
+    }
+
+    let mut entries = fs::read_dir(&models_dir).await.map_err(|e| e.to_string())?;
     while let Some(entry) = entries.next_entry().await.map_err(|e| e.to_string())? {
-        files.push(entry.file_name().to_string_lossy().to_string());
+        let model_id = entry.file_name().to_string_lossy().to_string();
+
+        let completed = match verify_model_integrity(&model_id, app.clone()).await {
+            Ok(v) => v,
+            Err(e) => {
+                // 联网或解析错误
+                println!("verify failed for {}: {}", model_id, e);
+                false
+            }
+        };
+
+        models.push(ModelStatus {
+            model_id,
+            completed,
+        });
     }
 
-    Ok(files)
+    Ok(models)
 }
 
 pub async fn download(id: String, app: tauri::AppHandle) -> Result<String, String> {
     let base_dir = get_sandbox_dir(app.clone())?;
     let app_dir = std::path::Path::new(&base_dir).join("models").join(&id);
 
+    if app_dir.exists() {
+        let _ = fs::remove_dir_all(&app_dir).await;
+    }
+    fs::create_dir_all(&app_dir)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let result : Result<(), String> = async{
     println!("Storage path: {:?}", app_dir);
 
     let client = reqwest::Client::builder()
@@ -169,5 +255,33 @@ pub async fn download(id: String, app: tauri::AppHandle) -> Result<String, Strin
 
     println!("Successfully downloaded all files for model: {}", id);
     // 返回模型存放的沙箱路径
+    Ok(())
+    }
+    .await;
+
+    if let Err(e) = result {
+        if app_dir.exists() {
+            let _ = fs::remove_dir_all(&app_dir).await;
+            println!("Download failed, cleaned up directory: {:?}", app_dir);
+        }
+        return Err(e);
+    }
+
     Ok(app_dir.to_string_lossy().to_string())
+}
+
+pub async fn uninstall(id: String, app: tauri::AppHandle) -> Result<(), String> {
+    let base_dir = get_sandbox_dir(app.clone())?;
+    let model_dir = std::path::Path::new(&base_dir).join("models").join(&id);
+
+    if !model_dir.exists() {
+        // 不存在也视为成功，方便前端
+        return Ok(());
+    }
+
+    fs::remove_dir_all(&model_dir)
+        .await
+        .map_err(|e| format!("Failed to remove model {}: {}", id, e))?;
+
+    Ok(())
 }
