@@ -14,7 +14,7 @@ import "./styles/components/transitions.css";
 import { useInferenceStore, InferenceConfig } from "./store/llmStore";
 import { invoke } from "@tauri-apps/api/core";
 
-const pages = ["/", "/calendar", "/chat", "/myPlan", "/model"];
+export const pages = ["/", "/calendar", "/chat", "/myPlan", "/model"];
 
 function App() {
   const { syncToDatabase } = usePlanStore();
@@ -133,7 +133,7 @@ function App() {
           </CSSTransition>
         </TransitionGroup>
       </main>
-      <TabBarBase />
+      <TabBarBase setDirection={setDirection} />
     </div>
   );
 }

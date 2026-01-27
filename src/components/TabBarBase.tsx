@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { pages } from "../App";
 import {
   CheckSquareOutlined,
   CalendarOutlined,
@@ -10,7 +11,7 @@ import {
 import { TabBar, TabBarItem } from "tdesign-mobile-react";
 import "../styles/components/TabBarBase.css";
 
-function TabBarBase() {
+function TabBarBase({ setDirection }: { setDirection: (dir: string) => void }) {
   const list = [
     { value: "/", icon: <CheckSquareOutlined />, ariaLabel: "Todo" },
     { value: "/calendar", icon: <CalendarOutlined />, ariaLabel: "Calendar" },
@@ -28,8 +29,16 @@ function TabBarBase() {
   }, [location.pathname]);
 
   const change = (changeValue: string | number) => {
-    setValue(changeValue as string);
-    navigate(`${changeValue}`);
+    const target = changeValue as string;
+    const currentIndex = pages.indexOf(value);
+    const targetIndex = pages.indexOf(target);
+    if (targetIndex > currentIndex) {
+      setDirection("forward");
+    } else if (targetIndex < currentIndex) {
+      setDirection("backward");
+    }
+    setValue(target);
+    navigate(`${target}`);
   };
 
   return (
