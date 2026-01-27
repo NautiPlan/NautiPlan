@@ -1,0 +1,100 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram name="Page-1" id="page-1">
+    <mxGraphModel dx="1213" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f5ff;strokeColor=#1d39c4;strokeWidth=3;fontSize=20;fontStyle=1;verticalAlign=top;align=center;" value="后端/插件层" vertex="1">
+          <mxGeometry height="320" width="885" x="45" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#1890ff;strokeWidth=2;fontSize=16;fontStyle=1;fontFamily=Helvetica;verticalAlign=top;align=center;" value="主后端 (Rust Core)" vertex="1">
+          <mxGeometry height="230" width="300" x="70" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bae7ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="云端API调用逻辑" vertex="1">
+          <mxGeometry height="36.59090909090909" width="120" x="20" y="41.81818181818182" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bae7ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="Json Schema定义" vertex="1">
+          <mxGeometry height="36.59090909090909" width="120" x="160" y="41.81818181818182" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bae7ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="Web Search通用逻辑" vertex="1">
+          <mxGeometry height="36.59090909090909" width="120" x="20" y="99.31818181818181" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bae7ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="端侧模型管理" vertex="1">
+          <mxGeometry height="36.59090909090909" width="120" x="160" y="99.31818181818181" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bae7ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="RPC风格接口" vertex="1">
+          <mxGeometry height="36.59090909090909" width="120" x="20" y="156.8181818181818" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bae7ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="错误处理封装" vertex="1">
+          <mxGeometry height="36.59090909090909" width="120" x="160" y="156.8181818181818" as="geometry" />
+        </mxCell>
+        <mxCell id="35" edge="1" parent="1" source="2" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1d39c4;" target="24" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="700" as="sourcePoint" />
+            <mxPoint x="500" y="740" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="36" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="90" width="885" x="45" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="24" parent="36" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9f0ff;strokeColor=#9254de;strokeWidth=2;fontSize=16;fontStyle=1;fontFamily=Helvetica;verticalAlign=top;align=center;container=0;" value="原生能力" vertex="1">
+          <mxGeometry height="90" width="884.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="25" parent="36" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6e4ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="端侧模型 C API" vertex="1">
+          <mxGeometry height="32.213333333333324" width="136.9559405940594" x="10.51485148514851" y="44.66666666666663" as="geometry" />
+        </mxCell>
+        <mxCell id="26" parent="36" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6e4ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="Android Native能力" vertex="1">
+          <mxGeometry height="32.213333333333324" width="175.33514851485148" x="701.3405940594059" y="44.66666666666663" as="geometry" />
+        </mxCell>
+        <mxCell id="27" parent="36" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6e4ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="交叉编译动态库" vertex="1">
+          <mxGeometry height="32.213333333333324" width="158.59900990099007" x="526.0054455445544" y="44.66666666666663" as="geometry" />
+        </mxCell>
+        <mxCell id="28" parent="36" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6e4ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="交叉编译 (dex/jar)" vertex="1">
+          <mxGeometry height="32.213333333333324" width="168.58811881188117" x="168.58811881188117" y="44.66666666666663" as="geometry" />
+        </mxCell>
+        <mxCell id="29" parent="36" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6e4ff;strokeColor=#91d5ff;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="JNI调用" vertex="1">
+          <mxGeometry height="32.213333333333324" width="151.50148514851486" x="358.9945544554455" y="44.66666666666663" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbe6;strokeColor=#ffd591;strokeWidth=2;fontSize=16;fontStyle=1;fontFamily=Helvetica;verticalAlign=top;align=center;container=0;" value="插件层 (Plugins)" vertex="1">
+          <mxGeometry height="235" width="470" x="420" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff1f0;strokeColor=#ff4d4f;strokeWidth=1.5;fontSize=14;fontStyle=1;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="Taskpilot Inference" vertex="1">
+          <mxGeometry height="40" width="195.8" x="442.6" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#f5c6cb;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="FFI调用C API" vertex="1">
+          <mxGeometry height="35" width="90.4" x="442.6" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#f5c6cb;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="字符串安全转换" vertex="1">
+          <mxGeometry height="35" width="90.4" x="548.1" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#f5c6cb;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="LLM模型封装" vertex="1">
+          <mxGeometry height="35" width="90.4" x="442.6" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#f5c6cb;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="Embedding模型封装" vertex="1">
+          <mxGeometry height="35" width="90.4" x="548.1" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#f5c6cb;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="RAG安全封装" vertex="1">
+          <mxGeometry height="35" width="90.4" x="442.6" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#f5c6cb;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="初始化/释放接口" vertex="1">
+          <mxGeometry height="35" width="90.4" x="548.1" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6fffb;strokeColor=#36cfc9;strokeWidth=1.5;fontSize=14;fontStyle=1;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="Secure Store" vertex="1">
+          <mxGeometry height="40" width="195.8" x="660.1" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9f7be;strokeColor=#b7eb8f;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="AndroidX Security&lt;div&gt;加密&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="90.4" x="660" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9f7be;strokeColor=#b7eb8f;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="MasterKey + EncryptedSP" vertex="1">
+          <mxGeometry height="50" width="90.4" x="765.5" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9f7be;strokeColor=#b7eb8f;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="密钥安全存储" vertex="1">
+          <mxGeometry height="55" width="90.4" x="660" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9f7be;strokeColor=#b7eb8f;strokeWidth=1;fontSize=13;fontStyle=0;fontFamily=Helvetica;verticalAlign=middle;align=center;" value="set/get/delete接口" vertex="1">
+          <mxGeometry height="55" width="90.4" x="765.5" y="560" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
