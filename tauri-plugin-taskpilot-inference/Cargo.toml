@@ -1,6 +1,6 @@
 [package]
 name = "tauri-plugin-taskpilot-inference"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["TaskPilot Team"]
 description = "Tauri plugin for TaskPilot Inference Core - 端侧 LLM/Embedding/RAG 推理"
 edition = "2021"
