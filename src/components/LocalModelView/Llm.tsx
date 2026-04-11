@@ -14,7 +14,6 @@ const backends = [
 const Llm: React.FC = () => {
   return (
     <div className="tab-container" style={{ padding: "16px 0" }}>
-      <>此页面仅作演示，具体功能实现需结合OPPO能力支持</>
       <div className="card">
         <div className="card-title">
           <RocketOutlined /> LLM 后端配置
