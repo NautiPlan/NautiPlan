@@ -4,4 +4,4 @@
 
 [submodule "tauri-plugin-taskpilot-inference/taskPilot-InferrenceCore"]
 	path = tauri-plugin-taskpilot-inference/taskPilot-InferrenceCore
-	url = https://github.com/chuanshanjia666/taskPilot-InferrenceCore.git
+	url = https://github.com/NautiPlan/NautiPlan-InferrenceCore.git
